@@ -1,0 +1,47 @@
+{
+  "dataset": "Grunfeld (1958) investment panel",
+  "source": "Stata Press (webuse grunfeld, Stata 18 data collection)",
+  "source_url": "https://www.stata-press.com/data/r18/grunfeld.dta",
+  "source_format": "dta",
+  "retrieval_date_utc": "2026-07-15T11:02:34.405838+00:00",
+  "source_bytes_sha256": "be844fe819788af680c8c7bb44f0a86f6726fb440081bd2de4a102679ebbc939",
+  "failed_sources": [],
+  "local_files": {
+    "grunfeld.csv": {
+      "path": "X:\\Claude Agentic Tasks\\GPU Powered BMA\\data\\public\\grunfeld.csv",
+      "sha256": "c30e6532ecf09ce903fd0498aa3ccbb7e172a096d187cf77bcdb84a08369f642"
+    },
+    "grunfeld.parquet": {
+      "path": "X:\\Claude Agentic Tasks\\GPU Powered BMA\\data\\public\\grunfeld.parquet",
+      "sha256": "b92deb842f67222de7b18fead2a30d39ad231665202b53f30eb2dea520285e2d"
+    },
+    "grunfeld.dta": {
+      "path": "X:\\Claude Agentic Tasks\\GPU Powered BMA\\data\\public\\grunfeld.dta",
+      "sha256": "be844fe819788af680c8c7bb44f0a86f6726fb440081bd2de4a102679ebbc939"
+    }
+  },
+  "content_sha256": "c1709ac7305f1241c388dbb2e100e8011d94af1e09ec41959cd3360a34b5c793",
+  "row_count": 200,
+  "column_names": [
+    "company",
+    "year",
+    "invest",
+    "mvalue",
+    "kstock",
+    "time"
+  ],
+  "panel_identifier": "company",
+  "time_identifier": "year",
+  "n_companies": 10,
+  "n_years": 20,
+  "duplicate_panel_time_keys": 0,
+  "missing_values_by_column": {
+    "company": 0,
+    "year": 0,
+    "invest": 0,
+    "mvalue": 0,
+    "kstock": 0,
+    "time": 0
+  },
+  "notes": "Observations were downloaded, never manually recreated. When the Stata Press source is used, grunfeld.dta preserves the original downloaded bytes; CSV/Parquet are derived from it."
+}

@@ -1,0 +1,104 @@
+{
+  "timestamp_utc": "2026-07-15T11:09:59.683714+00:00",
+  "os": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "system": "Windows",
+    "release": "11",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 165 Stepping 5, GenuineIntel",
+    "cpu_count": 20,
+    "total_ram_bytes": 68555329536
+  },
+  "python": {
+    "version": "3.12.6",
+    "executable": "C:\\Python312\\python.exe",
+    "implementation": "CPython"
+  },
+  "packages": {
+    "numpy": "2.4.4",
+    "scipy": "1.17.1",
+    "pandas": "3.0.2",
+    "pyarrow": "24.0.0",
+    "torch": "2.5.1+cu121",
+    "pytest": "9.1.1",
+    "statsmodels": null,
+    "cupy": null,
+    "numba": null
+  },
+  "package_managers": {
+    "pip": true,
+    "conda": false,
+    "uv": false
+  },
+  "compilers": {
+    "nvcc": null,
+    "cl": null,
+    "g++": "C:\\Strawberry\\c\\bin\\g++.EXE",
+    "gcc": "C:\\Strawberry\\c\\bin\\gcc.EXE"
+  },
+  "nvidia": {
+    "nvidia_smi_available": true,
+    "gpu_name": "NVIDIA GeForce RTX 3060",
+    "gpu_uuid": "GPU-be0764ed-35c6-d0e3-59d8-f6ca76527a26",
+    "vram_total_mib": 12288.0,
+    "vram_free_mib": 10121.0,
+    "driver_version": "591.86",
+    "compute_capability": "8.6",
+    "pci_bus_id": "00000000:01:00.0",
+    "driver_reported_cuda_version": "13.1"
+  },
+  "torch_cuda": {
+    "torch_installed": true,
+    "cuda_available_from_python": true,
+    "float64_kernel_verified": true,
+    "torch_version": "2.5.1+cu121",
+    "torch_cuda_build": "12.1",
+    "device_name": "NVIDIA GeForce RTX 3060",
+    "compute_capability": "8.6",
+    "multiprocessor_count": 28,
+    "total_vram_bytes": 12884377600,
+    "max_threads_per_multiprocessor": 1536,
+    "warp_size": 32,
+    "float64_test": {
+      "gpu": -1533.124861793392,
+      "cpu": -1533.1248617933884,
+      "abs_diff": 3.637978807091713e-12
+    },
+    "documented_architecture_facts": {
+      "max_threads_per_block": 1024,
+      "shared_memory_per_block_default_bytes": 49152,
+      "shared_memory_per_block_optin_max_bytes": 101376,
+      "fp64_to_fp32_throughput_ratio": "1/64 (GeForce Ampere GA10x)",
+      "source": "NVIDIA CUDA C Programming Guide; NVIDIA GA102 whitepaper"
+    }
+  },
+  "stata": {
+    "installed": true,
+    "callable": false,
+    "callable_executables": [],
+    "on_path": {},
+    "directories": {
+      "C:\\Program Files\\Stata18": [
+        "StataSE-64_old.exe"
+      ],
+      "C:\\Program Files\\Stata17": [
+        "StataSE-64_old.exe"
+      ]
+    },
+    "note": "directories contain only renamed '*_old.exe' leftovers; batch execution was tested and produced no output \u2014 treated as NOT callable"
+  },
+  "summary": {
+    "gpu_detected": "NVIDIA GeForce RTX 3060",
+    "cuda_usable_from_python_float64_verified": true,
+    "nvcc_installed": false,
+    "stata_installed": true,
+    "stata_callable": false
+  },
+  "repository": {
+    "root": "X:\\Claude Agentic Tasks\\GPU Powered BMA",
+    "git_branch": null,
+    "git_head": null,
+    "git_status_porcelain_lines": 9,
+    "git_remotes": "(none)"
+  }
+}

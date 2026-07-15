@@ -1,0 +1,316 @@
+{
+  "timestamp_utc": "2026-07-15T11:13:53.361983+00:00",
+  "hardware": {
+    "cuda": true,
+    "device_name": "NVIDIA GeForce RTX 3060",
+    "compute_capability": "8.6",
+    "multiprocessors": 28,
+    "total_vram_bytes": 12884377600,
+    "torch_version": "2.5.1+cu121",
+    "torch_cuda_build": "12.1"
+  },
+  "seed": 20260715,
+  "note": "Phase 1 feasibility benchmark; NOT the production CUDA enumerator.",
+  "ladder": [
+    {
+      "predictors": 8,
+      "n_models": 256,
+      "n_obs": 1000,
+      "status": "Measured",
+      "cpu": {
+        "backend": "cpu (numpy/scipy, float64)",
+        "repeats": 3,
+        "median_s": 0.007606299943290651,
+        "min_s": 0.007584500010125339,
+        "max_s": 0.008024099981412292,
+        "models_per_second": 33656.311466629966,
+        "sufficient_statistics_s": 3.0100112780928612e-05,
+        "enumeration_s": 0.00736230006441474,
+        "reduction_s": 0.000206099939532578
+      },
+      "gpu": {
+        "backend": "gpu (torch batched cholesky, float64)",
+        "device": "NVIDIA GeForce RTX 3060",
+        "precision": "float64",
+        "cold_s": 0.2089285000693053,
+        "repeats": 3,
+        "median_s": 0.005930999992415309,
+        "min_s": 0.005663300049491227,
+        "max_s": 0.005985299940221012,
+        "models_per_second": 43163.041700788795,
+        "peak_gpu_memory_bytes": 8583680,
+        "max_abs_logscore_diff_vs_cpu": 4.547473508864641e-13
+      }
+    },
+    {
+      "predictors": 10,
+      "n_models": 1024,
+      "n_obs": 1000,
+      "status": "Measured",
+      "cpu": {
+        "backend": "cpu (numpy/scipy, float64)",
+        "repeats": 3,
+        "median_s": 0.030216500046662986,
+        "min_s": 0.03013450000435114,
+        "max_s": 0.030586499953642488,
+        "models_per_second": 33888.76932863332,
+        "sufficient_statistics_s": 4.730001091957092e-05,
+        "enumeration_s": 0.029729299945756793,
+        "reduction_s": 0.00034600007347762585
+      },
+      "gpu": {
+        "backend": "gpu (torch batched cholesky, float64)",
+        "device": "NVIDIA GeForce RTX 3060",
+        "precision": "float64",
+        "cold_s": 0.007629700005054474,
+        "repeats": 3,
+        "median_s": 0.007335799979045987,
+        "min_s": 0.00701689999550581,
+        "max_s": 0.007494100020267069,
+        "models_per_second": 139589.41123326131,
+        "peak_gpu_memory_bytes": 8842240,
+        "max_abs_logscore_diff_vs_cpu": 4.547473508864641e-13
+      }
+    },
+    {
+      "predictors": 12,
+      "n_models": 4096,
+      "n_obs": 1000,
+      "status": "Measured",
+      "cpu": {
+        "backend": "cpu (numpy/scipy, float64)",
+        "repeats": 3,
+        "median_s": 0.12139210000168532,
+        "min_s": 0.12113670003600419,
+        "max_s": 0.1216416999232024,
+        "models_per_second": 33741.899184074864,
+        "sufficient_statistics_s": 4.6600005589425564e-05,
+        "enumeration_s": 0.12049649993423373,
+        "reduction_s": 0.0005808999994769692
+      },
+      "gpu": {
+        "backend": "gpu (torch batched cholesky, float64)",
+        "device": "NVIDIA GeForce RTX 3060",
+        "precision": "float64",
+        "cold_s": 0.009809799958020449,
+        "repeats": 3,
+        "median_s": 0.009101400035433471,
+        "min_s": 0.008801799966022372,
+        "max_s": 0.009128700010478497,
+        "models_per_second": 450040.651334245,
+        "peak_gpu_memory_bytes": 10143232,
+        "max_abs_logscore_diff_vs_cpu": 4.547473508864641e-13
+      }
+    },
+    {
+      "predictors": 15,
+      "n_models": 32768,
+      "n_obs": 1000,
+      "status": "Measured",
+      "cpu": {
+        "backend": "cpu (numpy/scipy, float64)",
+        "repeats": 3,
+        "median_s": 0.9868835000088438,
+        "min_s": 0.9849589999066666,
+        "max_s": 0.9920525000197813,
+        "models_per_second": 33203.51388963981,
+        "sufficient_statistics_s": 6.759993266314268e-05,
+        "enumeration_s": 0.982009100029245,
+        "reduction_s": 0.0028681999538093805
+      },
+      "gpu": {
+        "backend": "gpu (torch batched cholesky, float64)",
+        "device": "NVIDIA GeForce RTX 3060",
+        "precision": "float64",
+        "cold_s": 0.021409999928437173,
+        "repeats": 3,
+        "median_s": 0.01885170000605285,
+        "min_s": 0.01855280005838722,
+        "max_s": 0.01900329999625683,
+        "models_per_second": 1738198.6764842928,
+        "peak_gpu_memory_bytes": 26182144,
+        "max_abs_logscore_diff_vs_cpu": 4.547473508864641e-13
+      }
+    },
+    {
+      "predictors": 18,
+      "n_models": 262144,
+      "n_obs": 1000,
+      "status": "Not evaluated",
+      "reason": "beyond --max-predictors 15 (Phase 1 safe limit)"
+    },
+    {
+      "predictors": 20,
+      "n_models": 1048576,
+      "n_obs": 1000,
+      "status": "Not evaluated",
+      "reason": "beyond --max-predictors 15 (Phase 1 safe limit)"
+    },
+    {
+      "predictors": 24,
+      "n_models": 16777216,
+      "n_obs": 1000,
+      "status": "Not evaluated",
+      "reason": "beyond --max-predictors 15 (Phase 1 safe limit)"
+    },
+    {
+      "predictors": 26,
+      "n_models": 67108864,
+      "n_obs": 1000,
+      "status": "Not evaluated",
+      "reason": "beyond --max-predictors 15 (Phase 1 safe limit)"
+    },
+    {
+      "predictors": 28,
+      "n_models": 268435456,
+      "n_obs": 1000,
+      "status": "Not evaluated",
+      "reason": "beyond --max-predictors 15 (Phase 1 safe limit)"
+    },
+    {
+      "predictors": 30,
+      "n_models": 1073741824,
+      "n_obs": 1000,
+      "status": "Not evaluated",
+      "reason": "beyond --max-predictors 15 (Phase 1 safe limit)"
+    }
+  ],
+  "projections": [
+    {
+      "status": "Projected",
+      "target_predictors": 24,
+      "target_models": 16777216,
+      "backend": "cpu",
+      "source_benchmark": "measured cpu run at p=15 on this machine",
+      "scaling_assumption": "constant models/second (linear scaling in model count)",
+      "projected_seconds": 505.28435200452805,
+      "throughput_stability": "single-size extrapolation; stability across sizes NOT established",
+      "confidence": "LOW",
+      "reasons_projection_may_fail": [
+        "per-model cost grows with model size k (larger Cholesky factors dominate at larger p)",
+        "memory pressure and batching behaviour differ at larger p",
+        "the Phase 1 scorers are not the production enumerator",
+        "reduction/normalization costs are excluded from the scaling model"
+      ]
+    },
+    {
+      "status": "Projected",
+      "target_predictors": 26,
+      "target_models": 67108864,
+      "backend": "cpu",
+      "source_benchmark": "measured cpu run at p=15 on this machine",
+      "scaling_assumption": "constant models/second (linear scaling in model count)",
+      "projected_seconds": 2021.1374080181122,
+      "throughput_stability": "single-size extrapolation; stability across sizes NOT established",
+      "confidence": "LOW",
+      "reasons_projection_may_fail": [
+        "per-model cost grows with model size k (larger Cholesky factors dominate at larger p)",
+        "memory pressure and batching behaviour differ at larger p",
+        "the Phase 1 scorers are not the production enumerator",
+        "reduction/normalization costs are excluded from the scaling model"
+      ]
+    },
+    {
+      "status": "Projected",
+      "target_predictors": 28,
+      "target_models": 268435456,
+      "backend": "cpu",
+      "source_benchmark": "measured cpu run at p=15 on this machine",
+      "scaling_assumption": "constant models/second (linear scaling in model count)",
+      "projected_seconds": 8084.549632072449,
+      "throughput_stability": "single-size extrapolation; stability across sizes NOT established",
+      "confidence": "LOW",
+      "reasons_projection_may_fail": [
+        "per-model cost grows with model size k (larger Cholesky factors dominate at larger p)",
+        "memory pressure and batching behaviour differ at larger p",
+        "the Phase 1 scorers are not the production enumerator",
+        "reduction/normalization costs are excluded from the scaling model"
+      ]
+    },
+    {
+      "status": "Projected",
+      "target_predictors": 30,
+      "target_models": 1073741824,
+      "backend": "cpu",
+      "source_benchmark": "measured cpu run at p=15 on this machine",
+      "scaling_assumption": "constant models/second (linear scaling in model count)",
+      "projected_seconds": 32338.198528289795,
+      "throughput_stability": "single-size extrapolation; stability across sizes NOT established",
+      "confidence": "LOW",
+      "reasons_projection_may_fail": [
+        "per-model cost grows with model size k (larger Cholesky factors dominate at larger p)",
+        "memory pressure and batching behaviour differ at larger p",
+        "the Phase 1 scorers are not the production enumerator",
+        "reduction/normalization costs are excluded from the scaling model"
+      ]
+    },
+    {
+      "status": "Projected",
+      "target_predictors": 24,
+      "target_models": 16777216,
+      "backend": "gpu",
+      "source_benchmark": "measured gpu run at p=15 on this machine",
+      "scaling_assumption": "constant models/second (linear scaling in model count)",
+      "projected_seconds": 9.65207040309906,
+      "throughput_stability": "single-size extrapolation; stability across sizes NOT established",
+      "confidence": "LOW",
+      "reasons_projection_may_fail": [
+        "per-model cost grows with model size k (larger Cholesky factors dominate at larger p)",
+        "memory pressure and batching behaviour differ at larger p",
+        "the Phase 1 scorers are not the production enumerator",
+        "reduction/normalization costs are excluded from the scaling model"
+      ]
+    },
+    {
+      "status": "Projected",
+      "target_predictors": 26,
+      "target_models": 67108864,
+      "backend": "gpu",
+      "source_benchmark": "measured gpu run at p=15 on this machine",
+      "scaling_assumption": "constant models/second (linear scaling in model count)",
+      "projected_seconds": 38.60828161239624,
+      "throughput_stability": "single-size extrapolation; stability across sizes NOT established",
+      "confidence": "LOW",
+      "reasons_projection_may_fail": [
+        "per-model cost grows with model size k (larger Cholesky factors dominate at larger p)",
+        "memory pressure and batching behaviour differ at larger p",
+        "the Phase 1 scorers are not the production enumerator",
+        "reduction/normalization costs are excluded from the scaling model"
+      ]
+    },
+    {
+      "status": "Projected",
+      "target_predictors": 28,
+      "target_models": 268435456,
+      "backend": "gpu",
+      "source_benchmark": "measured gpu run at p=15 on this machine",
+      "scaling_assumption": "constant models/second (linear scaling in model count)",
+      "projected_seconds": 154.43312644958496,
+      "throughput_stability": "single-size extrapolation; stability across sizes NOT established",
+      "confidence": "LOW",
+      "reasons_projection_may_fail": [
+        "per-model cost grows with model size k (larger Cholesky factors dominate at larger p)",
+        "memory pressure and batching behaviour differ at larger p",
+        "the Phase 1 scorers are not the production enumerator",
+        "reduction/normalization costs are excluded from the scaling model"
+      ]
+    },
+    {
+      "status": "Projected",
+      "target_predictors": 30,
+      "target_models": 1073741824,
+      "backend": "gpu",
+      "source_benchmark": "measured gpu run at p=15 on this machine",
+      "scaling_assumption": "constant models/second (linear scaling in model count)",
+      "projected_seconds": 617.7325057983398,
+      "throughput_stability": "single-size extrapolation; stability across sizes NOT established",
+      "confidence": "LOW",
+      "reasons_projection_may_fail": [
+        "per-model cost grows with model size k (larger Cholesky factors dominate at larger p)",
+        "memory pressure and batching behaviour differ at larger p",
+        "the Phase 1 scorers are not the production enumerator",
+        "reduction/normalization costs are excluded from the scaling model"
+      ]
+    }
+  ]
+}

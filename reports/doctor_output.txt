@@ -1,0 +1,32 @@
+gpubma doctor — hardware and software diagnostics
+============================================================
+Timestamp (UTC):     2026-07-15T11:07:01.494817+00:00
+OS:                  Windows-11-10.0.26200-SP0
+CPU:                 Intel64 Family 6 Model 165 Stepping 5, GenuineIntel (20 logical cores)
+RAM:                 63.8 GiB
+Python:              3.12.6 (C:\Python312\python.exe)
+
+GPU (nvidia-smi):
+  device:            NVIDIA GeForce RTX 3060
+  uuid:              GPU-be0764ed-35c6-d0e3-59d8-f6ca76527a26
+  vram total/free:   12288.0 / 10122.0 MiB
+  driver:            591.86   (driver CUDA: 13.1)
+  compute capability:8.6
+
+CUDA from Python (torch):
+  torch:             2.5.1+cu121 (CUDA build 12.1)
+  cuda available:    True
+  multiprocessors:   28
+  float64 verified:  True  (matmul abs diff 2.27e-12)
+  documented (CC 8.6, NVIDIA CUDA C Programming Guide; NVIDIA GA102 whitepaper):
+    max threads/block:       1024
+    shared mem/block:        49152 B (opt-in max 101376 B)
+    FP64:FP32 throughput:    1/64 (GeForce Ampere GA10x)
+
+nvcc:                NOT INSTALLED
+C++ compilers:       g++=C:\Strawberry\c\bin\g++.EXE, cl=no
+Stata:               installed: {'C:\\Program Files\\Stata18': 'C:\\Program Files\\Stata18', 'C:\\Program Files\\Stata17': 'C:\\Program Files\\Stata17'}
+
+Summary: CUDA float64 VERIFIED on NVIDIA GeForce RTX 3060
+
+JSON saved: reports/gpu_doctor.json
