@@ -40,6 +40,9 @@ CONFIGS = {
     "grunfeld_company_fe": dict(data="grunfeld", outcome="invest",
                                 predictors=["mvalue", "kstock"], controls=[],
                                 fixed_effects=["individual"], g=200.0),
+    "medium_no_fe": dict(data="panel_12", outcome="y",
+                         predictors=[f"x{j}" for j in range(1, 13)],
+                         controls=["w1", "w2"], fixed_effects=None, g=1000.0),
 }
 
 
@@ -61,8 +64,8 @@ def _load_stata(stem):
 
 
 def _run_python(cfg):
-    if cfg["data"] == "panel_8":
-        df = pd.read_parquet(ROOT / "data" / "synthetic" / "panel_8.parquet")
+    if cfg["data"].startswith("panel_"):
+        df = pd.read_parquet(ROOT / "data" / "synthetic" / f"{cfg['data']}.parquet")
         entity, time = "individual_id", "period"
     else:
         df = pd.read_parquet(ROOT / "data" / "public" / "grunfeld.parquet")
@@ -90,3 +93,42 @@ def test_parity_with_executed_stata_oracle(stem):
         assert stata["pip"][i] == pytest.approx(py.pip[j], abs=TOL), f"PIP {name}"
         assert stata["b"][i] == pytest.approx(py.coef_mean[j], abs=TOL), f"mean {name}"
         assert stata["sd"][i] == pytest.approx(py.coef_sd[j], abs=TOL), f"sd {name}"
+
+
+def test_medium_per_model_parity_with_stata_saving_export():
+    """All 4,096 panel_12 models against Stata's per-model saving() dataset.
+
+    ``bmaregress, saving()`` exports one row per enumerated model with the
+    optional-predictor inclusion indicators (state_eq1_p1..p12 in e(b_bma)
+    column order), the unnormalized log posterior, and the log model prior.
+    This checks each model is enumerated exactly once and that normalized
+    log PMPs, PMPs, the model-size distribution, and the posterior mean
+    model size all match the Python reference.
+    """
+    path = STATA_OUT / "medium_no_fe_models.dta"
+    if not path.exists():
+        pytest.skip("per-model Stata export for medium_no_fe not present")
+    cfg = CONFIGS["medium_no_fe"]
+    p = len(cfg["predictors"])
+    df = pd.read_stata(path)
+    states = df[[f"state_eq1_p{j}" for j in range(1, p + 1)]].to_numpy(np.int64)
+    masks = (states << np.arange(p, dtype=np.int64)).sum(axis=1)
+    assert len(masks) == 1 << p
+    assert len(np.unique(masks)) == 1 << p, "each model must appear exactly once"
+
+    py = _run_python(cfg)
+    order = np.argsort(masks)
+    assert np.array_equal(masks[order], np.arange(1 << p))
+    st_logpost = df["_logposterior"].to_numpy(np.float64)[order]
+    st_sizes = states.sum(axis=1)[order]
+    assert np.array_equal(st_sizes, np.bitwise_count(py.masks))
+
+    st_lognorm = np.logaddexp.reduce(np.sort(st_logpost))
+    py_lognorm = np.logaddexp.reduce(np.sort(py.log_scores))
+    np.testing.assert_allclose(st_logpost - st_lognorm, py.log_scores - py_lognorm,
+                               rtol=0.0, atol=TOL)
+    st_pmp = np.exp(st_logpost - st_lognorm)
+    np.testing.assert_allclose(st_pmp, py.pmp, rtol=0.0, atol=TOL)
+    st_size_dist = np.bincount(st_sizes, weights=st_pmp, minlength=p + 1)
+    np.testing.assert_allclose(st_size_dist, py.size_distribution, rtol=0.0, atol=TOL)
+    assert float(st_sizes @ st_pmp) == pytest.approx(py.mean_model_size, abs=TOL)

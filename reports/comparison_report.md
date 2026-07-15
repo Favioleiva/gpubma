@@ -1,6 +1,6 @@
 # Deterministic comparison report
 
-Stata designs compared against REAL executed bmaregress output: 6/6.
+Stata designs compared against REAL executed bmaregress output: 7/7.
 Values are never rounded before comparison; rounding is display-only.
 
 # Input format equivalence (panel_8)
@@ -203,3 +203,69 @@ Values are never rounded before comparison; rounding is display-only.
 | PIP[kstock] | 1 | 1 | 1.110e-16 | 1.110e-16 | 1.0e-09 (abs) | PASS |
 | coef mean[kstock] | 0.308522727417 | 0.308522727417 | 1.110e-15 | 3.599e-15 | 1.0e-09 (abs) | PASS |
 | coef sd[kstock] | 0.0176070213119 | 0.0176070213118 | 1.125e-14 | 6.390e-13 | 1.0e-09 (abs) | PASS |
+
+# Python vs Stata bmaregress — medium_no_fe
+
+- Reference: Stata bmaregress (StataNow/SE 19.5, batch export)
+- Candidate: gpubma CPU reference (float64 enumeration)
+- Overall: PASS
+
+| quantity | reference | candidate | abs diff | rel diff | tolerance | pass |
+|---|---|---|---|---|---|---|
+| models evaluated | 4096 | 4096 | 0.000e+00 | 0.000e+00 | 0.0e+00 (abs) | PASS |
+| mean model size (Stata minus p_always) | 5.3967596744 | 5.3967596744 | 1.288e-13 | 2.386e-14 | 1.0e-09 (abs) | PASS |
+| PIP[x1] | 1 | 1 | 5.573e-14 | 5.573e-14 | 1.0e-09 (abs) | PASS |
+| coef mean[x1] | 1.56468791074 | 1.56468791074 | 8.837e-14 | 5.648e-14 | 1.0e-09 (abs) | PASS |
+| coef sd[x1] | 0.0449645714387 | 0.0449645714402 | 1.432e-12 | 3.185e-11 | 1.0e-09 (abs) | PASS |
+| PIP[x2] | 1 | 1 | 5.573e-14 | 5.573e-14 | 1.0e-09 (abs) | PASS |
+| coef mean[x2] | -1.08337519226 | -1.08337519226 | 6.084e-14 | 5.616e-14 | 1.0e-09 (abs) | PASS |
+| coef sd[x2] | 0.0488330636051 | 0.0488330636057 | 6.475e-13 | 1.326e-11 | 1.0e-09 (abs) | PASS |
+| PIP[x3] | 1 | 1 | 5.573e-14 | 5.573e-14 | 1.0e-09 (abs) | PASS |
+| coef mean[x3] | 0.721437425575 | 0.721437425575 | 4.052e-14 | 5.617e-14 | 1.0e-09 (abs) | PASS |
+| coef sd[x3] | 0.0469691356167 | 0.0469691356171 | 3.167e-13 | 6.743e-12 | 1.0e-09 (abs) | PASS |
+| PIP[x4] | 1 | 1 | 5.573e-14 | 5.573e-14 | 1.0e-09 (abs) | PASS |
+| coef mean[x4] | 0.46875947278 | 0.46875947278 | 2.609e-14 | 5.566e-14 | 1.0e-09 (abs) | PASS |
+| coef sd[x4] | 0.0477286156337 | 0.0477286156338 | 1.245e-13 | 2.608e-12 | 1.0e-09 (abs) | PASS |
+| PIP[x5] | 0.999999834604 | 0.999999834604 | 5.551e-14 | 5.551e-14 | 1.0e-09 (abs) | PASS |
+| coef mean[x5] | 0.296387809152 | 0.296387809152 | 1.610e-14 | 5.431e-14 | 1.0e-09 (abs) | PASS |
+| coef sd[x5] | 0.0471426532419 | 0.047142653242 | 4.794e-14 | 1.017e-12 | 1.0e-09 (abs) | PASS |
+| PIP[x6] | 0.0481218765527 | 0.0481218765528 | 4.131e-14 | 8.585e-13 | 1.0e-09 (abs) | PASS |
+| coef mean[x6] | -0.00224707581703 | -0.00224707581703 | 1.921e-15 | 8.550e-13 | 1.0e-09 (abs) | PASS |
+| coef sd[x6] | 0.0143209376021 | 0.0143209376021 | 7.131e-15 | 4.980e-13 | 1.0e-09 (abs) | PASS |
+| PIP[x7] | 0.0421519900256 | 0.0421519900256 | 1.913e-14 | 4.538e-13 | 1.0e-09 (abs) | PASS |
+| coef mean[x7] | 0.00166711851006 | 0.00166711851006 | 7.444e-16 | 4.465e-13 | 1.0e-09 (abs) | PASS |
+| coef sd[x7] | 0.012467323081 | 0.012467323081 | 4.019e-15 | 3.224e-13 | 1.0e-09 (abs) | PASS |
+| PIP[x8] | 0.0361599595019 | 0.0361599595019 | 7.515e-15 | 2.078e-13 | 1.0e-09 (abs) | PASS |
+| coef mean[x8] | 0.00107149687241 | 0.00107149687241 | 2.318e-16 | 2.163e-13 | 1.0e-09 (abs) | PASS |
+| coef sd[x8] | 0.0105815938608 | 0.0105815938608 | 1.214e-15 | 1.148e-13 | 1.0e-09 (abs) | PASS |
+| PIP[x9] | 0.0312358518601 | 0.0312358518601 | 1.357e-15 | 4.343e-14 | 1.0e-09 (abs) | PASS |
+| coef mean[x9] | -0.000423666622312 | -0.000423666622313 | 5.074e-17 | 1.198e-13 | 1.0e-09 (abs) | PASS |
+| coef sd[x9] | 0.00858181855587 | 0.00858181855587 | 7.997e-16 | 9.319e-14 | 1.0e-09 (abs) | PASS |
+| PIP[x10] | 0.170954961873 | 0.170954961873 | 4.433e-14 | 2.593e-13 | 1.0e-09 (abs) | PASS |
+| coef mean[x10] | -0.015868779676 | -0.015868779676 | 4.167e-15 | 2.626e-13 | 1.0e-09 (abs) | PASS |
+| coef sd[x10] | 0.0399799167466 | 0.0399799167466 | 5.045e-15 | 1.262e-13 | 1.0e-09 (abs) | PASS |
+| PIP[x11] | 0.0324990749088 | 0.0324990749088 | 3.385e-14 | 1.042e-12 | 1.0e-09 (abs) | PASS |
+| coef mean[x11] | -0.000631019954992 | -0.000631019954992 | 6.387e-16 | 1.012e-12 | 1.0e-09 (abs) | PASS |
+| coef sd[x11] | 0.0092577701664 | 0.0092577701664 | 6.724e-15 | 7.263e-13 | 1.0e-09 (abs) | PASS |
+| PIP[x12] | 0.0356361250787 | 0.0356361250787 | 3.129e-15 | 8.782e-14 | 1.0e-09 (abs) | PASS |
+| coef mean[x12] | -0.000999624498677 | -0.000999624498677 | 9.628e-17 | 9.631e-14 | 1.0e-09 (abs) | PASS |
+| coef sd[x12] | 0.0102391281626 | 0.0102391281626 | 2.177e-15 | 2.126e-13 | 1.0e-09 (abs) | PASS |
+| per-model export: model count | 4096 | 4096 | 0.000e+00 | 0.000e+00 | 0.0e+00 (abs) | PASS |
+| per-model export: unique masks (each model exactly once) | 4096 | 4096 | 0.000e+00 | 0.000e+00 | 0.0e+00 (abs) | PASS |
+| per-model normalized log PMP (all 2^p models) [max@i=1014] | -430.001721622 | -430.001721622 | 3.411e-12 | 7.932e-15 | 1.0e-09 (abs) | PASS |
+| per-model PMP (all 2^p models) [max@i=31] | 0.673396130209 | 0.673396130209 | 1.531e-13 | 2.274e-13 | 1.0e-09 (abs) | PASS |
+| per-model model size [max@i=0] | 0 | 0 | 0.000e+00 | 0.000e+00 | 0.0e+00 (abs) | PASS |
+| model-size distribution P(size=0) | 2.73470040723e-235 | 2.73470040723e-235 | 3.109e-247 | 1.137e-12 | 1.0e-09 (abs) | PASS |
+| model-size distribution P(size=1) | 7.09474228993e-132 | 7.09474228994e-132 | 1.613e-144 | 2.273e-13 | 1.0e-09 (abs) | PASS |
+| model-size distribution P(size=2) | 1.76892573662e-64 | 1.76892573662e-64 | 4.021e-77 | 2.273e-13 | 1.0e-09 (abs) | PASS |
+| model-size distribution P(size=3) | 7.88799316033e-26 | 7.88799316033e-26 | 1.794e-38 | 2.275e-13 | 1.0e-09 (abs) | PASS |
+| model-size distribution P(size=4) | 1.20890125545e-07 | 1.20890125545e-07 | 1.374e-19 | 1.137e-12 | 1.0e-09 (abs) | PASS |
+| model-size distribution P(size=5) | 0.673396168018 | 0.673396168018 | 1.531e-13 | 2.274e-13 | 1.0e-09 (abs) | PASS |
+| model-size distribution P(size=6) | 0.265716101669 | 0.265716101669 | 1.180e-13 | 4.439e-13 | 1.0e-09 (abs) | PASS |
+| model-size distribution P(size=7) | 0.0526257502765 | 0.0526257502766 | 2.003e-14 | 3.807e-13 | 1.0e-09 (abs) | PASS |
+| model-size distribution P(size=8) | 0.00735001420184 | 0.00735001420184 | 3.128e-15 | 4.255e-13 | 1.0e-09 (abs) | PASS |
+| model-size distribution P(size=9) | 0.000824981570652 | 0.000824981570652 | 1.478e-16 | 1.791e-13 | 1.0e-09 (abs) | PASS |
+| model-size distribution P(size=10) | 7.94930734365e-05 | 7.94930734365e-05 | 8.660e-18 | 1.089e-13 | 1.0e-09 (abs) | PASS |
+| model-size distribution P(size=11) | 6.83328406926e-06 | 6.83328406927e-06 | 1.950e-18 | 2.853e-13 | 1.0e-09 (abs) | PASS |
+| model-size distribution P(size=12) | 5.37016194764e-07 | 5.37016194764e-07 | 1.221e-19 | 2.273e-13 | 1.0e-09 (abs) | PASS |
+| mean model size from per-model PMPs | 5.3967596744 | 5.3967596744 | 1.048e-13 | 1.942e-14 | 1.0e-09 (abs) | PASS |

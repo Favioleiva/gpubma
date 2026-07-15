@@ -36,6 +36,7 @@ from gpubma.validation.compare import ComparisonReport  # noqa: E402
 
 STATA_OUT = ROOT / "validation" / "stata" / "output"
 PANEL_PREDICTORS = [f"x{j}" for j in range(1, 9)]
+PANEL12_PREDICTORS = [f"x{j}" for j in range(1, 13)]
 
 # provisional cross-implementation tolerances; NEVER loosen merely to pass
 TOL_PIP = 1e-9
@@ -58,6 +59,9 @@ CONFIGS = [
     dict(stem="grunfeld_company_fe", data="grunfeld", outcome="invest",
          predictors=["mvalue", "kstock"], controls=[], fixed_effects=["individual"],
          g=200.0),
+    dict(stem="medium_no_fe", data="panel_12", outcome="y",
+         predictors=PANEL12_PREDICTORS, controls=["w1", "w2"], fixed_effects=None,
+         g=1000.0, per_model=True),
 ]
 
 
@@ -78,9 +82,32 @@ def load_stata(stem: str) -> dict | None:
             "scalars": scalars}
 
 
+def load_stata_models(stem: str, p: int) -> dict | None:
+    """Load the per-model dataset written by ``bmaregress, saving()``.
+
+    Columns (verified on the executed StataNow/SE 19.5 export):
+    state_eq1_p1..p{p} are the optional-predictor inclusion indicators in
+    e(b_bma) column order, the next columns are the always block and the
+    intercept (all 1); _loglikelihood is the unnormalized log marginal
+    likelihood, _logmprior the log model prior, _logposterior their sum.
+    """
+    path = STATA_OUT / f"{stem}_models.dta"
+    if not path.exists():
+        return None
+    df = pd.read_stata(path)
+    states = df[[f"state_eq1_p{j}" for j in range(1, p + 1)]].to_numpy(np.int64)
+    masks = (states << np.arange(p, dtype=np.int64)).sum(axis=1)
+    return {
+        "masks": masks,
+        "sizes": states.sum(axis=1),
+        "log_posterior": df["_logposterior"].to_numpy(np.float64),
+        "log_mprior": df["_logmprior"].to_numpy(np.float64),
+    }
+
+
 def run_python(cfg) -> object:
-    if cfg["data"] == "panel_8":
-        df = pd.read_parquet(ROOT / "data" / "synthetic" / "panel_8.parquet")
+    if cfg["data"].startswith("panel_"):
+        df = pd.read_parquet(ROOT / "data" / "synthetic" / f"{cfg['data']}.parquet")
         entity, time = "individual_id", "period"
     else:
         df = pd.read_parquet(ROOT / "data" / "public" / "grunfeld.parquet")
@@ -113,6 +140,38 @@ def compare_config(cfg) -> ComparisonReport | None:
         rep.add(f"PIP[{name}]", stata["pip"][i], py.pip[j], TOL_PIP)
         rep.add(f"coef mean[{name}]", stata["b"][i], py.coef_mean[j], TOL_COEF)
         rep.add(f"coef sd[{name}]", stata["sd"][i], py.coef_sd[j], TOL_SD)
+
+    if cfg.get("per_model"):
+        models = load_stata_models(cfg["stem"], len(cfg["predictors"]))
+        if models is None:
+            print(f"{cfg['stem']}: per-model dataset not found — skipped")
+            return rep
+        p = len(cfg["predictors"])
+        n_models = 1 << p
+        masks = models["masks"]
+        rep.add("per-model export: model count", n_models, len(masks), 0.0)
+        rep.add("per-model export: unique masks (each model exactly once)",
+                n_models, len(np.unique(masks)), 0.0)
+        # reorder Stata rows into Python's mask order
+        order = np.argsort(masks)
+        assert np.array_equal(masks[order], np.arange(n_models))
+        st_logpost = models["log_posterior"][order]
+        st_sizes = models["sizes"][order]
+        # unnormalized scores differ by a constant; compare normalized log PMPs
+        st_lognorm = float(np.logaddexp.reduce(np.sort(st_logpost)))
+        py_lognorm = float(np.logaddexp.reduce(np.sort(py.log_scores)))
+        rep.add_arrays("per-model normalized log PMP (all 2^p models)",
+                       st_logpost - st_lognorm, py.log_scores - py_lognorm, TOL_PIP)
+        st_pmp = np.exp(st_logpost - st_lognorm)
+        rep.add_arrays("per-model PMP (all 2^p models)", st_pmp, py.pmp, TOL_PIP)
+        rep.add_arrays("per-model model size", st_sizes.astype(float),
+                       np.bitwise_count(py.masks).astype(float), 0.0)
+        st_size_dist = np.bincount(st_sizes, weights=st_pmp, minlength=p + 1)
+        for k in range(p + 1):
+            rep.add(f"model-size distribution P(size={k})",
+                    st_size_dist[k], py.size_distribution[k], TOL_PIP)
+        rep.add("mean model size from per-model PMPs",
+                float(st_sizes @ st_pmp), py.mean_model_size, TOL_MSIZE)
     return rep
 
 
@@ -156,7 +215,8 @@ def main() -> int:
             n_stata += 1
 
     md = ["# Deterministic comparison report", "",
-          f"Stata designs compared against REAL executed bmaregress output: {n_stata}/6.",
+          f"Stata designs compared against REAL executed bmaregress output: "
+          f"{n_stata}/{len(CONFIGS)}.",
           "Values are never rounded before comparison; rounding is display-only.", ""]
     ok = True
     for rep in reports:

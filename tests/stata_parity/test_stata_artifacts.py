@@ -20,6 +20,7 @@ DO_FILES = [
     "small_time_fixed_effects.do",
     "small_two_way_fixed_effects.do",
     "grunfeld_validation.do",
+    "medium_no_fixed_effects.do",
 ]
 
 
@@ -42,9 +43,10 @@ def test_frozen_dta_loads_in_pandas():
 
 
 def test_stata_exports_exist_and_are_license_free():
-    """Exports exist for all six designs and contain no license information."""
+    """Exports exist for all seven designs and contain no license information."""
     stems = ["small_no_fe", "small_individual_fe", "small_time_fe",
-             "small_two_way_fe", "grunfeld_no_fe", "grunfeld_company_fe"]
+             "small_two_way_fe", "grunfeld_no_fe", "grunfeld_company_fe",
+             "medium_no_fe"]
     for stem in stems:
         for kind in ("b_bma", "pip", "v_diag", "scalars"):
             path = STATA_OUT / f"{stem}_{kind}.csv"

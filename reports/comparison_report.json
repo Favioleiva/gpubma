@@ -1352,5 +1352,583 @@
         "passed": true
       }
     ]
+  },
+  {
+    "title": "Python vs Stata bmaregress \u2014 medium_no_fe",
+    "reference": "Stata bmaregress (StataNow/SE 19.5, batch export)",
+    "candidate": "gpubma CPU reference (float64 enumeration)",
+    "passed": true,
+    "rows": [
+      {
+        "quantity": "models evaluated",
+        "reference": 4096.0,
+        "candidate": 4096.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 0.0,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "mean model size (Stata minus p_always)",
+        "reference": 5.396759674404768,
+        "candidate": 5.396759674404639,
+        "abs_diff": 1.2878587085651816e-13,
+        "rel_diff": 2.3863554915611935e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x1]",
+        "reference": 0.9999999999999996,
+        "candidate": 0.9999999999999438,
+        "abs_diff": 5.573319583618286e-14,
+        "rel_diff": 5.5733195836182884e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x1]",
+        "reference": 1.564687910740609,
+        "candidate": 1.5646879107405207,
+        "abs_diff": 8.837375276016246e-14,
+        "rel_diff": 5.64801147586887e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x1]",
+        "reference": 0.044964571438738304,
+        "candidate": 0.04496457144017025,
+        "abs_diff": 1.4319448404798152e-12,
+        "rel_diff": 3.184606890749882e-11,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x2]",
+        "reference": 0.9999999999999996,
+        "candidate": 0.9999999999999438,
+        "abs_diff": 5.573319583618286e-14,
+        "rel_diff": 5.5733195836182884e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x2]",
+        "reference": -1.083375192259165,
+        "candidate": -1.0833751922591042,
+        "abs_diff": 6.084022174945858e-14,
+        "rel_diff": 5.615803480102614e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x2]",
+        "reference": 0.04883306360505964,
+        "candidate": 0.04883306360570711,
+        "abs_diff": 6.474751290674874e-13,
+        "rel_diff": 1.325894959807144e-11,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x3]",
+        "reference": 0.9999999999999996,
+        "candidate": 0.9999999999999438,
+        "abs_diff": 5.573319583618286e-14,
+        "rel_diff": 5.5733195836182884e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x3]",
+        "reference": 0.7214374255750269,
+        "candidate": 0.7214374255749864,
+        "abs_diff": 4.0523140398818214e-14,
+        "rel_diff": 5.617000028314161e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x3]",
+        "reference": 0.04696913561674837,
+        "candidate": 0.04696913561706507,
+        "abs_diff": 3.166980566682298e-13,
+        "rel_diff": 6.7426843715038575e-12,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x4]",
+        "reference": 0.9999999999999996,
+        "candidate": 0.9999999999999438,
+        "abs_diff": 5.573319583618286e-14,
+        "rel_diff": 5.5733195836182884e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x4]",
+        "reference": 0.4687594727797676,
+        "candidate": 0.4687594727797415,
+        "abs_diff": 2.609024107869118e-14,
+        "rel_diff": 5.565805619665608e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x4]",
+        "reference": 0.04772861563368982,
+        "candidate": 0.04772861563381428,
+        "abs_diff": 1.2446293995438396e-13,
+        "rel_diff": 2.607721558682832e-12,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x5]",
+        "reference": 0.9999998346040275,
+        "candidate": 0.999999834603972,
+        "abs_diff": 5.551115123125783e-14,
+        "rel_diff": 5.5511160412580187e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x5]",
+        "reference": 0.2963878091517447,
+        "candidate": 0.2963878091517286,
+        "abs_diff": 1.609823385706477e-14,
+        "rel_diff": 5.4314763833025244e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x5]",
+        "reference": 0.04714265324192413,
+        "candidate": 0.047142653241972074,
+        "abs_diff": 4.794081798209504e-14,
+        "rel_diff": 1.0169308404434976e-12,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x6]",
+        "reference": 0.0481218765527392,
+        "candidate": 0.04812187655278052,
+        "abs_diff": 4.131417430386364e-14,
+        "rel_diff": 8.585320703059007e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x6]",
+        "reference": -0.0022470758170257,
+        "candidate": -0.002247075817027621,
+        "abs_diff": 1.921206249644314e-15,
+        "rel_diff": 8.549806086141054e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x6]",
+        "reference": 0.014320937602105527,
+        "candidate": 0.014320937602112659,
+        "abs_diff": 7.131448209740654e-15,
+        "rel_diff": 4.979735550756541e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x7]",
+        "reference": 0.0421519900255945,
+        "candidate": 0.04215199002561363,
+        "abs_diff": 1.913053049307223e-14,
+        "rel_diff": 4.5384643717764154e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x7]",
+        "reference": 0.0016671185100562,
+        "candidate": 0.0016671185100569444,
+        "abs_diff": 7.444132116285473e-16,
+        "rel_diff": 4.4652687084802395e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x7]",
+        "reference": 0.012467323080962487,
+        "candidate": 0.012467323080966507,
+        "abs_diff": 4.019354293838262e-15,
+        "rel_diff": 3.223911233979724e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x8]",
+        "reference": 0.036159959501869,
+        "candidate": 0.03615995950187652,
+        "abs_diff": 7.514822097931528e-15,
+        "rel_diff": 2.0782164032959018e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x8]",
+        "reference": 0.001071496872411,
+        "candidate": 0.0010714968724112317,
+        "abs_diff": 2.3180242447740085e-16,
+        "rel_diff": 2.1633513866985604e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x8]",
+        "reference": 0.010581593860789593,
+        "candidate": 0.010581593860788378,
+        "abs_diff": 1.214306433183765e-15,
+        "rel_diff": 1.1475647706376382e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x9]",
+        "reference": 0.0312358518601003,
+        "candidate": 0.031235851860101655,
+        "abs_diff": 1.3565537582138631e-15,
+        "rel_diff": 4.3429382502182486e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x9]",
+        "reference": -0.0004236666223125,
+        "candidate": -0.0004236666223125507,
+        "abs_diff": 5.074066167232161e-17,
+        "rel_diff": 1.1976553969571103e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x9]",
+        "reference": 0.00858181855586565,
+        "candidate": 0.00858181855586645,
+        "abs_diff": 7.997075224253081e-16,
+        "rel_diff": 9.318625384810025e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x10]",
+        "reference": 0.1709549618729647,
+        "candidate": 0.17095496187300901,
+        "abs_diff": 4.4325654258159375e-14,
+        "rel_diff": 2.592826424721497e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x10]",
+        "reference": -0.0158687796760344,
+        "candidate": -0.01586877967603857,
+        "abs_diff": 4.166805789296291e-15,
+        "rel_diff": 2.6257884187453024e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x10]",
+        "reference": 0.03997991674659291,
+        "candidate": 0.039979916746597954,
+        "abs_diff": 5.044575868140555e-15,
+        "rel_diff": 1.2617774819578177e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x11]",
+        "reference": 0.0324990749088043,
+        "candidate": 0.03249907490883815,
+        "abs_diff": 3.385486335716337e-14,
+        "rel_diff": 1.0417177551092849e-12,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x11]",
+        "reference": -0.0006310199549918,
+        "candidate": -0.0006310199549924387,
+        "abs_diff": 6.387034998112107e-16,
+        "rel_diff": 1.0121763896022339e-12,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x11]",
+        "reference": 0.009257770166395361,
+        "candidate": 0.009257770166402085,
+        "abs_diff": 6.723788192886104e-15,
+        "rel_diff": 7.262859276079025e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x12]",
+        "reference": 0.0356361250786721,
+        "candidate": 0.03563612507867523,
+        "abs_diff": 3.12944115066216e-15,
+        "rel_diff": 8.781653851963909e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x12]",
+        "reference": -0.0009996244986766,
+        "candidate": -0.0009996244986766962,
+        "abs_diff": 9.627715291671279e-17,
+        "rel_diff": 9.631331869533467e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x12]",
+        "reference": 0.010239128162641583,
+        "candidate": 0.01023912816264376,
+        "abs_diff": 2.177077962350893e-15,
+        "rel_diff": 2.1262337259276652e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "per-model export: model count",
+        "reference": 4096.0,
+        "candidate": 4096.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 0.0,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "per-model export: unique masks (each model exactly once)",
+        "reference": 4096.0,
+        "candidate": 4096.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 0.0,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "per-model normalized log PMP (all 2^p models) [max@i=1014]",
+        "reference": -430.0017216219678,
+        "candidate": -430.0017216219644,
+        "abs_diff": 3.410605131648481e-12,
+        "rel_diff": 7.93160808469247e-15,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "per-model PMP (all 2^p models) [max@i=31]",
+        "reference": 0.6733961302091692,
+        "candidate": 0.6733961302090161,
+        "abs_diff": 1.5309975509580909e-13,
+        "rel_diff": 2.2735467019724851e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "per-model model size [max@i=0]",
+        "reference": 0.0,
+        "candidate": 0.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 0.0,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "model-size distribution P(size=0)",
+        "reference": 2.734700407227164e-235,
+        "candidate": 2.7347004072302727e-235,
+        "abs_diff": 3.108708358861693e-247,
+        "rel_diff": 1.1367637751625665e-12,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "model-size distribution P(size=1)",
+        "reference": 7.094742289934977e-132,
+        "candidate": 7.09474228993659e-132,
+        "abs_diff": 1.6129281935568857e-144,
+        "rel_diff": 2.2734133639282638e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "model-size distribution P(size=2)",
+        "reference": 1.7689257366234413e-64,
+        "candidate": 1.768925736623039e-64,
+        "abs_diff": 4.021215983465851e-77,
+        "rel_diff": 2.273253139016239e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "model-size distribution P(size=3)",
+        "reference": 7.887993160329076e-26,
+        "candidate": 7.887993160327282e-26,
+        "abs_diff": 1.7942360061867533e-38,
+        "rel_diff": 2.2746419396133204e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "model-size distribution P(size=4)",
+        "reference": 1.208901255453404e-07,
+        "candidate": 1.2089012554547783e-07,
+        "abs_diff": 1.3743109569201023e-19,
+        "rel_diff": 1.136826478357075e-12,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "model-size distribution P(size=5)",
+        "reference": 0.6733961680183939,
+        "candidate": 0.6733961680182408,
+        "abs_diff": 1.5309975509580909e-13,
+        "rel_diff": 2.2735465743194898e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "model-size distribution P(size=6)",
+        "reference": 0.2657161016686952,
+        "candidate": 0.26571610166881315,
+        "abs_diff": 1.1796119636642288e-13,
+        "rel_diff": 4.439369523546938e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "model-size distribution P(size=7)",
+        "reference": 0.05262575027654896,
+        "candidate": 0.052625750276568996,
+        "abs_diff": 2.0032586700580168e-14,
+        "rel_diff": 3.806613035500882e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "model-size distribution P(size=8)",
+        "reference": 0.007350014201839642,
+        "candidate": 0.00735001420184277,
+        "abs_diff": 3.127706427186183e-15,
+        "rel_diff": 4.255374671795893e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "model-size distribution P(size=9)",
+        "reference": 0.0008249815706517171,
+        "candidate": 0.0008249815706518649,
+        "abs_diff": 1.4777675610977425e-16,
+        "rel_diff": 1.7912734219384736e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "model-size distribution P(size=10)",
+        "reference": 7.949307343648943e-05,
+        "candidate": 7.949307343649809e-05,
+        "abs_diff": 8.660064852727967e-18,
+        "rel_diff": 1.0894112503583016e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "model-size distribution P(size=11)",
+        "reference": 6.833284069264658e-06,
+        "candidate": 6.833284069266608e-06,
+        "abs_diff": 1.9498698445793994e-18,
+        "rel_diff": 2.853488637109553e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "model-size distribution P(size=12)",
+        "reference": 5.370161947640167e-07,
+        "candidate": 5.370161947641388e-07,
+        "abs_diff": 1.2207862352302604e-19,
+        "rel_diff": 2.2732763874401181e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "mean model size from per-model PMPs",
+        "reference": 5.396759674404534,
+        "candidate": 5.396759674404639,
+        "abs_diff": 1.0480505352461478e-13,
+        "rel_diff": 1.941999641408466e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      }
+    ]
   }
 ]
