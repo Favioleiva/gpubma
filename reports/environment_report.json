@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-07-15T11:09:59.683714+00:00",
+  "timestamp_utc": "2026-07-15T11:35:12.150175+00:00",
   "os": {
     "platform": "Windows-11-10.0.26200-SP0",
     "system": "Windows",
@@ -41,7 +41,7 @@
     "gpu_name": "NVIDIA GeForce RTX 3060",
     "gpu_uuid": "GPU-be0764ed-35c6-d0e3-59d8-f6ca76527a26",
     "vram_total_mib": 12288.0,
-    "vram_free_mib": 10121.0,
+    "vram_free_mib": 10255.0,
     "driver_version": "591.86",
     "compute_capability": "8.6",
     "pci_bus_id": "00000000:01:00.0",
@@ -60,9 +60,9 @@
     "max_threads_per_multiprocessor": 1536,
     "warp_size": 32,
     "float64_test": {
-      "gpu": -1533.124861793392,
-      "cpu": -1533.1248617933884,
-      "abs_diff": 3.637978807091713e-12
+      "gpu": -1266.0003994923454,
+      "cpu": -1266.000399492341,
+      "abs_diff": 4.320099833421409e-12
     },
     "documented_architecture_facts": {
       "max_threads_per_block": 1024,
@@ -96,9 +96,9 @@
   },
   "repository": {
     "root": "X:\\Claude Agentic Tasks\\GPU Powered BMA",
-    "git_branch": null,
-    "git_head": null,
-    "git_status_porcelain_lines": 9,
+    "git_branch": "main",
+    "git_head": "b04ba74ebaa316d7d5a1ba907a0614615c360add",
+    "git_status_porcelain_lines": 0,
     "git_remotes": "(none)"
   }
 }
