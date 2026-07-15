@@ -24,6 +24,7 @@ class GPUBMARegressor:
         fe_method="dummies",
         entity_col=None,
         time_col=None,
+        always_prior="shrink",
         backend="cpu",
         method="enumeration",
         precision="float64",
@@ -38,6 +39,7 @@ class GPUBMARegressor:
         self.fe_method = fe_method
         self.entity_col = entity_col
         self.time_col = time_col
+        self.always_prior = always_prior
         self.backend = backend
         self.method = method
         self.precision = precision
@@ -57,6 +59,7 @@ class GPUBMARegressor:
             fe_method=self.fe_method,
             entity_col=self.entity_col,
             time_col=self.time_col,
+            always_prior=self.always_prior,
             backend=self.backend,
             method=self.method,
             precision=self.precision,

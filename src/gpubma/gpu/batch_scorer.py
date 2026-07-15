@@ -46,7 +46,8 @@ def gpu_hardware_info() -> dict:
 
 
 def gpu_score_all_models(X, y, *, df_resid: int, g: float, log_model_prior,
-                         device: str = "cuda"):
+                         device: str = "cuda", tss_norm: float | None = None,
+                         k_always: int = 0):
     """Score all 2^p models on the GPU in float64. Returns dict with
     ``log_scores`` ordered by mask and a runtime breakdown (cold vs warm
     timing is the caller's responsibility; this reports phase timings)."""
@@ -69,6 +70,10 @@ def gpu_score_all_models(X, y, *, df_resid: int, g: float, log_model_prior,
     Zxx_np = X.T @ X
     Zxy_np = X.T @ y
     tss = float(y @ y)
+    if tss_norm is None:
+        tss_norm = tss
+        if k_always:
+            raise ValueError("k_always requires tss_norm (shrink convention)")
     t_suff = time.perf_counter() - t0
 
     t1 = time.perf_counter()
@@ -80,7 +85,9 @@ def gpu_score_all_models(X, y, *, df_resid: int, g: float, log_model_prior,
 
     log1pg = float(np.log1p(g))
     log_scores = np.empty(n_models, dtype=np.float64)
-    log_scores[0] = 0.0 + log_model_prior(0)
+    log_scores[0] = (0.5 * (df_resid - k_always) * log1pg
+                     - 0.5 * df_resid * np.log1p(g * max(tss / tss_norm, np.finfo(np.float64).tiny))
+                     + log_model_prior(0))
 
     t2 = time.perf_counter()
     tiny = float(np.finfo(np.float64).tiny)
@@ -95,8 +102,9 @@ def gpu_score_all_models(X, y, *, df_resid: int, g: float, log_model_prior,
         L = torch.linalg.cholesky(Z)
         u = torch.linalg.solve_triangular(L, b, upper=False)  # (m, k, 1)
         ess = (u.squeeze(-1) ** 2).sum(dim=1)                 # (m,)
-        one_minus_r2 = torch.clamp(1.0 - ess / tss, min=tiny)
-        log_ml = 0.5 * (df_resid - k) * log1pg - 0.5 * df_resid * torch.log1p(g * one_minus_r2)
+        one_minus_r2 = torch.clamp((tss - ess) / tss_norm, min=tiny)
+        log_ml = (0.5 * (df_resid - k - k_always) * log1pg
+                  - 0.5 * df_resid * torch.log1p(g * one_minus_r2))
         scores_k = (log_ml + log_model_prior(k)).cpu().numpy()
         # map combos back to mask positions
         masks_k = np.zeros(len(combos), dtype=np.int64)

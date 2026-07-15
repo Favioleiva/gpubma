@@ -23,5 +23,10 @@
 - Diagnostics: `python -m gpubma.doctor [--json reports/gpu_doctor.json]`.
 - Benchmarks: `python -m gpubma.benchmark --max-predictors 15`.
 - Tests: `python -m pytest` (GPU tests skip cleanly when CUDA is unavailable, with the skip reason printed).
+- Stata oracle (validation only): `STATA_EXE = C:\Program Files\StataNow19\StataSE-64.exe`,
+  batch mode `/e do <script>` from the repo root. After running, delete the
+  banner logs Stata drops at the repo root and never commit serial-number or
+  license-holder text (scan before committing; a test enforces this for
+  `validation/stata/output/`).
 - The `2^30` production run and the final CUDA enumerator are **out of scope** until Phase 1
   acceptance criteria pass and the user authorizes Phase 2.

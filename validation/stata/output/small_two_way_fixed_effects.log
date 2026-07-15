@@ -1,0 +1,517 @@
+------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  X:\Claude Agentic Tasks\GPU Powered BMA\validation/stata/output/small_two_way_fixed_effects.log
+  log type:  text
+ opened on:  15 Jul 2026, 20:58:51
+
+. 
+. display "Stata version: " c(stata_version)
+Stata version: 19.5
+
+. display "Edition: " c(edition_real)
+Edition: SE
+
+. display "Born: " c(born_date)
+Born: 08 Apr 2025
+
+. 
+. use "data/synthetic/panel_8.dta", clear
+
+. assert _N == 1000
+
+. confirm variable individual_id period y x1 x2 x3 x4 x5 x6 x7 x8 w1 w2
+
+. isid individual_id period
+
+. 
+. bmaregress y x1-x8 (w1 w2 i.individual_id i.period, always), ///
+>     enumeration ///
+>     gprior(fixed 1000) ///
+>     mprior(betabinomial 1 1)
+
+Enumerating models ...
+Computing model probabilities ...
+
+Bayesian model averaging                          No. of obs         =   1,000
+Linear regression                                 No. of predictors  =     118
+Model enumeration                                             Groups =       8
+                                                              Always =     110
+Priors:                                           No. of models      =     256
+  Models: Beta-binomial(1, 1)                         For CPMP >= .9 =       4
+   Cons.: Noninformative                          Mean model size    = 115.322
+   Coef.: Zellner's g
+       g: g = 1,000                               Shrinkage, g/(1+g) =  0.9990
+  sigma2: Noninformative                          Mean sigma2        =   0.900
+
+------------------------------------------------------------------------------
+            y |      Mean   Std. dev.                         Group        PIP
+--------------+---------------------------------------------------------------
+           x1 |  1.527637   .0312607                              1          1
+           x2 | -1.004896   .0339002                              2          1
+           x3 |  .7242825   .0321897                              3          1
+           x4 |  .5082006   .0326656                              4          1
+           x5 |   .241361   .0327159                              5          1
+           x6 | -.0042931   .0162127                              6     .11909
+           x8 |  .0034486   .0147143                              8      .1066
+           x7 |  .0026032     .01277                              7    .096355
+--------------+---------------------------------------------------------------
+Always        |
+           w1 |  .8880736   .0322596                              0          1
+           w2 | -.6105379   .0300612                              0          1
+              |
+individual_id |
+           2  | -.5103025   .4252378                              0          1
+           3  | -.5778826   .4278539                              0          1
+           4  | -1.629152   .4259587                              0          1
+           5  | -.1448327   .4262428                              0          1
+           6  |  .2893515   .4266353                              0          1
+           7  |  -.048358   .4288029                              0          1
+           8  | -1.475875   .4315016                              0          1
+           9  | -1.186418   .4293643                              0          1
+          10  | -1.265178   .4283371                              0          1
+          11  |  1.727865   .4287505                              0          1
+          12  |   .054746   .4290106                              0          1
+          13  | -1.987803   .4297239                              0          1
+          14  |  .2790322   .4272027                              0          1
+          15  | -2.333975   .4277133                              0          1
+          16  |   -1.2109   .4277161                              0          1
+          17  | -.3849197   .4276386                              0          1
+          18  |   .483742   .4305901                              0          1
+          19  |  1.229282   .4269956                              0          1
+          20  |  1.197119   .4286575                              0          1
+          21  | -1.097289   .4278325                              0          1
+          22  | -1.061206    .429065                              0          1
+          23  | -1.851995   .4280077                              0          1
+          24  | -1.444363   .4278063                              0          1
+          25  | -.7005739   .4287793                              0          1
+          26  | -.1412084   .4271166                              0          1
+          27  |  1.046625   .4277437                              0          1
+          28  | -2.560632   .4295495                              0          1
+          29  | -.2038195   .4292032                              0          1
+          30  |  -.854888   .4268717                              0          1
+          31  | -1.184181    .429204                              0          1
+          32  | -.7841868   .4270656                              0          1
+          33  |  .4888413   .4281358                              0          1
+          34  | -.4001151    .427738                              0          1
+          35  |  -.413369   .4267423                              0          1
+          36  | -.5460136   .4266224                              0          1
+          37  | -.1100716   .4258135                              0          1
+          38  |  1.035395   .4253467                              0          1
+          39  |  .9629237   .4297849                              0          1
+          40  | -1.284569   .4270475                              0          1
+          41  |  .3587825   .4274487                              0          1
+          42  | -.3079331   .4267224                              0          1
+          43  | -.6453157   .4269785                              0          1
+          44  |   1.06096   .4285518                              0          1
+          45  | -2.376051   .4297293                              0          1
+          46  |  .2195439   .4285313                              0          1
+          47  | -.4622885   .4276154                              0          1
+          48  |  .7146355   .4282838                              0          1
+          49  |  -.576635   .4273578                              0          1
+          50  | -.3581642   .4297378                              0          1
+          51  | -1.205289   .4284356                              0          1
+          52  | -2.376403   .4286095                              0          1
+          53  | -1.890728   .4289188                              0          1
+          54  |  .3969799   .4287641                              0          1
+          55  | -.9093259   .4265496                              0          1
+          56  | -1.857988     .42918                              0          1
+          57  |  -.256455   .4270579                              0          1
+          58  |  1.419827   .4283416                              0          1
+          59  | -.5874486    .429291                              0          1
+          60  | -.6449375   .4302612                              0          1
+          61  |  1.495329   .4272979                              0          1
+          62  | -.3657884   .4268107                              0          1
+          63  | -.2757815   .4281366                              0          1
+          64  | -.3974743   .4288539                              0          1
+          65  | -.0555376   .4277089                              0          1
+          66  |  .7221182   .4292164                              0          1
+          67  | -.5124169   .4268004                              0          1
+          68  |  .1398499   .4295203                              0          1
+          69  | -.3157467   .4260821                              0          1
+          70  | -1.015327   .4277047                              0          1
+          71  |   1.54107   .4281831                              0          1
+          72  |  .3557999   .4276709                              0          1
+          73  |  .8473821   .4276817                              0          1
+          74  | -1.137617    .428552                              0          1
+          75  | -.4231008   .4286241                              0          1
+          76  | -.9355594   .4266739                              0          1
+          77  | -2.023315   .4282182                              0          1
+          78  |  .3199557   .4286046                              0          1
+          79  | -1.652179   .4270372                              0          1
+          80  |  1.104405   .4271812                              0          1
+          81  | -2.804186   .4304157                              0          1
+          82  | -.4521547   .4283296                              0          1
+          83  | -.9098498   .4282155                              0          1
+          84  | -.3552506   .4288513                              0          1
+          85  | -1.950542   .4286577                              0          1
+          86  | -2.395725   .4275073                              0          1
+          87  | -1.343084   .4304384                              0          1
+          88  | -.7394862   .4282163                              0          1
+          89  |  1.125467   .4270661                              0          1
+          90  | -2.105537   .4275449                              0          1
+          91  | -.0535001   .4291532                              0          1
+          92  |  .5418169   .4261006                              0          1
+          93  |  .7721557   .4275193                              0          1
+          94  |  .1232018   .4297447                              0          1
+          95  |  .1683667   .4275191                              0          1
+          96  | -.6116387   .4279035                              0          1
+          97  | -.9167069   .4278342                              0          1
+          98  |  .0961479   .4268326                              0          1
+          99  |  .0191925   .4286769                              0          1
+         100  | -1.571231   .4276112                              0          1
+              |
+       period |
+           2  |  .0885811   .1349209                              0          1
+           3  | -.3171367   .1348954                              0          1
+           4  | -1.235243   .1346357                              0          1
+           5  | -.2813459   .1347545                              0          1
+           6  | -.3371859   .1346883                              0          1
+           7  |  .0111254   .1349292                              0          1
+           8  | -.5178332   .1346974                              0          1
+           9  | -1.058558   .1351278                              0          1
+          10  | -.6547307   .1350046                              0          1
+              |
+        _cons |  .7309707   .3175068                              0          1
+------------------------------------------------------------------------------
+Note: Coefficient posterior means and std. dev. estimated from 256 models.
+
+. 
+. ereturn list
+
+scalars:
+                  e(N) =  1000
+                  e(p) =  118
+           e(p_always) =  110
+           e(p_groups) =  8
+           e(k_models) =  256
+      e(k_models_cpmp) =  4
+       e(k_models_all) =  256
+       e(msize_mean_a) =  115.3220392312292
+          e(shrinkage) =  .999000999000999
+                  e(g) =  1000
+            e(groupfv) =  0
+              e(arate) =  1
+             e(sigma2) =  .9004327447217211
+   e(msize_mean_prior) =  113.9999999999998
+         e(msize_mean) =  115.3220392312292
+
+macros:
+                e(cmd) : "bmaregress"
+            e(cmdline) : "bmaregress y x1-x8 (w1 w2 i.individual_id i.period, always),     enumeration     gprior(fi.."
+              e(title) : "Bayesian model averaging"
+             e(title2) : "Linear regression"
+             e(depvar) : "y"
+          e(indepvars) : "x1 x2 x3 x4 x5 x6 x7 x8 w1 w2 1b.individual_id 2.individual_id 3.individual_id 4.individua.."
+           e(omitvars) : "1b.individual_id 1b.period"
+           e(sampling) : "enumeration"
+       e(sampling_lab) : "Model enumeration"
+             e(mprior) : "betabinomial 1 1"
+        e(mprior_dist) : "betabinomial"
+         e(mprior_lab) : "Beta-binomial({res:1}, {res:1})"
+             e(gprior) : "fixed 1000"
+        e(gprior_dist) : "fixed"
+         e(gprior_lab) : "g = {res:1,000}"
+         e(alwaysvars) : "w1 w2 2.individual_id 3.individual_id 4.individual_id 5.individual_id 6.individual_id 7.in.."
+      e(modelfilename) : "C:\Users\FAVIOL~1\AppData\Local\Temp\STB88a8_000001.tmp"
+           e(rngstate) : "XAA000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.."
+
+matrices:
+      e(mprior_params) :  1 x 2
+      e(gprior_params) :  1 x 1
+              e(V_bma) :  121 x 121
+              e(b_bma) :  1 x 121
+            e(V_bma_c) :  121 x 121
+            e(b_bma_c) :  1 x 121
+                e(pip) :  1 x 121
+              e(group) :  1 x 120
+
+functions:
+             e(sample)   
+
+. bmastats models, top(20)
+
+Computing model probabilities ...
+
+Model summary           Number of models:
+                                 Visited = 256
+                                Reported =  20
+
+----------------------------------------------
+             |   Analytical PMP     Model size
+-------------+--------------------------------
+Rank         |
+           1 |            .7308            115
+           2 |           .08418            116
+           3 |           .07256            116
+           4 |           .06561            116
+           5 |           .01614            117
+           6 |           .01285            117
+           7 |           .01198            117
+           8 |          .005918            118
+           9 |        5.290e-11            114
+          10 |        4.753e-12            115
+          11 |        3.937e-12            115
+          12 |        2.157e-12            115
+          13 |        5.401e-13            116
+          14 |        3.211e-13            116
+          15 |        2.620e-13            116
+          16 |        6.553e-14            117
+          17 |        1.324e-46            114
+          18 |        9.969e-48            115
+          19 |        8.927e-48            115
+          20 |        5.536e-48            115
+----------------------------------------------
+
+Note: Use option vartable to display variable-inclusion table for more than 12 models.
+
+. bmastats pip
+
+Posterior inclusion probability (PIP)
+
+No. of obs         =   1,000
+No. of predictors  =     118
+            Groups =       8
+            Always =     110
+          Reported =     118
+No. of models      =     256
+Mean model size    = 115.322
+
+-------------------------------------
+              |       PIP       Group
+--------------+----------------------
+           x1 |         1           1
+           x2 |         1           2
+           x3 |         1           3
+           x4 |         1           4
+           x5 |         1           5
+           x6 |    .11909           6
+           x8 |     .1066           8
+           x7 |   .096355           7
+--------------+----------------------
+Always        |
+           w1 |         1           0
+           w2 |         1           0
+              |
+individual_id |
+           2  |         1           0
+           3  |         1           0
+           4  |         1           0
+           5  |         1           0
+           6  |         1           0
+           7  |         1           0
+           8  |         1           0
+           9  |         1           0
+          10  |         1           0
+          11  |         1           0
+          12  |         1           0
+          13  |         1           0
+          14  |         1           0
+          15  |         1           0
+          16  |         1           0
+          17  |         1           0
+          18  |         1           0
+          19  |         1           0
+          20  |         1           0
+          21  |         1           0
+          22  |         1           0
+          23  |         1           0
+          24  |         1           0
+          25  |         1           0
+          26  |         1           0
+          27  |         1           0
+          28  |         1           0
+          29  |         1           0
+          30  |         1           0
+          31  |         1           0
+          32  |         1           0
+          33  |         1           0
+          34  |         1           0
+          35  |         1           0
+          36  |         1           0
+          37  |         1           0
+          38  |         1           0
+          39  |         1           0
+          40  |         1           0
+          41  |         1           0
+          42  |         1           0
+          43  |         1           0
+          44  |         1           0
+          45  |         1           0
+          46  |         1           0
+          47  |         1           0
+          48  |         1           0
+          49  |         1           0
+          50  |         1           0
+          51  |         1           0
+          52  |         1           0
+          53  |         1           0
+          54  |         1           0
+          55  |         1           0
+          56  |         1           0
+          57  |         1           0
+          58  |         1           0
+          59  |         1           0
+          60  |         1           0
+          61  |         1           0
+          62  |         1           0
+          63  |         1           0
+          64  |         1           0
+          65  |         1           0
+          66  |         1           0
+          67  |         1           0
+          68  |         1           0
+          69  |         1           0
+          70  |         1           0
+          71  |         1           0
+          72  |         1           0
+          73  |         1           0
+          74  |         1           0
+          75  |         1           0
+          76  |         1           0
+          77  |         1           0
+          78  |         1           0
+          79  |         1           0
+          80  |         1           0
+          81  |         1           0
+          82  |         1           0
+          83  |         1           0
+          84  |         1           0
+          85  |         1           0
+          86  |         1           0
+          87  |         1           0
+          88  |         1           0
+          89  |         1           0
+          90  |         1           0
+          91  |         1           0
+          92  |         1           0
+          93  |         1           0
+          94  |         1           0
+          95  |         1           0
+          96  |         1           0
+          97  |         1           0
+          98  |         1           0
+          99  |         1           0
+         100  |         1           0
+              |
+       period |
+           2  |         1           0
+           3  |         1           0
+           4  |         1           0
+           5  |         1           0
+           6  |         1           0
+           7  |         1           0
+           8  |         1           0
+           9  |         1           0
+          10  |         1           0
+              |
+        _cons |         1           0
+-------------------------------------
+Note: Using analytical PMPs.
+
+. bmastats msize
+
+Model-size summary
+
+Number of models = 256
+Model size:
+  Minimum = 110
+  Maximum = 118
+
+----------------------------------------
+             |           Mean     Median
+-------------+--------------------------
+Prior        |
+  Analytical |       114.0000        114
+-------------+--------------------------
+Posterior    |
+  Analytical |       115.3220        115
+----------------------------------------
+Note: Frequency summaries not available.
+
+. 
+. * -- machine-readable exports (no manual copying of output) ------------
+. * Matrix names confirmed from `ereturn list` on Stata 19.5 (StataNow, SE):
+. * e(b_bma) = BMA posterior means, e(V_bma) = BMA posterior covariance,
+. * e(pip) = posterior inclusion probabilities. There is no e(b).
+. matrix b_bma = e(b_bma)
+
+. matrix pip = e(pip)
+
+. matrix vdiag = vecdiag(e(V_bma))
+
+. local names : colnames e(b_bma)
+
+. file open fh using "validation/stata/output/small_two_way_fe_colnames.txt", write replace
+
+. file write fh `"`names'"'
+
+. file close fh
+
+. preserve
+
+. clear
+
+. svmat double b_bma
+number of observations will be reset to 1
+Press any key to continue, or Break to abort
+Number of observations (_N) was 0, now 1.
+
+. export delimited using "validation/stata/output/small_two_way_fe_b_bma.csv", replace
+file validation/stata/output/small_two_way_fe_b_bma.csv saved
+
+. clear
+
+. svmat double pip
+number of observations will be reset to 1
+Press any key to continue, or Break to abort
+Number of observations (_N) was 0, now 1.
+
+. export delimited using "validation/stata/output/small_two_way_fe_pip.csv", replace
+file validation/stata/output/small_two_way_fe_pip.csv saved
+
+. clear
+
+. svmat double vdiag
+number of observations will be reset to 1
+Press any key to continue, or Break to abort
+Number of observations (_N) was 0, now 1.
+
+. export delimited using "validation/stata/output/small_two_way_fe_v_diag.csv", replace
+file validation/stata/output/small_two_way_fe_v_diag.csv saved
+
+. clear
+
+. set obs 1
+Number of observations (_N) was 0, now 1.
+
+. gen double msize_mean = e(msize_mean)
+
+. gen double msize_mean_prior = e(msize_mean_prior)
+
+. gen double p_always = e(p_always)
+
+. gen double p_groups = e(p_groups)
+
+. gen double g_used = e(g)
+
+. gen double shrinkage = e(shrinkage)
+
+. gen double sigma2 = e(sigma2)
+
+. gen double k_models = e(k_models)
+
+. gen double n_obs = e(N)
+
+. export delimited using "validation/stata/output/small_two_way_fe_scalars.csv", replace
+(file validation/stata/output/small_two_way_fe_scalars.csv not found)
+file validation/stata/output/small_two_way_fe_scalars.csv saved
+
+. restore
+
+. 
+. log close
+      name:  <unnamed>
+       log:  X:\Claude Agentic Tasks\GPU Powered BMA\validation/stata/output/small_two_way_fixed_effects.log
+  log type:  text
+ closed on:  15 Jul 2026, 20:58:54
+------------------------------------------------------------------------------------------------------------------------

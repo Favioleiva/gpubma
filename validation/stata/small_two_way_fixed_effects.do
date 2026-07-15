@@ -4,8 +4,8 @@
 * Model   : y on optional x1-x8; always-included w1 w2 + individual AND
 *           time dummies (two-way fixed effects)
 *
-* STATUS: PREPARED, NOT YET EXECUTED (no working Stata on the dev machine).
-* Requires Stata 18+ (bmaregress). Verify option keywords via help bmaregress.
+* STATUS: EXECUTED 2026-07-15 in batch mode on StataNow/SE 19.5.
+* Option keywords and e() matrix names verified on that run.
 * Priors fixed to match Python: g = 1000, beta-binomial(1,1) model prior.
 *----------------------------------------------------------------------
 version 18
@@ -16,7 +16,8 @@ capture mkdir "validation/stata/output"
 log using "validation/stata/output/small_two_way_fixed_effects.log", replace text
 
 display "Stata version: " c(stata_version)
-about
+display "Edition: " c(edition_real)
+display "Born: " c(born_date)
 
 use "data/synthetic/panel_8.dta", clear
 assert _N == 1000
@@ -33,21 +34,40 @@ bmastats models, top(20)
 bmastats pip
 bmastats msize
 
-matrix b = e(b)
+* -- machine-readable exports (no manual copying of output) ------------
+* Matrix names confirmed from `ereturn list` on Stata 19.5 (StataNow, SE):
+* e(b_bma) = BMA posterior means, e(V_bma) = BMA posterior covariance,
+* e(pip) = posterior inclusion probabilities. There is no e(b).
+matrix b_bma = e(b_bma)
+matrix pip = e(pip)
+matrix vdiag = vecdiag(e(V_bma))
+local names : colnames e(b_bma)
+file open fh using "validation/stata/output/small_two_way_fe_colnames.txt", write replace
+file write fh `"`names'"'
+file close fh
 preserve
 clear
-svmat double b, names(col)
-export delimited using "validation/stata/output/small_two_way_fe_e_b.csv", replace
+svmat double b_bma
+export delimited using "validation/stata/output/small_two_way_fe_b_bma.csv", replace
+clear
+svmat double pip
+export delimited using "validation/stata/output/small_two_way_fe_pip.csv", replace
+clear
+svmat double vdiag
+export delimited using "validation/stata/output/small_two_way_fe_v_diag.csv", replace
+clear
+set obs 1
+gen double msize_mean = e(msize_mean)
+gen double msize_mean_prior = e(msize_mean_prior)
+gen double p_always = e(p_always)
+gen double p_groups = e(p_groups)
+gen double g_used = e(g)
+gen double shrinkage = e(shrinkage)
+gen double sigma2 = e(sigma2)
+gen double k_models = e(k_models)
+gen double n_obs = e(N)
+export delimited using "validation/stata/output/small_two_way_fe_scalars.csv", replace
 restore
-
-capture noisily {
-    matrix PIP = e(pip)
-    preserve
-    clear
-    svmat double PIP, names(col)
-    export delimited using "validation/stata/output/small_two_way_fe_pip.csv", replace
-    restore
-}
 
 log close
 exit, clear

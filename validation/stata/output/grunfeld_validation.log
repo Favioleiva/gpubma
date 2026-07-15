@@ -1,0 +1,547 @@
+------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  X:\Claude Agentic Tasks\GPU Powered BMA\validation/stata/output/grunfeld_validation.log
+  log type:  text
+ opened on:  15 Jul 2026, 20:58:54
+
+. 
+. display "Stata version: " c(stata_version)
+Stata version: 19.5
+
+. display "Edition: " c(edition_real)
+Edition: SE
+
+. display "Born: " c(born_date)
+Born: 08 Apr 2025
+
+. 
+. use "data/public/grunfeld.dta", clear
+
+. assert _N == 200
+
+. confirm variable company year invest mvalue kstock
+
+. isid company year
+
+. describe
+
+Contains data from data/public/grunfeld.dta
+ Observations:           200                  
+    Variables:             6                  3 Mar 2022 20:27
+------------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+------------------------------------------------------------------------------------------------------------------------
+company         byte    %9.0g                 Company
+year            int     %ty                   Year
+invest          float   %9.0g                 Investment (current year)
+mvalue          float   %9.0g                 Market value (prior year)
+kstock          float   %9.0g                 Capital stock (prior year)
+time            byte    %9.0g                 Time
+------------------------------------------------------------------------------------------------------------------------
+Sorted by: company  year
+
+. summarize
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     company |        200         5.5    2.879489          1         10
+        year |        200      1944.5    5.780751       1935       1954
+      invest |        200    145.9583    216.8753        .93     1486.7
+      mvalue |        200    1081.681     1314.47      58.12     6241.7
+      kstock |        200    276.0172    301.1039         .8     2226.3
+-------------+---------------------------------------------------------
+        time |        200        10.5    5.780751          1         20
+
+. 
+. * -- no fixed effects ---------------------------------------------------
+. bmaregress invest mvalue kstock, ///
+>     enumeration ///
+>     gprior(fixed 200) ///
+>     mprior(betabinomial 1 1)
+
+Enumerating models ...
+Computing model probabilities ...
+
+Bayesian model averaging                         No. of obs         =      200
+Linear regression                                No. of predictors  =        2
+Model enumeration                                            Groups =        2
+                                                             Always =        0
+Priors:                                          No. of models      =        4
+  Models: Beta-binomial(1, 1)                        For CPMP >= .9 =        1
+   Cons.: Noninformative                         Mean model size    =    2.000
+   Coef.: Zellner's g
+       g: g = 200                                Shrinkage, g/(1+g) =   0.9950
+  sigma2: Noninformative                         Mean sigma2        = 9104.983
+
+------------------------------------------------------------------------------
+      invest |      Mean   Std. dev.                          Group        PIP
+-------------+----------------------------------------------------------------
+      mvalue |  .1149872   .0058836                               1          1
+      kstock |  .2295308   .0256847                               2          1
+-------------+----------------------------------------------------------------
+Always       |
+       _cons |  -41.7757   9.601456                               0          1
+------------------------------------------------------------------------------
+Note: Coefficient posterior means and std. dev. estimated from 4 models.
+
+. 
+. ereturn list
+
+scalars:
+                  e(N) =  200
+                  e(p) =  2
+           e(p_always) =  0
+           e(p_groups) =  2
+           e(k_models) =  4
+      e(k_models_cpmp) =  1
+       e(k_models_all) =  4
+       e(msize_mean_a) =  1.999999999999986
+          e(shrinkage) =  .9950248756218906
+                  e(g) =  200
+            e(groupfv) =  0
+              e(arate) =  1
+             e(sigma2) =  9104.983467826143
+   e(msize_mean_prior) =  .9999999999999999
+         e(msize_mean) =  1.999999999999986
+
+macros:
+                e(cmd) : "bmaregress"
+            e(cmdline) : "bmaregress invest mvalue kstock,     enumeration     gprior(fixed 200)     mprior(betabino.."
+              e(title) : "Bayesian model averaging"
+             e(title2) : "Linear regression"
+             e(depvar) : "invest"
+          e(indepvars) : "mvalue kstock"
+           e(sampling) : "enumeration"
+       e(sampling_lab) : "Model enumeration"
+             e(mprior) : "betabinomial 1 1"
+        e(mprior_dist) : "betabinomial"
+         e(mprior_lab) : "Beta-binomial({res:1}, {res:1})"
+             e(gprior) : "fixed 200"
+        e(gprior_dist) : "fixed"
+         e(gprior_lab) : "g = {res:200}"
+      e(modelfilename) : "C:\Users\FAVIOL~1\AppData\Local\Temp\STBc6a0_000001.tmp"
+           e(rngstate) : "XAA000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.."
+
+matrices:
+      e(mprior_params) :  1 x 2
+      e(gprior_params) :  1 x 1
+              e(V_bma) :  3 x 3
+              e(b_bma) :  1 x 3
+            e(V_bma_c) :  3 x 3
+            e(b_bma_c) :  1 x 3
+                e(pip) :  1 x 3
+              e(group) :  1 x 2
+
+functions:
+             e(sample)   
+
+. bmastats models, top(4)
+
+Computing model probabilities ...
+
+Model summary             Number of models:
+                                   Visited = 4
+                                  Reported = 4
+
+----------------------------------------------
+             |   Analytical PMP     Model size
+-------------+--------------------------------
+Rank         |
+           1 |                1              2
+           2 |        1.396e-14              1
+           3 |        1.846e-46              1
+           4 |        8.113e-70              0
+----------------------------------------------
+
+Variable-inclusion summary
+--------------------------------------------
+             |   Rank      Rank      Rank   
+             |     1         2         3    
+-------------+------------------------------
+      mvalue |     x         x    
+      kstock |     x                   x    
+--------------------------------------------
+Legend:
+  x - estimated
+
+. bmastats pip
+
+Posterior inclusion probability (PIP)
+
+No. of obs         =   200
+No. of predictors  =     2
+            Groups =     2
+            Always =     0
+          Reported =     2
+No. of models      =     4
+Mean model size    = 2.000
+
+------------------------------------
+             |       PIP       Group
+-------------+----------------------
+      mvalue |         1           1
+      kstock |         1           2
+-------------+----------------------
+Always       |
+       _cons |         1           0
+------------------------------------
+Note: Using analytical PMPs.
+
+. bmastats msize
+
+Model-size summary
+
+Number of models = 4
+Model size:
+  Minimum = 0
+  Maximum = 2
+
+----------------------------------------
+             |           Mean     Median
+-------------+--------------------------
+Prior        |
+  Analytical |         1.0000          1
+-------------+--------------------------
+Posterior    |
+  Analytical |         2.0000          2
+----------------------------------------
+Note: Frequency summaries not available.
+
+. 
+. * -- machine-readable exports (no manual copying of output) ------------
+. * Matrix names confirmed from `ereturn list` on Stata 19.5 (StataNow, SE):
+. * e(b_bma) = BMA posterior means, e(V_bma) = BMA posterior covariance,
+. * e(pip) = posterior inclusion probabilities. There is no e(b).
+. matrix b_bma = e(b_bma)
+
+. matrix pip = e(pip)
+
+. matrix vdiag = vecdiag(e(V_bma))
+
+. local names : colnames e(b_bma)
+
+. file open fh using "validation/stata/output/grunfeld_no_fe_colnames.txt", write replace
+
+. file write fh `"`names'"'
+
+. file close fh
+
+. preserve
+
+. clear
+
+. svmat double b_bma
+number of observations will be reset to 1
+Press any key to continue, or Break to abort
+Number of observations (_N) was 0, now 1.
+
+. export delimited using "validation/stata/output/grunfeld_no_fe_b_bma.csv", replace
+file validation/stata/output/grunfeld_no_fe_b_bma.csv saved
+
+. clear
+
+. svmat double pip
+number of observations will be reset to 1
+Press any key to continue, or Break to abort
+Number of observations (_N) was 0, now 1.
+
+. export delimited using "validation/stata/output/grunfeld_no_fe_pip.csv", replace
+file validation/stata/output/grunfeld_no_fe_pip.csv saved
+
+. clear
+
+. svmat double vdiag
+number of observations will be reset to 1
+Press any key to continue, or Break to abort
+Number of observations (_N) was 0, now 1.
+
+. export delimited using "validation/stata/output/grunfeld_no_fe_v_diag.csv", replace
+file validation/stata/output/grunfeld_no_fe_v_diag.csv saved
+
+. clear
+
+. set obs 1
+Number of observations (_N) was 0, now 1.
+
+. gen double msize_mean = e(msize_mean)
+
+. gen double msize_mean_prior = e(msize_mean_prior)
+
+. gen double p_always = e(p_always)
+
+. gen double p_groups = e(p_groups)
+
+. gen double g_used = e(g)
+
+. gen double shrinkage = e(shrinkage)
+
+. gen double sigma2 = e(sigma2)
+
+. gen double k_models = e(k_models)
+
+. gen double n_obs = e(N)
+
+. export delimited using "validation/stata/output/grunfeld_no_fe_scalars.csv", replace
+(file validation/stata/output/grunfeld_no_fe_scalars.csv not found)
+file validation/stata/output/grunfeld_no_fe_scalars.csv saved
+
+. restore
+
+. 
+. * -- company (individual) fixed effects, always included ---------------
+. bmaregress invest mvalue kstock (i.company, always), ///
+>     enumeration ///
+>     gprior(fixed 200) ///
+>     mprior(betabinomial 1 1)
+
+Enumerating models ...
+Computing model probabilities ...
+
+Bayesian model averaging                         No. of obs         =      200
+Linear regression                                No. of predictors  =       11
+Model enumeration                                            Groups =        2
+                                                             Always =        9
+Priors:                                          No. of models      =        4
+  Models: Beta-binomial(1, 1)                        For CPMP >= .9 =        1
+   Cons.: Noninformative                         Mean model size    =   11.000
+   Coef.: Zellner's g
+       g: g = 200                                Shrinkage, g/(1+g) =   0.9950
+  sigma2: Noninformative                         Mean sigma2        = 2880.409
+
+------------------------------------------------------------------------------
+      invest |      Mean   Std. dev.                          Group        PIP
+-------------+----------------------------------------------------------------
+      kstock |  .3085227    .017607                               2          1
+      mvalue |  .1095759   .0120292                               1          1
+-------------+----------------------------------------------------------------
+Always       |
+     company |
+          2  |  171.3458   31.61467                               0          1
+          3  | -164.4529   32.23792                               0          1
+          4  |  42.27602   44.54879                               0          1
+          5  | -44.09963   51.22695                               0          1
+          6  |  46.90089   47.49181                               0          1
+          7  |  3.724589   51.30068                               0          1
+          8  |  12.68759   44.69362                               0          1
+          9  | -16.84138   49.15829                               0          1
+         10  |  63.41178   51.06257                               0          1
+             |
+       _cons | -69.22079   50.43195                               0          1
+------------------------------------------------------------------------------
+Note: Coefficient posterior means and std. dev. estimated from 4 models.
+
+. 
+. ereturn list
+
+scalars:
+                  e(N) =  200
+                  e(p) =  11
+           e(p_always) =  9
+           e(p_groups) =  2
+           e(k_models) =  4
+      e(k_models_cpmp) =  1
+       e(k_models_all) =  4
+       e(msize_mean_a) =  10.99999999999999
+          e(shrinkage) =  .9950248756218906
+                  e(g) =  200
+            e(groupfv) =  0
+              e(arate) =  1
+             e(sigma2) =  2880.409291057042
+   e(msize_mean_prior) =  9.999999999999998
+         e(msize_mean) =  10.99999999999999
+
+macros:
+                e(cmd) : "bmaregress"
+            e(cmdline) : "bmaregress invest mvalue kstock (i.company, always),     enumeration     gprior(fixed 200).."
+              e(title) : "Bayesian model averaging"
+             e(title2) : "Linear regression"
+             e(depvar) : "invest"
+          e(indepvars) : "mvalue kstock 1b.company 2.company 3.company 4.company 5.company 6.company 7.company 8.com.."
+           e(omitvars) : "1b.company"
+           e(sampling) : "enumeration"
+       e(sampling_lab) : "Model enumeration"
+             e(mprior) : "betabinomial 1 1"
+        e(mprior_dist) : "betabinomial"
+         e(mprior_lab) : "Beta-binomial({res:1}, {res:1})"
+             e(gprior) : "fixed 200"
+        e(gprior_dist) : "fixed"
+         e(gprior_lab) : "g = {res:200}"
+         e(alwaysvars) : "2.company 3.company 4.company 5.company 6.company 7.company 8.company 9.company 10.company"
+      e(modelfilename) : "C:\Users\FAVIOL~1\AppData\Local\Temp\STBc6a0_000001.tmp"
+           e(rngstate) : "XAA3b8ba9cd046ba5ba4fb08a4cdddb806275fbf6adf94193b2a4be96d8ed674e75b0165bdfff6f96b5446446f.."
+
+matrices:
+      e(mprior_params) :  1 x 2
+      e(gprior_params) :  1 x 1
+              e(V_bma) :  13 x 13
+              e(b_bma) :  1 x 13
+            e(V_bma_c) :  13 x 13
+            e(b_bma_c) :  1 x 13
+                e(pip) :  1 x 13
+              e(group) :  1 x 12
+
+functions:
+             e(sample)   
+
+. bmastats models, top(4)
+
+Computing model probabilities ...
+
+Model summary             Number of models:
+                                   Visited = 4
+                                  Reported = 4
+
+----------------------------------------------
+             |   Analytical PMP     Model size
+-------------+--------------------------------
+Rank         |
+           1 |                1             11
+           2 |        4.585e-15             10
+           3 |        1.796e-40             10
+           4 |        1.616e-58              9
+----------------------------------------------
+
+Variable-inclusion summary
+------------------------------------------------------
+             |   Rank      Rank      Rank      Rank   
+             |     1         2         3         4    
+-------------+----------------------------------------
+      mvalue |     x                   x    
+      kstock |     x         x    
+             |
+     company |
+          2  |     x         x         x         x    
+          3  |     x         x         x         x    
+          4  |     x         x         x         x    
+          5  |     x         x         x         x    
+          6  |     x         x         x         x    
+          7  |     x         x         x         x    
+          8  |     x         x         x         x    
+          9  |     x         x         x         x    
+         10  |     x         x         x         x    
+------------------------------------------------------
+Legend:
+  x - estimated
+
+. bmastats pip
+
+Posterior inclusion probability (PIP)
+
+No. of obs         =    200
+No. of predictors  =     11
+            Groups =      2
+            Always =      9
+          Reported =     11
+No. of models      =      4
+Mean model size    = 11.000
+
+------------------------------------
+             |       PIP       Group
+-------------+----------------------
+      kstock |         1           2
+      mvalue |         1           1
+-------------+----------------------
+Always       |
+     company |
+          2  |         1           0
+          3  |         1           0
+          4  |         1           0
+          5  |         1           0
+          6  |         1           0
+          7  |         1           0
+          8  |         1           0
+          9  |         1           0
+         10  |         1           0
+             |
+       _cons |         1           0
+------------------------------------
+Note: Using analytical PMPs.
+
+. 
+. * -- machine-readable exports (no manual copying of output) ------------
+. * Matrix names confirmed from `ereturn list` on Stata 19.5 (StataNow, SE):
+. * e(b_bma) = BMA posterior means, e(V_bma) = BMA posterior covariance,
+. * e(pip) = posterior inclusion probabilities. There is no e(b).
+. matrix b_bma = e(b_bma)
+
+. matrix pip = e(pip)
+
+. matrix vdiag = vecdiag(e(V_bma))
+
+. local names : colnames e(b_bma)
+
+. file open fh using "validation/stata/output/grunfeld_company_fe_colnames.txt", write replace
+
+. file write fh `"`names'"'
+
+. file close fh
+
+. preserve
+
+. clear
+
+. svmat double b_bma
+number of observations will be reset to 1
+Press any key to continue, or Break to abort
+Number of observations (_N) was 0, now 1.
+
+. export delimited using "validation/stata/output/grunfeld_company_fe_b_bma.csv", replace
+file validation/stata/output/grunfeld_company_fe_b_bma.csv saved
+
+. clear
+
+. svmat double pip
+number of observations will be reset to 1
+Press any key to continue, or Break to abort
+Number of observations (_N) was 0, now 1.
+
+. export delimited using "validation/stata/output/grunfeld_company_fe_pip.csv", replace
+file validation/stata/output/grunfeld_company_fe_pip.csv saved
+
+. clear
+
+. svmat double vdiag
+number of observations will be reset to 1
+Press any key to continue, or Break to abort
+Number of observations (_N) was 0, now 1.
+
+. export delimited using "validation/stata/output/grunfeld_company_fe_v_diag.csv", replace
+file validation/stata/output/grunfeld_company_fe_v_diag.csv saved
+
+. clear
+
+. set obs 1
+Number of observations (_N) was 0, now 1.
+
+. gen double msize_mean = e(msize_mean)
+
+. gen double msize_mean_prior = e(msize_mean_prior)
+
+. gen double p_always = e(p_always)
+
+. gen double p_groups = e(p_groups)
+
+. gen double g_used = e(g)
+
+. gen double shrinkage = e(shrinkage)
+
+. gen double sigma2 = e(sigma2)
+
+. gen double k_models = e(k_models)
+
+. gen double n_obs = e(N)
+
+. export delimited using "validation/stata/output/grunfeld_company_fe_scalars.csv", replace
+(file validation/stata/output/grunfeld_company_fe_scalars.csv not found)
+file validation/stata/output/grunfeld_company_fe_scalars.csv saved
+
+. restore
+
+. 
+. log close
+      name:  <unnamed>
+       log:  X:\Claude Agentic Tasks\GPU Powered BMA\validation/stata/output/grunfeld_validation.log
+  log type:  text
+ closed on:  15 Jul 2026, 20:58:55
+------------------------------------------------------------------------------------------------------------------------

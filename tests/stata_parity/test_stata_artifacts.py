@@ -1,9 +1,8 @@
-"""Stata parity scaffolding.
+"""Stata artifact structure checks.
 
-The .do scripts are PREPARED; no working Stata installation exists on the
-development machine (only renamed *_old.exe leftovers that do not run in
-batch mode). Numerical parity tests therefore SKIP explicitly until real
-Stata exports appear under validation/stata/output/.
+The .do scripts were EXECUTED in batch mode on StataNow/SE 19.5
+(2026-07-15); real exports live under validation/stata/output/.
+Numerical parity is covered by test_stata_parity.py.
 """
 
 from pathlib import Path
@@ -42,14 +41,15 @@ def test_frozen_dta_loads_in_pandas():
     assert len(g) == 200
 
 
-def test_python_vs_stata_pip_parity():
-    export = STATA_OUT / "small_no_fe_pip.csv"
-    if not export.exists():
-        pytest.skip(
-            "Stata outputs not available: .do scripts are prepared but were "
-            "never executed (no callable Stata on this machine). Parity "
-            "comparison pending."
-        )
-    # When real exports exist, compare via scripts/compare_stata_python.py logic.
-    stata = pd.read_csv(export)
-    assert not stata.empty
+def test_stata_exports_exist_and_are_license_free():
+    """Exports exist for all six designs and contain no license information."""
+    stems = ["small_no_fe", "small_individual_fe", "small_time_fe",
+             "small_two_way_fe", "grunfeld_no_fe", "grunfeld_company_fe"]
+    for stem in stems:
+        for kind in ("b_bma", "pip", "v_diag", "scalars"):
+            path = STATA_OUT / f"{stem}_{kind}.csv"
+            assert path.exists(), f"missing Stata export {path.name}"
+    for path in STATA_OUT.iterdir():
+        text = path.read_text(errors="ignore").lower()
+        assert "serial number" not in text and "licensed to" not in text, (
+            f"license information leaked into {path.name}")

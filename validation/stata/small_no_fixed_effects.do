@@ -4,17 +4,13 @@
 * Model   : y on optional x1-x8; always-included controls w1 w2
 * Fixed effects: none
 *
-* STATUS: PREPARED, NOT YET EXECUTED. No working Stata installation was
-* available on the development machine (only renamed StataSE-64_old.exe
-* leftovers that do not run in batch mode). Numbers in the repository do
-* NOT come from this script. Requires Stata 18+ (bmaregress).
+* STATUS: EXECUTED 2026-07-15 in batch mode on StataNow/SE 19.5.
+* Option keywords and e() matrix names verified on that run.
 *
 * Priors are fixed and documented to match the Python reference exactly:
 *   g-prior      : fixed g = 1000  (Python default benchmark g = max(n, p^2)
 *                  = max(1000, 64) = 1000 for this dataset)
 *   model prior  : beta-binomial(1, 1)
-* NOTE: verify option keywords against `help bmaregress` on first run;
-* they follow the [BMA] bmaregress manual but have not been executed here.
 *----------------------------------------------------------------------
 version 18
 clear all
@@ -26,8 +22,8 @@ capture mkdir "validation/stata/output"
 log using "validation/stata/output/small_no_fixed_effects.log", replace text
 
 display "Stata version: " c(stata_version)
+display "Edition: " c(edition_real)
 display "Born: " c(born_date)
-about
 
 use "data/synthetic/panel_8.dta", clear
 
@@ -53,27 +49,39 @@ bmastats pip
 bmastats msize
 
 * -- machine-readable exports (no manual copying of output) ------------
-* coefficient posterior means
-matrix b = e(b)
+* Matrix names confirmed from `ereturn list` on Stata 19.5 (StataNow, SE):
+* e(b_bma) = BMA posterior means, e(V_bma) = BMA posterior covariance,
+* e(pip) = posterior inclusion probabilities. There is no e(b).
+matrix b_bma = e(b_bma)
+matrix pip = e(pip)
+matrix vdiag = vecdiag(e(V_bma))
+local names : colnames e(b_bma)
+file open fh using "validation/stata/output/small_no_fe_colnames.txt", write replace
+file write fh `"`names'"'
+file close fh
 preserve
 clear
-svmat double b, names(col)
-export delimited using "validation/stata/output/small_no_fe_e_b.csv", replace
+svmat double b_bma
+export delimited using "validation/stata/output/small_no_fe_b_bma.csv", replace
+clear
+svmat double pip
+export delimited using "validation/stata/output/small_no_fe_pip.csv", replace
+clear
+svmat double vdiag
+export delimited using "validation/stata/output/small_no_fe_v_diag.csv", replace
+clear
+set obs 1
+gen double msize_mean = e(msize_mean)
+gen double msize_mean_prior = e(msize_mean_prior)
+gen double p_always = e(p_always)
+gen double p_groups = e(p_groups)
+gen double g_used = e(g)
+gen double shrinkage = e(shrinkage)
+gen double sigma2 = e(sigma2)
+gen double k_models = e(k_models)
+gen double n_obs = e(N)
+export delimited using "validation/stata/output/small_no_fe_scalars.csv", replace
 restore
-
-* posterior inclusion probabilities: bmaregress stores them in e();
-* the exact matrix name must be confirmed from `ereturn list` above on the
-* first real run. The capture block records the attempt without fabricating
-* output if the name differs. LIMITATION: cannot be confirmed until a
-* working Stata installation is available.
-capture noisily {
-    matrix PIP = e(pip)
-    preserve
-    clear
-    svmat double PIP, names(col)
-    export delimited using "validation/stata/output/small_no_fe_pip.csv", replace
-    restore
-}
 
 log close
 exit, clear

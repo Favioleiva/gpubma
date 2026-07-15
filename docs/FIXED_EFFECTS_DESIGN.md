@@ -39,7 +39,7 @@ approaches that are compared quantitatively.
 - With identical fixed g and aligned df, all 256 BMA log scores, PMPs, PIPs,
   and coefficient moments coincide (see `reports/fixed_effects_comparison.md`).
 
-## The statistical caveat (do not skip)
+## The statistical caveat — now settled by real Stata output
 
 Equality of OLS slopes does **not** automatically establish equality of
 Bayesian model scores. Under a g-prior, absorbing fixed effects may affect
@@ -47,15 +47,27 @@ prior parameterization, effective sample size, degrees of freedom, marginal
 likelihood constants, and model comparison unless the always-included block
 is treated consistently.
 
-In gpubma the two approaches agree **because we constructed them to**: both
-use residualized data, the same fixed g, and df = n − (rank of the full
-always block, explicit or absorbed). These are modelling choices. An
-implementation that, e.g., keeps df = n − 1 − k after absorption, or rescales
-g by the post-absorption sample information, would produce different scores
-with the same OLS slopes. Whether Stata's `bmaregress` with
-`(i.individual_id, always)` matches our convention is an **open question**
-that only real Stata output can settle (STATUS.md item; the prepared .do
-scripts exist precisely for this).
+Executing the oracle (StataNow/SE 19.5, 2026-07-15) settled the question:
 
-Therefore: gpubma documents its convention, tests its internal consistency,
-and does not claim Stata-equivalence for fixed-effects BMA scores yet.
+- **Stata's convention** (`always_prior="shrink"`, gpubma's default): the
+  g-prior shrinks the fixed-effect dummies jointly with the optional
+  predictors; only the intercept is flat and df = n − 1. gpubma reproduces
+  Stata's PIPs, posterior means, and posterior sds to ~1e-12 for individual,
+  time, and two-way FE dummies (`reports/comparison_report.md`).
+- **Consequence:** under this convention, dummies-vs-absorption equivalence
+  does NOT hold — absorption treats the fixed effects as flat, which is a
+  different prior. `bma_regress` therefore refuses
+  `always_prior="shrink"` with `fe_method="within"`.
+- **gpubma's conditional convention** (`always_prior="flat"`): flat always
+  block, df = n − rank(always). Under this convention (and only this one)
+  explicit dummies and within absorption produce identical scores, PIPs and
+  moments — verified in `scripts/compare_fixed_effects.py` and the test
+  suite. This convention is NOT Stata-compatible when always variables are
+  present.
+
+For the eventual 2^30 production run this matters: absorption is the cheap
+path computationally, but reproducing Stata requires either explicit
+(g-shrunk) dummies or a block-inverse implementation of the joint formula
+(the FWL identity in docs/STATISTICAL_SPECIFICATION.md gives exactly that:
+joint scores are computable from residualized sufficient statistics plus
+ESS_W, at absorption-like cost).

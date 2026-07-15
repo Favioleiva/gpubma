@@ -24,7 +24,8 @@ oracle on small frozen datasets.
    coefficient moments, top models.
 5. Fixed effects via explicit dummies (reference) and within residualization
    (candidate), with OLS and score-level comparisons.
-6. Stata validation `.do` scripts (prepared; no callable Stata found locally).
+6. Stata validation `.do` scripts — EXECUTED on StataNow/SE 19.5; Python
+   matches the exported oracle on all six designs (worst |diff| 1.8e-12).
 7. A GPU feasibility layer (batched float64 scoring validated against CPU)
    and an honest benchmark ladder (Measured / Projected / Not evaluated).
 
@@ -38,9 +39,11 @@ oracle on small frozen datasets.
 
 ## Phase 2 candidates (require Phase 1 acceptance + user authorization)
 
-- Execute the Stata oracle on a machine with a working Stata 18+ license and
-  close the parity loop.
-- Resolve the g-prior parameterization questions recorded in STATUS.md.
+- ~~Execute the Stata oracle and close the parity loop~~ — DONE 2026-07-15
+  (StataNow/SE 19.5; all six designs match, worst |diff| 1.8e-12).
+- ~~Resolve the g-prior parameterization questions~~ — DONE: Stata uses joint
+  g-shrinkage over optional + always slopes with df = n − 1, implemented as
+  `always_prior="shrink"` (default).
 - Design the production GPU enumerator (bit-ordered model traversal, tiled
   sufficient statistics, streaming reductions, checkpointing) and grow the
   benchmark ladder to 2^18–2^24 before attempting 2^30.

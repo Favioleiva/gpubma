@@ -6,12 +6,14 @@
 
 ## Outcome
 
-**65 passed, 1 skipped, 0 failed** (3.08 s).
+**73 passed, 0 skipped, 0 failed** (3.23 s).
 
-The single skip is explicit and intentional:
-`tests/stata_parity/test_stata_artifacts.py::test_python_vs_stata_pip_parity`
-— "Stata outputs not available: .do scripts are prepared but were never
-executed (no callable Stata on this machine). Parity comparison pending."
+Earlier in the day the suite was 65 passed + 1 explicit skip (Stata parity
+pending). After the Stata oracle was executed (StataNow/SE 19.5 batch mode,
+`C:\Program Files\StataNow19\StataSE-64.exe`), the parity skip was replaced
+by six real numerical parity tests (`test_stata_parity.py`), all passing at
+tolerance 1e-9 (observed worst |diff| 1.8e-12), plus a license-sanitization
+check and the new shrink/flat convention tests.
 
 GPU tests were NOT skipped: CUDA float64 execution ran on the detected
 NVIDIA GeForce RTX 3060 and matched the CPU reference.
@@ -38,6 +40,10 @@ NVIDIA GeForce RTX 3060 and matched the CPU reference.
 | repeatable results | test_repeatable_results | pass |
 | actual GPU float64 when CUDA available | test_actual_float64_gpu_execution, test_gpu_scores_match_cpu_reference, test_gpu_scorer_uses_float64_not_float32 | pass (executed on RTX 3060) |
 | explicit skip without CUDA | requires_cuda marker with reasoned message; test_skip_reason_is_explicit_when_cuda_unavailable | pass |
+
+| Python vs Stata numerical parity | test_parity_with_executed_stata_oracle[6 designs] | pass (real executed oracle, tol 1e-9) |
+| Stata exports present and license-free | test_stata_exports_exist_and_are_license_free | pass |
+| shrink convention rejects within-FE | test_shrink_convention_rejects_within | pass |
 
 Additional guards: MC3 substitution rejected, silent float32 rejected,
 model/beta-binomial priors sum to 1 over the model space, comparison utility

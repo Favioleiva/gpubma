@@ -4,18 +4,17 @@ rootdir: X:\Claude Agentic Tasks\GPU Powered BMA
 configfile: pyproject.toml
 testpaths: tests
 plugins: anyio-4.13.0
-collected 66 items
+collected 73 items
 
-tests\datasets\test_serialization.py ....                                [  6%]
-tests\datasets\test_synthetic.py .............                           [ 25%]
-tests\enumeration\test_cpu_enumeration.py .........                      [ 39%]
-tests\enumeration\test_formula.py ....                                   [ 45%]
-tests\fixed_effects\test_fe.py .........                                 [ 59%]
-tests\gpu\test_gpu.py ....                                               [ 65%]
-tests\stata_parity\test_stata_artifacts.py ......s                       [ 75%]
-tests\unit\test_compare.py ....                                          [ 81%]
+tests\datasets\test_serialization.py ....                                [  5%]
+tests\datasets\test_synthetic.py .............                           [ 23%]
+tests\enumeration\test_cpu_enumeration.py .........                      [ 35%]
+tests\enumeration\test_formula.py ....                                   [ 41%]
+tests\fixed_effects\test_fe.py ..........                                [ 54%]
+tests\gpu\test_gpu.py ....                                               [ 60%]
+tests\stata_parity\test_stata_artifacts.py .......                       [ 69%]
+tests\stata_parity\test_stata_parity.py ......                           [ 78%]
+tests\unit\test_compare.py ....                                          [ 83%]
 tests\unit\test_priors.py ............                                   [100%]
 
-=========================== short test summary info ===========================
-SKIPPED [1] tests\stata_parity\test_stata_artifacts.py:48: Stata outputs not available: .do scripts are prepared but were never executed (no callable Stata on this machine). Parity comparison pending.
-======================== 65 passed, 1 skipped in 3.08s ========================
+============================= 73 passed in 3.23s ==============================

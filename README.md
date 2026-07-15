@@ -70,6 +70,8 @@ python -m pytest                              # 65 tests (GPU tests skip cleanly
 The non-negotiable project rules live in `CLAUDE.md`: exhaustive enumeration
 (no silent MC3), explicit float64, measured-vs-projected labelling, detected
 (never assumed) hardware, reproducible seeds and checksums, and honest
-recording of unresolved statistical questions. The g-prior parameterization
-is currently **provisional** and not yet validated against Stata — results
-must not be described as Stata-compatible (see `STATUS.md`).
+recording of unresolved statistical questions. The default
+`always_prior="shrink"` parameterization is **verified against executed
+Stata `bmaregress` output** (StataNow/SE 19.5, six designs, worst absolute
+difference 1.8e-12 — see `reports/comparison_report.md`); the alternative
+`always_prior="flat"` convention is gpubma-specific and not Stata's.

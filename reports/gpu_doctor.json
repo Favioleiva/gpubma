@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-07-15T11:10:03.368806+00:00",
+  "timestamp_utc": "2026-07-15T12:13:13.712641+00:00",
   "os": {
     "platform": "Windows-11-10.0.26200-SP0",
     "system": "Windows",
@@ -41,7 +41,7 @@
     "gpu_name": "NVIDIA GeForce RTX 3060",
     "gpu_uuid": "GPU-be0764ed-35c6-d0e3-59d8-f6ca76527a26",
     "vram_total_mib": 12288.0,
-    "vram_free_mib": 10121.0,
+    "vram_free_mib": 10202.0,
     "driver_version": "591.86",
     "compute_capability": "8.6",
     "pci_bus_id": "00000000:01:00.0",
@@ -60,9 +60,9 @@
     "max_threads_per_multiprocessor": 1536,
     "warp_size": 32,
     "float64_test": {
-      "gpu": -226.39754075645874,
-      "cpu": -226.39754075646283,
-      "abs_diff": 4.092726157978177e-12
+      "gpu": -5438.409278920452,
+      "cpu": -5438.409278920455,
+      "abs_diff": 2.7284841053187847e-12
     },
     "documented_architecture_facts": {
       "max_threads_per_block": 1024,
@@ -74,10 +74,15 @@
   },
   "stata": {
     "installed": true,
-    "callable": false,
-    "callable_executables": [],
+    "callable": true,
+    "callable_executables": [
+      "C:\\Program Files\\StataNow19\\StataSE-64.exe"
+    ],
     "on_path": {},
     "directories": {
+      "C:\\Program Files\\StataNow19": [
+        "StataSE-64.exe"
+      ],
       "C:\\Program Files\\Stata18": [
         "StataSE-64_old.exe"
       ],
@@ -85,13 +90,13 @@
         "StataSE-64_old.exe"
       ]
     },
-    "note": "directories contain only renamed '*_old.exe' leftovers; batch execution was tested and produced no output \u2014 treated as NOT callable"
+    "note": "verified working in batch mode (validation oracle executed 2026-07-15)"
   },
   "summary": {
     "gpu_detected": "NVIDIA GeForce RTX 3060",
     "cuda_usable_from_python_float64_verified": true,
     "nvcc_installed": false,
     "stata_installed": true,
-    "stata_callable": false
+    "stata_callable": true
   }
 }

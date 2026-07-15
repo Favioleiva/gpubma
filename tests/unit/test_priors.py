@@ -16,9 +16,12 @@ def test_benchmark_g():
         resolve_g(-1.0, 10, 2)
 
 
-def test_benchmark_g_is_provisional():
-    assert resolve_g("benchmark", 1000, 8).provisional is True
-    assert "PROVISIONAL" in resolve_g("benchmark", 1000, 8).describe()
+def test_benchmark_g_verified_against_stata():
+    """The g-prior formulation was verified against executed StataNow/SE 19.5
+    bmaregress output on 2026-07-15 (always_prior='shrink')."""
+    spec = resolve_g("benchmark", 1000, 8)
+    assert spec.provisional is False
+    assert "verified" in spec.describe()
 
 
 @pytest.mark.parametrize("p", [1, 4, 8])

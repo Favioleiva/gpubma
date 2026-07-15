@@ -7,8 +7,8 @@
     "rows": [
       {
         "quantity": "log scores parquet vs csv [max@i=0]",
-        "reference": -2.1972245773362182,
-        "candidate": -2.1972245773362182,
+        "reference": 73.22363958860672,
+        "candidate": 73.22363958860672,
         "abs_diff": 0.0,
         "rel_diff": 0.0,
         "tolerance": 0.0,
@@ -17,8 +17,8 @@
       },
       {
         "quantity": "PIP parquet vs csv [max@i=0]",
-        "reference": 1.0000000000000215,
-        "candidate": 1.0000000000000215,
+        "reference": 0.9999999999999721,
+        "candidate": 0.9999999999999721,
         "abs_diff": 0.0,
         "rel_diff": 0.0,
         "tolerance": 0.0,
@@ -27,8 +27,8 @@
       },
       {
         "quantity": "coef means parquet vs csv [max@i=0]",
-        "reference": 1.5653542122330752,
-        "candidate": 1.5653542122330752,
+        "reference": 1.5653540921612168,
+        "candidate": 1.5653540921612168,
         "abs_diff": 0.0,
         "rel_diff": 0.0,
         "tolerance": 0.0,
@@ -37,8 +37,8 @@
       },
       {
         "quantity": "log scores parquet vs dta [max@i=0]",
-        "reference": -2.1972245773362182,
-        "candidate": -2.1972245773362182,
+        "reference": 73.22363958860672,
+        "candidate": 73.22363958860672,
         "abs_diff": 0.0,
         "rel_diff": 0.0,
         "tolerance": 0.0,
@@ -47,8 +47,8 @@
       },
       {
         "quantity": "PIP parquet vs dta [max@i=0]",
-        "reference": 1.0000000000000215,
-        "candidate": 1.0000000000000215,
+        "reference": 0.9999999999999721,
+        "candidate": 0.9999999999999721,
         "abs_diff": 0.0,
         "rel_diff": 0.0,
         "tolerance": 0.0,
@@ -57,8 +57,8 @@
       },
       {
         "quantity": "coef means parquet vs dta [max@i=0]",
-        "reference": 1.5653542122330752,
-        "candidate": 1.5653542122330752,
+        "reference": 1.5653540921612168,
+        "candidate": 1.5653540921612168,
         "abs_diff": 0.0,
         "rel_diff": 0.0,
         "tolerance": 0.0,
@@ -75,8 +75,8 @@
     "rows": [
       {
         "quantity": "log scores [max@i=0]",
-        "reference": -2.1972245773362182,
-        "candidate": -2.1972245773362182,
+        "reference": 73.22363958860672,
+        "candidate": 73.22363958860672,
         "abs_diff": 0.0,
         "rel_diff": 0.0,
         "tolerance": 0.0,
@@ -85,8 +85,8 @@
       },
       {
         "quantity": "PIP [max@i=0]",
-        "reference": 1.0000000000000215,
-        "candidate": 1.0000000000000215,
+        "reference": 0.9999999999999721,
+        "candidate": 0.9999999999999721,
         "abs_diff": 0.0,
         "rel_diff": 0.0,
         "tolerance": 0.0,
@@ -95,11 +95,1259 @@
       },
       {
         "quantity": "coef means [max@i=0]",
-        "reference": 1.5653542122330752,
-        "candidate": 1.5653542122330752,
+        "reference": 1.5653540921612168,
+        "candidate": 1.5653540921612168,
         "abs_diff": 0.0,
         "rel_diff": 0.0,
         "tolerance": 0.0,
+        "tolerance_kind": "abs",
+        "passed": true
+      }
+    ]
+  },
+  {
+    "title": "Python vs Stata bmaregress \u2014 small_no_fe",
+    "reference": "Stata bmaregress (StataNow/SE 19.5, batch export)",
+    "candidate": "gpubma CPU reference (float64 enumeration)",
+    "passed": true,
+    "rows": [
+      {
+        "quantity": "models evaluated",
+        "reference": 256.0,
+        "candidate": 256.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 0.0,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "mean model size (Stata minus p_always)",
+        "reference": 5.279409016284087,
+        "candidate": 5.279409016284092,
+        "abs_diff": 4.440892098500626e-15,
+        "rel_diff": 8.4117220029796915e-16,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x1]",
+        "reference": 0.9999999999999998,
+        "candidate": 0.9999999999999721,
+        "abs_diff": 2.7644553313166398e-14,
+        "rel_diff": 2.7644553313166404e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x1]",
+        "reference": 1.565354092161263,
+        "candidate": 1.5653540921612168,
+        "abs_diff": 4.618527782440651e-14,
+        "rel_diff": 2.950468399174728e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x1]",
+        "reference": 0.04493000707622246,
+        "candidate": 0.04493000707698307,
+        "abs_diff": 7.606068552767908e-13,
+        "rel_diff": 1.6928705441189164e-11,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x2]",
+        "reference": 0.9999999999999998,
+        "candidate": 0.9999999999999721,
+        "abs_diff": 2.7644553313166398e-14,
+        "rel_diff": 2.7644553313166404e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x2]",
+        "reference": -1.083024234980124,
+        "candidate": -1.0830242349800934,
+        "abs_diff": 3.064215547965432e-14,
+        "rel_diff": 2.82931392391387e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x2]",
+        "reference": 0.04884326372063296,
+        "candidate": 0.04884326372095327,
+        "abs_diff": 3.2030628149826157e-13,
+        "rel_diff": 6.5578394459511395e-12,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x3]",
+        "reference": 0.9999999999999998,
+        "candidate": 0.9999999999999721,
+        "abs_diff": 2.7644553313166398e-14,
+        "rel_diff": 2.7644553313166404e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x3]",
+        "reference": 0.721228837927824,
+        "candidate": 0.7212288379278038,
+        "abs_diff": 2.020605904817785e-14,
+        "rel_diff": 2.8016155186240547e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x3]",
+        "reference": 0.046979233202101116,
+        "candidate": 0.04697923320225805,
+        "abs_diff": 1.5693696342466978e-13,
+        "rel_diff": 3.3405603439505825e-12,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x4]",
+        "reference": 0.9999999999999998,
+        "candidate": 0.9999999999999721,
+        "abs_diff": 2.7644553313166398e-14,
+        "rel_diff": 2.7644553313166404e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x4]",
+        "reference": 0.4689510059323087,
+        "candidate": 0.4689510059322955,
+        "abs_diff": 1.3211653993039363e-14,
+        "rel_diff": 2.817278100677838e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x4]",
+        "reference": 0.04773968471144421,
+        "candidate": 0.04773968471150808,
+        "abs_diff": 6.387251838546604e-14,
+        "rel_diff": 1.337933393809553e-12,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x5]",
+        "reference": 0.9999999179575968,
+        "candidate": 0.999999917957569,
+        "abs_diff": 2.7755575615628914e-14,
+        "rel_diff": 2.7755577892763228e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x5]",
+        "reference": 0.2965877375125699,
+        "candidate": 0.2965877375125615,
+        "abs_diff": 8.382183835919932e-15,
+        "rel_diff": 2.82620714740935e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x5]",
+        "reference": 0.047163068014291654,
+        "candidate": 0.04716306801431812,
+        "abs_diff": 2.646494134950217e-14,
+        "rel_diff": 5.611369756833407e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x6]",
+        "reference": 0.1053193086942014,
+        "candidate": 0.10531930869428836,
+        "abs_diff": 8.695821840376539e-14,
+        "rel_diff": 8.256626394707932e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x6]",
+        "reference": -0.0048954804030781,
+        "candidate": -0.004895480403082087,
+        "abs_diff": 3.986394547794703e-15,
+        "rel_diff": 8.143009918464705e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x6]",
+        "reference": 0.020833353871328543,
+        "candidate": 0.020833353871336537,
+        "abs_diff": 7.993605777301127e-15,
+        "rel_diff": 3.8369269905692373e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x7]",
+        "reference": 0.0926998426908399,
+        "candidate": 0.09269984269088404,
+        "abs_diff": 4.413136522884997e-14,
+        "rel_diff": 4.760673151950213e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x7]",
+        "reference": 0.0035807132708895,
+        "candidate": 0.0035807132708912206,
+        "abs_diff": 1.7204120072999984e-15,
+        "rel_diff": 4.804662862245312e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x7]",
+        "reference": 0.01811705955997275,
+        "candidate": 0.018117059559975807,
+        "abs_diff": 3.056582764671134e-15,
+        "rel_diff": 1.6871296109351731e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x8]",
+        "reference": 0.0813899469414498,
+        "candidate": 0.08138994694146105,
+        "abs_diff": 1.1254885912137524e-14,
+        "rel_diff": 1.3828348997736164e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x8]",
+        "reference": 0.0023770234421594,
+        "candidate": 0.0023770234421597813,
+        "abs_diff": 3.8120548384590336e-16,
+        "rel_diff": 1.6037094001039268e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x8]",
+        "reference": 0.015710602975767672,
+        "candidate": 0.015710602975768408,
+        "abs_diff": 7.355227538141662e-16,
+        "rel_diff": 4.6816965265344416e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      }
+    ]
+  },
+  {
+    "title": "Python vs Stata bmaregress \u2014 small_individual_fe",
+    "reference": "Stata bmaregress (StataNow/SE 19.5, batch export)",
+    "candidate": "gpubma CPU reference (float64 enumeration)",
+    "passed": true,
+    "rows": [
+      {
+        "quantity": "models evaluated",
+        "reference": 256.0,
+        "candidate": 256.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 0.0,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "mean model size (Stata minus p_always)",
+        "reference": 5.451934050207797,
+        "candidate": 5.451934050207904,
+        "abs_diff": 1.0746958878371515e-13,
+        "rel_diff": 1.971219530427315e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x1]",
+        "reference": 1.0,
+        "candidate": 1.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x1]",
+        "reference": 1.51328117124731,
+        "candidate": 1.5132811712473906,
+        "abs_diff": 8.060219158778636e-14,
+        "rel_diff": 5.326319597391564e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x1]",
+        "reference": 0.034010413662519605,
+        "candidate": 0.034010413660717616,
+        "abs_diff": 1.8019891134812838e-12,
+        "rel_diff": 5.298345181455774e-11,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x2]",
+        "reference": 1.0,
+        "candidate": 1.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x2]",
+        "reference": -1.024046191669559,
+        "candidate": -1.024046191669614,
+        "abs_diff": 5.5067062021407764e-14,
+        "rel_diff": 5.377400206100658e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x2]",
+        "reference": 0.036786717234908305,
+        "candidate": 0.036786717234150466,
+        "abs_diff": 7.578382366091319e-13,
+        "rel_diff": 2.0600866116153213e-11,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x3]",
+        "reference": 1.0,
+        "candidate": 1.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x3]",
+        "reference": 0.71984379399587,
+        "candidate": 0.719843793995908,
+        "abs_diff": 3.808064974464287e-14,
+        "rel_diff": 5.290126838942969e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x3]",
+        "reference": 0.035089994797839454,
+        "candidate": 0.03508999479743955,
+        "abs_diff": 3.999023334699814e-13,
+        "rel_diff": 1.1396477422521704e-11,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x4]",
+        "reference": 1.0,
+        "candidate": 1.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x4]",
+        "reference": 0.4939335243770971,
+        "candidate": 0.4939335243771233,
+        "abs_diff": 2.6201263381153694e-14,
+        "rel_diff": 5.30461329066394e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x4]",
+        "reference": 0.03553078791026734,
+        "candidate": 0.03553078791008656,
+        "abs_diff": 1.8077900287849502e-13,
+        "rel_diff": 5.087953673727997e-12,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x5]",
+        "reference": 0.9999999999823154,
+        "candidate": 0.9999999999823684,
+        "abs_diff": 5.306866057708248e-14,
+        "rel_diff": 5.3068660578018166e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x5]",
+        "reference": 0.2671017990361511,
+        "candidate": 0.2671017990361651,
+        "abs_diff": 1.3988810110276972e-14,
+        "rel_diff": 5.237257914681029e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x5]",
+        "reference": 0.03536536865439126,
+        "candidate": 0.03536536865433799,
+        "abs_diff": 5.326988850029579e-14,
+        "rel_diff": 1.5062726765519341e-12,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x6]",
+        "reference": 0.1298809532844866,
+        "candidate": 0.12988095328441296,
+        "abs_diff": 7.363554210826351e-14,
+        "rel_diff": 5.669464247538656e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x6]",
+        "reference": -0.0051521964011659,
+        "candidate": -0.00515219640116306,
+        "abs_diff": 2.8406096919120216e-15,
+        "rel_diff": 5.51339559041114e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x6]",
+        "reference": 0.018506594168290393,
+        "candidate": 0.01850659416828486,
+        "abs_diff": 5.533767888366015e-15,
+        "rel_diff": 2.9901600683758953e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x7]",
+        "reference": 0.1569082856982192,
+        "candidate": 0.15690828569821397,
+        "abs_diff": 5.245803791353865e-15,
+        "rel_diff": 3.343229306222291e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x7]",
+        "reference": 0.0072330838511388,
+        "candidate": 0.007233083851138477,
+        "abs_diff": 3.226585665316861e-16,
+        "rel_diff": 4.460871367900508e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x7]",
+        "reference": 0.021760056135984578,
+        "candidate": 0.021760056135983225,
+        "abs_diff": 1.3530843112619095e-15,
+        "rel_diff": 6.21820230061041e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x8]",
+        "reference": 0.165144811242759,
+        "candidate": 0.1651448112426981,
+        "abs_diff": 6.092348847630547e-14,
+        "rel_diff": 3.6890949232882263e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x8]",
+        "reference": 0.008148915567217,
+        "candidate": 0.008148915567213973,
+        "abs_diff": 3.0270924655795284e-15,
+        "rel_diff": 3.7147181617115884e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x8]",
+        "reference": 0.02344114173384906,
+        "candidate": 0.023441141733846,
+        "abs_diff": 3.0600522116230877e-15,
+        "rel_diff": 1.305419440045604e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      }
+    ]
+  },
+  {
+    "title": "Python vs Stata bmaregress \u2014 small_time_fe",
+    "reference": "Stata bmaregress (StataNow/SE 19.5, batch export)",
+    "candidate": "gpubma CPU reference (float64 enumeration)",
+    "passed": true,
+    "rows": [
+      {
+        "quantity": "models evaluated",
+        "reference": 256.0,
+        "candidate": 256.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 0.0,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "mean model size (Stata minus p_always)",
+        "reference": 5.245550253407892,
+        "candidate": 5.245550253407988,
+        "abs_diff": 9.592326932761353e-14,
+        "rel_diff": 1.828659810575507e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x1]",
+        "reference": 1.0,
+        "candidate": 1.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x1]",
+        "reference": 1.578323373259326,
+        "candidate": 1.578323373259345,
+        "abs_diff": 1.887379141862766e-14,
+        "rel_diff": 1.1958127046963767e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x1]",
+        "reference": 0.04325388267892375,
+        "candidate": 0.04325388267860032,
+        "abs_diff": 3.234287837550198e-13,
+        "rel_diff": 7.477450895121987e-12,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x2]",
+        "reference": 1.0,
+        "candidate": 1.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x2]",
+        "reference": -1.067053048435747,
+        "candidate": -1.0670530484357579,
+        "abs_diff": 1.0880185641326534e-14,
+        "rel_diff": 1.0196480537941669e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x2]",
+        "reference": 0.04712802003102825,
+        "candidate": 0.047128020030891615,
+        "abs_diff": 1.3663375986183723e-13,
+        "rel_diff": 2.8992043326216548e-12,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x3]",
+        "reference": 1.0,
+        "candidate": 1.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x3]",
+        "reference": 0.7239803026477084,
+        "candidate": 0.7239803026477165,
+        "abs_diff": 8.104628079763643e-15,
+        "rel_diff": 1.1194542241168259e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x3]",
+        "reference": 0.04513842175406225,
+        "candidate": 0.04513842175399947,
+        "abs_diff": 6.27761731486487e-14,
+        "rel_diff": 1.3907480746820557e-12,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x4]",
+        "reference": 1.0,
+        "candidate": 1.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x4]",
+        "reference": 0.4813137133368952,
+        "candidate": 0.4813137133369008,
+        "abs_diff": 5.6066262743570405e-15,
+        "rel_diff": 1.1648590345549994e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x4]",
+        "reference": 0.04596985887205768,
+        "candidate": 0.04596985887203061,
+        "abs_diff": 2.7068625119142098e-14,
+        "rel_diff": 5.888342010028552e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x5]",
+        "reference": 0.9999995269220817,
+        "candidate": 0.999999526922093,
+        "abs_diff": 1.1324274851176597e-14,
+        "rel_diff": 1.1324280208443376e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x5]",
+        "reference": 0.2739841600685062,
+        "candidate": 0.2739841600685093,
+        "abs_diff": 3.1086244689504383e-15,
+        "rel_diff": 1.1346000689138861e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x5]",
+        "reference": 0.04569645837303915,
+        "candidate": 0.0456964583730306,
+        "abs_diff": 8.548717289613705e-15,
+        "rel_diff": 1.8707614537273282e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x6]",
+        "reference": 0.1007707144806093,
+        "candidate": 0.10077071448063946,
+        "abs_diff": 3.0156432906380815e-14,
+        "rel_diff": 2.992579050550903e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x6]",
+        "reference": -0.0043690069814468,
+        "candidate": -0.00436900698144808,
+        "abs_diff": 1.2802259252708836e-15,
+        "rel_diff": 2.9302446315765806e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x6]",
+        "reference": 0.019324671106637235,
+        "candidate": 0.019324671106640604,
+        "abs_diff": 3.3688329903469594e-15,
+        "rel_diff": 1.743280892987263e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x7]",
+        "reference": 0.0742448122197397,
+        "candidate": 0.07424481221975734,
+        "abs_diff": 1.7638668303732175e-14,
+        "rel_diff": 2.3757442138210885e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x7]",
+        "reference": 0.0015636772695203,
+        "candidate": 0.001563677269520718,
+        "abs_diff": 4.180683577104105e-16,
+        "rel_diff": 2.6736230414000484e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x7]",
+        "reference": 0.013439746849022119,
+        "candidate": 0.013439746849022934,
+        "abs_diff": 8.153200337090993e-16,
+        "rel_diff": 6.066483564520211e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x8]",
+        "reference": 0.0705351997854602,
+        "candidate": 0.07053519978545285,
+        "abs_diff": 7.355227538141662e-15,
+        "rel_diff": 1.0427740419695861e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x8]",
+        "reference": 0.0010341077703826,
+        "candidate": 0.0010341077703824573,
+        "abs_diff": 1.4268100589909238e-16,
+        "rel_diff": 1.3797498673305892e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x8]",
+        "reference": 0.012703163136112989,
+        "candidate": 0.012703163136111986,
+        "abs_diff": 1.0026701691145945e-15,
+        "rel_diff": 7.893074806417067e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      }
+    ]
+  },
+  {
+    "title": "Python vs Stata bmaregress \u2014 small_two_way_fe",
+    "reference": "Stata bmaregress (StataNow/SE 19.5, batch export)",
+    "candidate": "gpubma CPU reference (float64 enumeration)",
+    "passed": true,
+    "rows": [
+      {
+        "quantity": "models evaluated",
+        "reference": 256.0,
+        "candidate": 256.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 0.0,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "mean model size (Stata minus p_always)",
+        "reference": 5.322039231229198,
+        "candidate": 5.322039231229207,
+        "abs_diff": 8.881784197001252e-15,
+        "rel_diff": 1.6688686067708425e-15,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x1]",
+        "reference": 0.9999999999999998,
+        "candidate": 1.0,
+        "abs_diff": 2.220446049250313e-16,
+        "rel_diff": 2.220446049250313e-16,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x1]",
+        "reference": 1.527637443078826,
+        "candidate": 1.5276374430788267,
+        "abs_diff": 6.661338147750939e-16,
+        "rel_diff": 4.3605491459580646e-16,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x1]",
+        "reference": 0.03126074396885973,
+        "candidate": 0.03126074396881005,
+        "abs_diff": 4.9682480351975755e-14,
+        "rel_diff": 1.589292961212528e-12,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x2]",
+        "reference": 0.9999999999999998,
+        "candidate": 1.0,
+        "abs_diff": 2.220446049250313e-16,
+        "rel_diff": 2.220446049250313e-16,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x2]",
+        "reference": -1.00489603595043,
+        "candidate": -1.0048960359504329,
+        "abs_diff": 2.886579864025407e-15,
+        "rel_diff": 2.8725159227991912e-15,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x2]",
+        "reference": 0.033900228966002574,
+        "candidate": 0.03390022896597253,
+        "abs_diff": 3.00454106039183e-14,
+        "rel_diff": 8.862893119114285e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x3]",
+        "reference": 0.9999999999999998,
+        "candidate": 1.0,
+        "abs_diff": 2.220446049250313e-16,
+        "rel_diff": 2.220446049250313e-16,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x3]",
+        "reference": 0.7242824777373893,
+        "candidate": 0.7242824777373905,
+        "abs_diff": 1.2212453270876722e-15,
+        "rel_diff": 1.686145067188095e-15,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x3]",
+        "reference": 0.032189672809578226,
+        "candidate": 0.03218967280956831,
+        "abs_diff": 9.91567938868343e-15,
+        "rel_diff": 3.0803914806282094e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x4]",
+        "reference": 0.9999999999999998,
+        "candidate": 1.0,
+        "abs_diff": 2.220446049250313e-16,
+        "rel_diff": 2.220446049250313e-16,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x4]",
+        "reference": 0.5082005663394777,
+        "candidate": 0.5082005663394785,
+        "abs_diff": 7.771561172376096e-16,
+        "rel_diff": 1.5292311121087349e-15,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x4]",
+        "reference": 0.0326655585413429,
+        "candidate": 0.03266555854133852,
+        "abs_diff": 4.378442053365461e-15,
+        "rel_diff": 1.3403848729002816e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x5]",
+        "reference": 0.9999999999350604,
+        "candidate": 0.9999999999350621,
+        "abs_diff": 1.6653345369377348e-15,
+        "rel_diff": 1.6653345370458782e-15,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x5]",
+        "reference": 0.2413609979033891,
+        "candidate": 0.24136099790338936,
+        "abs_diff": 2.498001805406602e-16,
+        "rel_diff": 1.0349649807159351e-15,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x5]",
+        "reference": 0.03271585738428079,
+        "candidate": 0.03271585738427913,
+        "abs_diff": 1.6583956430338276e-15,
+        "rel_diff": 5.0690881292038165e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x6]",
+        "reference": 0.1190879162251952,
+        "candidate": 0.11908791622517585,
+        "abs_diff": 1.9345636204093353e-14,
+        "rel_diff": 1.624483559483127e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x6]",
+        "reference": -0.0042931271473815,
+        "candidate": -0.004293127147380882,
+        "abs_diff": 6.184289191857317e-16,
+        "rel_diff": 1.4405092091505584e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x6]",
+        "reference": 0.016212688376500056,
+        "candidate": 0.016212688376500323,
+        "abs_diff": 2.671474153004283e-16,
+        "rel_diff": 1.6477675330369534e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x7]",
+        "reference": 0.0963546652831895,
+        "candidate": 0.09635466528319554,
+        "abs_diff": 6.036837696399289e-15,
+        "rel_diff": 6.265226160722419e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x7]",
+        "reference": 0.0026031713407267,
+        "candidate": 0.0026031713407269137,
+        "abs_diff": 2.1380466841414147e-16,
+        "rel_diff": 8.213238409210448e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x7]",
+        "reference": 0.01277004457730669,
+        "candidate": 0.01277004457730838,
+        "abs_diff": 1.6896206656014101e-15,
+        "rel_diff": 1.3231125822409164e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[x8]",
+        "reference": 0.1065966497857481,
+        "candidate": 0.10659664978576855,
+        "abs_diff": 2.045585922871851e-14,
+        "rel_diff": 1.9189964478085803e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[x8]",
+        "reference": 0.0034485829024649,
+        "candidate": 0.0034485829024655445,
+        "abs_diff": 6.444497713253838e-16,
+        "rel_diff": 1.8687379412124272e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[x8]",
+        "reference": 0.014714342450126679,
+        "candidate": 0.014714342450129371,
+        "abs_diff": 2.6922908347160046e-15,
+        "rel_diff": 1.8297051627287182e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      }
+    ]
+  },
+  {
+    "title": "Python vs Stata bmaregress \u2014 grunfeld_no_fe",
+    "reference": "Stata bmaregress (StataNow/SE 19.5, batch export)",
+    "candidate": "gpubma CPU reference (float64 enumeration)",
+    "passed": true,
+    "rows": [
+      {
+        "quantity": "models evaluated",
+        "reference": 4.0,
+        "candidate": 4.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 0.0,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "mean model size (Stata minus p_always)",
+        "reference": 1.999999999999986,
+        "candidate": 2.0000000000000138,
+        "abs_diff": 2.7755575615628914e-14,
+        "rel_diff": 1.387778780781436e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[mvalue]",
+        "reference": 1.0,
+        "candidate": 1.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[mvalue]",
+        "reference": 0.114987219966134,
+        "candidate": 0.11498721996613545,
+        "abs_diff": 1.457167719820518e-15,
+        "rel_diff": 1.2672431947216953e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[mvalue]",
+        "reference": 0.005883551571975893,
+        "candidate": 0.005883551571962228,
+        "abs_diff": 1.366441682026931e-14,
+        "rel_diff": 2.3224776146018117e-12,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[kstock]",
+        "reference": 0.999999999999986,
+        "candidate": 1.0,
+        "abs_diff": 1.3988810110276972e-14,
+        "rel_diff": 1.3988810110276972e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[kstock]",
+        "reference": 0.229530833382901,
+        "candidate": 0.22953083338290461,
+        "abs_diff": 3.608224830031759e-15,
+        "rel_diff": 1.572000056311606e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[kstock]",
+        "reference": 0.02568465581646949,
+        "candidate": 0.02568465581645574,
+        "abs_diff": 1.3749418270592173e-14,
+        "rel_diff": 5.353164305116281e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      }
+    ]
+  },
+  {
+    "title": "Python vs Stata bmaregress \u2014 grunfeld_company_fe",
+    "reference": "Stata bmaregress (StataNow/SE 19.5, batch export)",
+    "candidate": "gpubma CPU reference (float64 enumeration)",
+    "passed": true,
+    "rows": [
+      {
+        "quantity": "models evaluated",
+        "reference": 4.0,
+        "candidate": 4.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 0.0,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "mean model size (Stata minus p_always)",
+        "reference": 1.9999999999999893,
+        "candidate": 2.0000000000000044,
+        "abs_diff": 1.509903313490213e-14,
+        "rel_diff": 7.549516567451047e-15,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[mvalue]",
+        "reference": 0.9999999999999953,
+        "candidate": 1.0,
+        "abs_diff": 4.6629367034256575e-15,
+        "rel_diff": 4.6629367034256575e-15,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[mvalue]",
+        "reference": 0.109575917081806,
+        "candidate": 0.10957591708180756,
+        "abs_diff": 1.5543122344752192e-15,
+        "rel_diff": 1.4184797863154507e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[mvalue]",
+        "reference": 0.012029216162668289,
+        "candidate": 0.012029216162665047,
+        "abs_diff": 3.2421981766006525e-15,
+        "rel_diff": 2.695269694015937e-13,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "PIP[kstock]",
+        "reference": 0.9999999999999999,
+        "candidate": 1.0,
+        "abs_diff": 1.1102230246251565e-16,
+        "rel_diff": 1.1102230246251565e-16,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef mean[kstock]",
+        "reference": 0.3085227274174145,
+        "candidate": 0.3085227274174156,
+        "abs_diff": 1.1102230246251565e-15,
+        "rel_diff": 3.598512932640716e-15,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "coef sd[kstock]",
+        "reference": 0.0176070213118517,
+        "candidate": 0.01760702131184045,
+        "abs_diff": 1.1251416465185571e-14,
+        "rel_diff": 6.39030092932981e-13,
+        "tolerance": 1e-09,
         "tolerance_kind": "abs",
         "passed": true
       }

@@ -1,14 +1,19 @@
-"""Compare Python BMA results against exported Stata bmaregress outputs.
+"""Compare Python BMA results against ACTUAL Stata bmaregress exports.
 
-Runs the Python reference on the frozen datasets and, when the CSV exports
-from validation/stata/*.do exist under validation/stata/output/, compares
-coefficient posterior means and PIPs without any rounding.
+The Stata oracle was executed in batch mode (StataNow/SE 19.5, bmaregress
+1.0.2) via the scripts in validation/stata/, which export e(b_bma), e(pip),
+vecdiag(e(V_bma)), and key e() scalars to CSV at full double precision.
 
-If the Stata exports are absent (Stata has not been run yet), the script
-says so explicitly and exits with status 0 — prepared scripts are clearly
-distinguished from executed validations.
+For each of six designs this script runs the Python reference with the same
+fixed g and priors and compares, without any rounding:
+  - PIP per optional predictor;
+  - BMA posterior mean per optional predictor (+ w1, w2 for no-FE designs);
+  - BMA posterior sd per optional predictor (sqrt of V_bma diagonal);
+  - posterior mean model size (Stata counts always-included variables in
+    model size: Stata msize_mean - p_always == Python mean_model_size);
+  - number of models evaluated.
 
-Also always compares CSV vs Parquet vs DTA inputs and repeated Python runs.
+Also compares CSV vs Parquet vs DTA inputs and repeated Python runs.
 
 Usage:  python scripts/compare_stata_python.py
 """
@@ -30,58 +35,129 @@ from gpubma.datasets.io_utils import read_any  # noqa: E402
 from gpubma.validation.compare import ComparisonReport  # noqa: E402
 
 STATA_OUT = ROOT / "validation" / "stata" / "output"
-PREDICTORS = [f"x{j}" for j in range(1, 9)]
+PANEL_PREDICTORS = [f"x{j}" for j in range(1, 9)]
 
-# provisional cross-implementation tolerance; NEVER loosen merely to pass
-STATA_TOL = 1e-6
+# provisional cross-implementation tolerances; NEVER loosen merely to pass
+TOL_PIP = 1e-9
+TOL_COEF = 1e-9
+TOL_SD = 1e-9
+TOL_MSIZE = 1e-9
+
+CONFIGS = [
+    dict(stem="small_no_fe", data="panel_8", outcome="y", predictors=PANEL_PREDICTORS,
+         controls=["w1", "w2"], fixed_effects=None, g=1000.0,
+         compare_always=["w1", "w2"]),
+    dict(stem="small_individual_fe", data="panel_8", outcome="y", predictors=PANEL_PREDICTORS,
+         controls=["w1", "w2"], fixed_effects=["individual"], g=1000.0),
+    dict(stem="small_time_fe", data="panel_8", outcome="y", predictors=PANEL_PREDICTORS,
+         controls=["w1", "w2"], fixed_effects=["time"], g=1000.0),
+    dict(stem="small_two_way_fe", data="panel_8", outcome="y", predictors=PANEL_PREDICTORS,
+         controls=["w1", "w2"], fixed_effects=["individual", "time"], g=1000.0),
+    dict(stem="grunfeld_no_fe", data="grunfeld", outcome="invest",
+         predictors=["mvalue", "kstock"], controls=[], fixed_effects=None, g=200.0),
+    dict(stem="grunfeld_company_fe", data="grunfeld", outcome="invest",
+         predictors=["mvalue", "kstock"], controls=[], fixed_effects=["individual"],
+         g=200.0),
+]
 
 
-def run_python(df):
-    return bma_regress(data=df, outcome="y", predictors=PREDICTORS,
-                       controls=["w1", "w2"], g="benchmark",
-                       model_prior=("betabinomial", 1.0, 1.0))
+def load_stata(stem: str) -> dict | None:
+    files = {kind: STATA_OUT / f"{stem}_{kind}.csv"
+             for kind in ("b_bma", "pip", "v_diag", "scalars")}
+    names_file = STATA_OUT / f"{stem}_colnames.txt"
+    if not all(f.exists() for f in files.values()) or not names_file.exists():
+        return None
+    names = names_file.read_text().split()
+    b = pd.read_csv(files["b_bma"], float_precision="round_trip").iloc[0].to_numpy(float)
+    pip = pd.read_csv(files["pip"], float_precision="round_trip").iloc[0].to_numpy(float)
+    v = pd.read_csv(files["v_diag"], float_precision="round_trip").iloc[0].to_numpy(float)
+    scalars = pd.read_csv(files["scalars"], float_precision="round_trip").iloc[0].to_dict()
+    assert len(names) == len(b) == len(pip) == len(v)
+    idx = {n: i for i, n in enumerate(names)}
+    return {"names": names, "idx": idx, "b": b, "pip": pip, "sd": np.sqrt(v),
+            "scalars": scalars}
 
 
-def main() -> int:
+def run_python(cfg) -> object:
+    if cfg["data"] == "panel_8":
+        df = pd.read_parquet(ROOT / "data" / "synthetic" / "panel_8.parquet")
+        entity, time = "individual_id", "period"
+    else:
+        df = pd.read_parquet(ROOT / "data" / "public" / "grunfeld.parquet")
+        entity, time = "company", "year"
+    return bma_regress(
+        data=df, outcome=cfg["outcome"], predictors=cfg["predictors"],
+        controls=cfg["controls"], fixed_effects=cfg["fixed_effects"],
+        fe_method="dummies", entity_col=entity, time_col=time,
+        g=cfg["g"], model_prior=("betabinomial", 1.0, 1.0),
+    )
+
+
+def compare_config(cfg) -> ComparisonReport | None:
+    stata = load_stata(cfg["stem"])
+    if stata is None:
+        print(f"{cfg['stem']}: Stata exports NOT found — skipped (prepared only)")
+        return None
+    py = run_python(cfg)
+    rep = ComparisonReport(
+        title=f"Python vs Stata bmaregress — {cfg['stem']}",
+        reference_label="Stata bmaregress (StataNow/SE 19.5, batch export)",
+        candidate_label="gpubma CPU reference (float64 enumeration)",
+    )
+    rep.add("models evaluated", stata["scalars"]["k_models"], py.n_models_evaluated, 0.0)
+    rep.add("mean model size (Stata minus p_always)",
+            stata["scalars"]["msize_mean"] - stata["scalars"]["p_always"],
+            py.mean_model_size, TOL_MSIZE)
+    for j, name in enumerate(cfg["predictors"]):
+        i = stata["idx"][name]
+        rep.add(f"PIP[{name}]", stata["pip"][i], py.pip[j], TOL_PIP)
+        rep.add(f"coef mean[{name}]", stata["b"][i], py.coef_mean[j], TOL_COEF)
+        rep.add(f"coef sd[{name}]", stata["sd"][i], py.coef_sd[j], TOL_SD)
+    return rep
+
+
+def internal_comparisons() -> list:
     reports = []
-
-    # --- deterministic internal comparisons (always available) ----------
     frames = {fmt: read_any(ROOT / "data" / "synthetic" / f"panel_8.{fmt}")
               for fmt in ("csv", "parquet", "dta")}
-    results = {fmt: run_python(df) for fmt, df in frames.items()}
+
+    def run(df):
+        return bma_regress(data=df, outcome="y", predictors=PANEL_PREDICTORS,
+                           controls=["w1", "w2"], g=1000.0,
+                           model_prior=("betabinomial", 1.0, 1.0))
+
+    results = {fmt: run(df) for fmt, df in frames.items()}
     rep = ComparisonReport("Input format equivalence (panel_8)", "parquet", "csv & dta")
     for fmt in ("csv", "dta"):
         rep.add_arrays(f"log scores parquet vs {fmt}",
                        results["parquet"].log_scores, results[fmt].log_scores, 0.0)
-        rep.add_arrays(f"PIP parquet vs {fmt}",
-                       results["parquet"].pip, results[fmt].pip, 0.0)
-        rep.add_arrays(f"coef means parquet vs {fmt}",
-                       results["parquet"].coef_mean, results[fmt].coef_mean, 0.0)
+        rep.add_arrays(f"PIP parquet vs {fmt}", results["parquet"].pip,
+                       results[fmt].pip, 0.0)
+        rep.add_arrays(f"coef means parquet vs {fmt}", results["parquet"].coef_mean,
+                       results[fmt].coef_mean, 0.0)
     reports.append(rep)
 
     rep = ComparisonReport("Repeated Python runs (determinism)", "run 1", "run 2")
-    r1, r2 = run_python(frames["parquet"]), run_python(frames["parquet"])
+    r1, r2 = run(frames["parquet"]), run(frames["parquet"])
     rep.add_arrays("log scores", r1.log_scores, r2.log_scores, 0.0)
     rep.add_arrays("PIP", r1.pip, r2.pip, 0.0)
     rep.add_arrays("coef means", r1.coef_mean, r2.coef_mean, 0.0)
     reports.append(rep)
+    return reports
 
-    # --- Stata comparison (only if real exports exist) -------------------
-    stata_pip = STATA_OUT / "small_no_fe_pip.csv"
-    if stata_pip.exists():
-        stata = pd.read_csv(stata_pip)
-        rep = ComparisonReport("Python vs Stata bmaregress (panel_8, no FE)",
-                               "Stata bmaregress export", "gpubma CPU reference")
-        py = results["parquet"]
-        rep.add_arrays("PIP", stata.iloc[0].to_numpy(dtype=float)[: len(py.pip)],
-                       py.pip, STATA_TOL)
-        reports.append(rep)
-    else:
-        print("NOTE: no Stata exports found under validation/stata/output/.")
-        print("      The .do scripts are PREPARED but have not been executed;")
-        print("      Python-vs-Stata numerical comparison is pending a working Stata.")
 
-    md = ["# Deterministic comparison report", ""]
+def main() -> int:
+    reports = internal_comparisons()
+    n_stata = 0
+    for cfg in CONFIGS:
+        rep = compare_config(cfg)
+        if rep is not None:
+            reports.append(rep)
+            n_stata += 1
+
+    md = ["# Deterministic comparison report", "",
+          f"Stata designs compared against REAL executed bmaregress output: {n_stata}/6.",
+          "Values are never rounded before comparison; rounding is display-only.", ""]
     ok = True
     for rep in reports:
         md += [rep.to_markdown(), ""]

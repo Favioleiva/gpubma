@@ -9,34 +9,52 @@ enlarging the model space.
 
 ## Priors
 
-- **Slopes (g-prior, PROVISIONAL):** after residualizing y and X_gamma on A,
-  `beta_gamma | sigma^2 ~ N(0, g sigma^2 (X_gamma' X_gamma)^{-1})` with flat
-  priors on the A-coefficients and `p(sigma^2) ∝ 1/sigma^2`.
-  Default fixed g = max(n, p^2) — the FLS (2001) benchmark; Stata's
-  `bmaregress` documents the same default, but parity is UNVERIFIED
-  (see STATUS.md). The formulation is isolated in `gpubma/priors/gpriors.py`.
-- **Model prior:** beta-binomial(a, b) with default a = b = 1 (uniform over
-  model size); uniform over models also available
-  (`gpubma/priors/model_priors.py`).
+- **Slopes (Zellner g-prior, VERIFIED vs Stata):** `p(sigma^2) ∝ 1/sigma^2`,
+  flat prior on the intercept, and `beta | sigma^2 ~ N(0, g sigma^2 (X'X)^{-1})`
+  on slopes. Default fixed g = max(n, p^2) — the FLS (2001) benchmark and
+  Stata's documented default (confirmed on executed runs: `e(g)` matched).
+  The formulation lives in `gpubma/priors/gpriors.py`.
+- **Model prior:** beta-binomial(a, b) over the OPTIONAL predictors only,
+  default a = b = 1 (uniform over model size); uniform over models also
+  available (`gpubma/priors/model_priors.py`). Stata's
+  `mprior(betabinomial 1 1)` matches (confirmed: `e(msize_mean_prior)` =
+  p/2 + n_always).
 
-## Marginal likelihood
+## Always-included blocks: two conventions
 
-Let A have total effective rank r (explicit columns plus any rank absorbed by
-a within transform), define df = n − r, and let ỹ, X̃ be the residualized
-data. For model gamma with k predictors and R²_gamma computed on the
-residualized data:
+### `always_prior="shrink"` — Stata's convention (default, VERIFIED)
 
-    log m(gamma) = ((df − k)/2) · log(1+g) − (df/2) · log(1 + g(1 − R²_gamma)) + C
+The g-prior covers the optional predictors AND the always-included slopes
+(controls, fixed-effect dummies) **jointly**; only the intercept is flat.
+For model gamma with k optional predictors, q always slopes, joint R² from
+the centered regression on [X_gamma, W], and df = n − 1:
 
-with C common to all models (dropped). With r = 1 (intercept only) this is
-exactly the null-based Bayes factor of Liang et al. (2008, JASA 103:410-423).
-The generalization replaces n − 1 by df, which is the standard conditioning
-of the g-prior on a larger always block; whether Stata makes the same choice
-is an open validation question (STATUS.md).
+    log m(gamma) = ((n−1−k−q)/2)·log(1+g) − ((n−1)/2)·log(1 + g(1 − R²_joint)) + C
 
-Derivation sketch: integrating the A-coefficients (flat) and sigma^2
-(Jeffreys) gives m(y|gamma) ∝ (1+g)^{−k/2} [ỹ'ỹ − s·ỹ'P_gamma ỹ]^{−df/2}
-with s = g/(1+g); factoring ỹ'ỹ and rearranging yields the boxed formula.
+Verified on 2026-07-15 against executed StataNow/SE 19.5 `bmaregress`
+exports on six designs (no FE; individual, time, two-way FE dummies;
+Grunfeld with and without company FE): worst absolute difference across all
+264 compared quantities (PIPs, posterior means, posterior sds, mean model
+size) was **1.8e-12** (`reports/comparison_report.md`).
+
+Implementation note (FWL): with X̃, ỹ residualized on [1, W],
+ESS_joint = ESS_W + ESS_gamma(residualized), the x-block of the joint OLS
+solution equals the residualized solution, and the x-block of the inverse
+joint Gram equals (X̃'X̃)^{-1} — so the residualized fast path computes the
+joint formula exactly. E[sigma^2|gamma] = (TSS_c − s·ESS_joint)/(n−3).
+
+### `always_prior="flat"` — conditional convention (gpubma-specific)
+
+Flat (improper) priors on the always block; A has total effective rank r
+(explicit columns plus any rank absorbed by a within transform); df = n − r;
+R² on residualized data:
+
+    log m(gamma) = ((df − k)/2)·log(1+g) − (df/2)·log(1 + g(1 − R²_gamma)) + C
+
+With r = 1 (intercept only) both conventions coincide and reduce to the
+null-based Bayes factor of Liang et al. (2008, JASA 103:410-423). This
+convention is NOT Stata's when q > 0; it is retained because it is the only
+coherent treatment for absorbed (within-transformed) fixed effects.
 
 ## Posterior quantities
 
@@ -46,11 +64,12 @@ with s = g/(1+g); factoring ỹ'ỹ and rearranging yields the boxed formula.
   overshoot is < 1e-12 (pure summation noise).
 - Conditional moments: E[beta|gamma] = s·beta_hat_gamma;
   Var[beta|gamma] = E[sigma^2|gamma] · s · (X̃'X̃)^{-1} with
-  E[sigma^2|gamma] = (ỹ'ỹ − s·ESS_gamma)/(df − 2).
+  E[sigma^2|gamma] = (TSS_norm − s·ESS_total)/(df − 2), where TSS_norm and
+  ESS_total follow the active convention above.
 - BMA moments by the laws of total expectation/variance with excluded
   coefficients exactly 0. The **coefficient standard deviation formula is
-  internally validated** (independent-formula tests) but **not yet validated
-  against Stata**; treat cross-package sd comparisons as pending.
+  validated both internally and externally**: under `always_prior="shrink"`
+  it reproduces sqrt(diag(e(V_bma))) from executed Stata runs to ~1e-12.
 
 ## Numerical policy
 
@@ -59,8 +78,12 @@ with s = g/(1+g); factoring ỹ'ỹ and rearranging yields the boxed formula.
   an R² > 1 would indicate a real numerical failure and is not silently fixed.
 - No rounding before comparisons (validation module enforces this).
 
-## Known unresolved statistical questions
+## Resolved and remaining statistical questions
 
-Recorded in STATUS.md; chiefly: exact Stata parameterization (constant terms,
-df convention with always-included blocks, PIP export names), g-prior
-behaviour under absorbed fixed effects, and sd parity.
+Resolved on 2026-07-15 by executing the Stata oracle (see STATUS.md for the
+full log): Stata's always-block parameterization (joint shrinkage, df = n−1),
+the PIP/coefficient export names (e(pip), e(b_bma), e(V_bma)), model-size
+accounting (always variables counted; subtract e(p_always)), and posterior-sd
+parity. Remaining: dummies-vs-absorption equivalence under the shrink
+convention does NOT hold (documented, by design); unbalanced two-way FE
+unsupported; MC3 out of scope.

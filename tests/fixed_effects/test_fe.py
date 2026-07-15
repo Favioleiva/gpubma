@@ -27,6 +27,14 @@ def test_explicit_dummy_rank_no_trap(panel8):
     assert info["base_categories"] == {"individual": "1", "time": "1"}
 
 
+def test_shrink_convention_rejects_within(panel8):
+    """always_prior='shrink' (Stata) is incompatible with absorbed FE."""
+    with pytest.raises(ValueError, match="shrink"):
+        bma_regress(data=panel8, outcome="y", predictors=PREDICTORS,
+                    fixed_effects=["individual"], fe_method="within",
+                    always_prior="shrink", **KW)
+
+
 @pytest.mark.parametrize("fe", [["individual"], ["time"]])
 def test_one_way_residualization_matches_dummies(panel8, fe):
     y = panel8["y"].to_numpy(float)
@@ -55,11 +63,12 @@ def test_two_way_within_rejects_unbalanced(panel8):
 
 @pytest.mark.parametrize("fe", [["individual"], ["time"], ["individual", "time"]])
 def test_bma_scores_equal_dummies_vs_within_when_df_aligned(panel8, fe):
-    """With identical fixed g and aligned effective df the BMA scores must
-    coincide (FWL). This alignment is a documented modelling choice, not an
-    automatic property — see docs/FIXED_EFFECTS_DESIGN.md."""
+    """Under the flat (conditional) always-block convention with identical
+    fixed g and aligned effective df the BMA scores must coincide (FWL).
+    Under the Stata 'shrink' convention this equivalence does NOT hold —
+    see docs/FIXED_EFFECTS_DESIGN.md."""
     kw = dict(data=panel8, outcome="y", predictors=PREDICTORS, controls=["w1", "w2"],
-              fixed_effects=fe, **KW)
+              fixed_effects=fe, always_prior="flat", **KW)
     r_dum = bma_regress(fe_method="dummies", **kw)
     r_win = bma_regress(fe_method="within", **kw)
     assert r_dum.df_resid == r_win.df_resid

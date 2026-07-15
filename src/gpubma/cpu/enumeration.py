@@ -47,9 +47,24 @@ def enumerate_models(
     compute_coefficients: bool = True,
     top_k: int = 10,
     keep_masks: bool | None = None,
+    tss_norm: float | None = None,
+    k_always: int = 0,
 ):
     """Score all 2^p models. X, y must already be residualized on the
-    always-included block. Returns a plain dict of arrays and scalars."""
+    always-included block. Returns a plain dict of arrays and scalars.
+
+    Two always-block prior conventions (see docs/STATISTICAL_SPECIFICATION.md):
+
+    - flat (default; ``tss_norm=None, k_always=0``): always-included
+      coefficients get flat priors; df_resid = n - rank(always block) and the
+      normalizing total sum of squares is the residualized y'y.
+    - shrink (Stata bmaregress convention; verified 2026-07-15 against
+      StataNow/SE 19.5): the g-prior covers optional AND always slopes
+      jointly with only the intercept flat. Pass df_resid = n - 1,
+      ``tss_norm`` = centered-only y'y, and ``k_always`` = number of always
+      slope columns. FWL makes the residualized sufficient statistics valid
+      for the joint formula: ESS_joint = (tss_norm - y'y_resid) + ESS_gamma.
+    """
     t0 = time.perf_counter()
     X = np.ascontiguousarray(X, dtype=np.float64)
     y = np.ascontiguousarray(y, dtype=np.float64)
@@ -61,10 +76,19 @@ def enumerate_models(
     # --- sufficient statistics -------------------------------------------
     Zxx = X.T @ X
     Zxy = X.T @ y
-    tss = float(y @ y)
+    tss = float(y @ y)  # residualized y'y
     if tss <= 0:
         raise ValueError("residualized outcome has zero variation")
     t_suff = time.perf_counter() - t0
+
+    # normalization TSS and always-slope count per convention (see docstring)
+    if tss_norm is None:
+        tss_norm = tss
+        if k_always:
+            raise ValueError("k_always requires tss_norm (shrink convention)")
+    ess_always = tss_norm - tss  # ESS of the always slopes; 0 in flat mode
+    if ess_always < -1e-9 * tss_norm:
+        raise ValueError("tss_norm must be >= residualized y'y")
 
     log1pg = np.log1p(g)
     shrink = g / (1.0 + g)
@@ -77,16 +101,21 @@ def enumerate_models(
 
     log_ml = np.empty(n_models, dtype=np.float64)
     ess_arr = np.empty(n_models, dtype=np.float64)
-    log_ml[0] = 0.0
+    tiny = np.finfo(np.float64).tiny
+
+    def _score(k: int, ess: float) -> float:
+        one_minus_r2 = max((tss - ess) / tss_norm, tiny)
+        return (0.5 * (df_resid - k - k_always) * log1pg
+                - 0.5 * df_resid * np.log1p(g * one_minus_r2))
+
+    log_ml[0] = _score(0, 0.0)
     ess_arr[0] = 0.0
     for mask in range(1, n_models):
         idx = _mask_indices(mask, p)
-        k = idx.size
         c, low = cho_factor(Zxx[np.ix_(idx, idx)], lower=True, check_finite=False)
         w = cho_solve((c, low), Zxy[idx], check_finite=False)
         ess = float(Zxy[idx] @ w)
-        one_minus_r2 = max(1.0 - ess / tss, np.finfo(np.float64).tiny)
-        log_ml[mask] = 0.5 * (df_resid - k) * log1pg - 0.5 * df_resid * np.log1p(g * one_minus_r2)
+        log_ml[mask] = _score(idx.size, ess)
         ess_arr[mask] = ess
     log_scores = log_ml + log_prior_by_size[sizes]
     t_enum = time.perf_counter() - t1
@@ -137,7 +166,7 @@ def enumerate_models(
             beta_hat = cho_solve((c, low), b, check_finite=False)
             zinv_diag = np.diag(cho_solve((c, low), np.eye(idx.size), check_finite=False))
             cond_mean = shrink * beta_hat
-            e_sigma2 = (tss - shrink * ess_arr[mask]) / (df_resid - 2)
+            e_sigma2 = (tss_norm - shrink * (ess_always + ess_arr[mask])) / (df_resid - 2)
             cond_var = e_sigma2 * shrink * zinv_diag
             mean_acc[idx] += wgt * cond_mean
             m2_acc[idx] += wgt * (cond_var + cond_mean**2)

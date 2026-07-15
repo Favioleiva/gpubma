@@ -1,0 +1,341 @@
+------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  X:\Claude Agentic Tasks\GPU Powered BMA\validation/stata/output/small_no_fixed_effects.log
+  log type:  text
+ opened on:  15 Jul 2026, 20:58:47
+
+. 
+. display "Stata version: " c(stata_version)
+Stata version: 19.5
+
+. display "Edition: " c(edition_real)
+Edition: SE
+
+. display "Born: " c(born_date)
+Born: 08 Apr 2025
+
+. 
+. use "data/synthetic/panel_8.dta", clear
+
+. 
+. * -- validate the frozen data ------------------------------------------
+. assert _N == 1000
+
+. confirm variable individual_id period y x1 x2 x3 x4 x5 x6 x7 x8 w1 w2
+
+. isid individual_id period
+
+. describe
+
+Contains data from data/synthetic/panel_8.dta
+ Observations:         1,000                  
+    Variables:            13                  15 Jul 2026 20:05
+------------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+------------------------------------------------------------------------------------------------------------------------
+individual_id   long    %12.0g                
+period          long    %12.0g                
+y               double  %10.0g                
+x1              double  %10.0g                
+x2              double  %10.0g                
+x3              double  %10.0g                
+x4              double  %10.0g                
+x5              double  %10.0g                
+x6              double  %10.0g                
+x7              double  %10.0g                
+x8              double  %10.0g                
+w1              double  %10.0g                
+w2              double  %10.0g                
+------------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+
+. summarize
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+individual~d |      1,000        50.5    28.88051          1        100
+      period |      1,000         5.5    2.873719          1         10
+           y |      1,000   -.1163372    2.780109  -9.401397   8.054763
+          x1 |      1,000   -.0489468     1.02923  -3.393479   3.315615
+          x2 |      1,000   -.0702113    .9472963  -3.393889   3.267135
+-------------+---------------------------------------------------------
+          x3 |      1,000    .0326211    .9819783  -2.735266   3.688664
+          x4 |      1,000    .0052736    .9679181  -2.977314    3.23373
+          x5 |      1,000     -.04272     .979394  -3.359204   2.658237
+          x6 |      1,000    .0020196    .9883644  -3.625407   3.260373
+          x7 |      1,000    .0201031    .9876439  -2.923153   2.729056
+-------------+---------------------------------------------------------
+          x8 |      1,000   -.0124725     .977863  -3.349283   3.682253
+          w1 |      1,000    .0111063    .9809962  -3.137204   3.182996
+          w2 |      1,000   -.0156935    1.040213  -3.391714   3.267165
+
+. 
+. * -- exhaustive BMA (enumeration explicitly requested, never sampling) --
+. bmaregress y x1-x8 (w1 w2, always), ///
+>     enumeration ///
+>     gprior(fixed 1000) ///
+>     mprior(betabinomial 1 1)
+
+Enumerating models ...
+Computing model probabilities ...
+
+Bayesian model averaging                           No. of obs         =  1,000
+Linear regression                                  No. of predictors  =     10
+Model enumeration                                              Groups =      8
+                                                               Always =      2
+Priors:                                            No. of models      =    256
+  Models: Beta-binomial(1, 1)                          For CPMP >= .9 =      3
+   Cons.: Noninformative                           Mean model size    =  7.279
+   Coef.: Zellner's g
+       g: g = 1,000                                Shrinkage, g/(1+g) = 0.9990
+  sigma2: Noninformative                           Mean sigma2        =  2.124
+
+------------------------------------------------------------------------------
+           y |      Mean   Std. dev.                          Group        PIP
+-------------+----------------------------------------------------------------
+          x1 |  1.565354     .04493                               1          1
+          x2 | -1.083024   .0488433                               2          1
+          x3 |  .7212288   .0469792                               3          1
+          x4 |   .468951   .0477397                               4          1
+          x5 |  .2965877   .0471631                               5          1
+          x6 | -.0048955   .0208334                               6     .10532
+          x7 |  .0035807   .0181171                               7      .0927
+          x8 |   .002377   .0157106                               8     .08139
+-------------+----------------------------------------------------------------
+Always       |
+          w1 |  .8779797   .0470999                               0          1
+          w2 | -.6391178   .0444267                               0          1
+       _cons | -.1489024   .0463333                               0          1
+------------------------------------------------------------------------------
+Note: Coefficient posterior means and std. dev. estimated from 256 models.
+
+. 
+. * -- record everything the estimation stored ---------------------------
+. ereturn list
+
+scalars:
+                  e(N) =  1000
+                  e(p) =  10
+           e(p_always) =  2
+           e(p_groups) =  8
+           e(k_models) =  256
+      e(k_models_cpmp) =  3
+       e(k_models_all) =  256
+       e(msize_mean_a) =  7.279409016284087
+          e(shrinkage) =  .999000999000999
+                  e(g) =  1000
+            e(groupfv) =  0
+              e(arate) =  1
+             e(sigma2) =  2.124484991542146
+   e(msize_mean_prior) =  5.99999999999999
+         e(msize_mean) =  7.279409016284087
+
+macros:
+                e(cmd) : "bmaregress"
+            e(cmdline) : "bmaregress y x1-x8 (w1 w2, always),     enumeration     gprior(fixed 1000)     mprior(beta.."
+              e(title) : "Bayesian model averaging"
+             e(title2) : "Linear regression"
+             e(depvar) : "y"
+          e(indepvars) : "x1 x2 x3 x4 x5 x6 x7 x8 w1 w2"
+           e(sampling) : "enumeration"
+       e(sampling_lab) : "Model enumeration"
+             e(mprior) : "betabinomial 1 1"
+        e(mprior_dist) : "betabinomial"
+         e(mprior_lab) : "Beta-binomial({res:1}, {res:1})"
+             e(gprior) : "fixed 1000"
+        e(gprior_dist) : "fixed"
+         e(gprior_lab) : "g = {res:1,000}"
+         e(alwaysvars) : "w1 w2"
+      e(modelfilename) : "C:\Users\FAVIOL~1\AppData\Local\Temp\STB1204_000001.tmp"
+           e(rngstate) : "XAA000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.."
+
+matrices:
+      e(mprior_params) :  1 x 2
+      e(gprior_params) :  1 x 1
+              e(V_bma) :  11 x 11
+              e(b_bma) :  1 x 11
+            e(V_bma_c) :  11 x 11
+            e(b_bma_c) :  1 x 11
+                e(pip) :  1 x 11
+              e(group) :  1 x 10
+
+functions:
+             e(sample)   
+
+. 
+. * posterior summaries (also captured in this plain-text log)
+. bmastats models, top(20)
+
+Computing model probabilities ...
+
+Model summary           Number of models:
+                                 Visited = 256
+                                Reported =  20
+
+----------------------------------------------
+             |   Analytical PMP     Model size
+-------------+--------------------------------
+Rank         |
+           1 |            .7603              7
+           2 |           .07862              8
+           3 |           .06771              8
+           4 |           .05758              8
+           5 |           .01201              9
+           6 |           .01084              9
+           7 |          .009122              9
+           8 |           .00385             10
+           9 |        6.824e-08              6
+          10 |        5.158e-09              7
+          11 |        4.703e-09              7
+          12 |        2.698e-09              7
+          13 |        5.521e-10              8
+          14 |        3.281e-10              8
+          15 |        2.982e-10              8
+          16 |        6.174e-11              9
+          17 |        1.813e-19              6
+          18 |        1.046e-20              7
+          19 |        8.361e-21              7
+          20 |        7.947e-21              7
+----------------------------------------------
+
+Note: Use option vartable to display variable-inclusion table for more than 12 models.
+
+. bmastats pip
+
+Posterior inclusion probability (PIP)
+
+No. of obs         = 1,000
+No. of predictors  =    10
+            Groups =     8
+            Always =     2
+          Reported =    10
+No. of models      =   256
+Mean model size    = 7.279
+
+------------------------------------
+             |       PIP       Group
+-------------+----------------------
+          x1 |         1           1
+          x2 |         1           2
+          x3 |         1           3
+          x4 |         1           4
+          x5 |         1           5
+          x6 |    .10532           6
+          x7 |     .0927           7
+          x8 |    .08139           8
+-------------+----------------------
+Always       |
+          w1 |         1           0
+          w2 |         1           0
+       _cons |         1           0
+------------------------------------
+Note: Using analytical PMPs.
+
+. bmastats msize
+
+Model-size summary
+
+Number of models = 256
+Model size:
+  Minimum =  2
+  Maximum = 10
+
+----------------------------------------
+             |           Mean     Median
+-------------+--------------------------
+Prior        |
+  Analytical |         6.0000          6
+-------------+--------------------------
+Posterior    |
+  Analytical |         7.2794          7
+----------------------------------------
+Note: Frequency summaries not available.
+
+. 
+. * -- machine-readable exports (no manual copying of output) ------------
+. * Matrix names confirmed from `ereturn list` on Stata 19.5 (StataNow, SE):
+. * e(b_bma) = BMA posterior means, e(V_bma) = BMA posterior covariance,
+. * e(pip) = posterior inclusion probabilities. There is no e(b).
+. matrix b_bma = e(b_bma)
+
+. matrix pip = e(pip)
+
+. matrix vdiag = vecdiag(e(V_bma))
+
+. local names : colnames e(b_bma)
+
+. file open fh using "validation/stata/output/small_no_fe_colnames.txt", write replace
+
+. file write fh `"`names'"'
+
+. file close fh
+
+. preserve
+
+. clear
+
+. svmat double b_bma
+number of observations will be reset to 1
+Press any key to continue, or Break to abort
+Number of observations (_N) was 0, now 1.
+
+. export delimited using "validation/stata/output/small_no_fe_b_bma.csv", replace
+file validation/stata/output/small_no_fe_b_bma.csv saved
+
+. clear
+
+. svmat double pip
+number of observations will be reset to 1
+Press any key to continue, or Break to abort
+Number of observations (_N) was 0, now 1.
+
+. export delimited using "validation/stata/output/small_no_fe_pip.csv", replace
+file validation/stata/output/small_no_fe_pip.csv saved
+
+. clear
+
+. svmat double vdiag
+number of observations will be reset to 1
+Press any key to continue, or Break to abort
+Number of observations (_N) was 0, now 1.
+
+. export delimited using "validation/stata/output/small_no_fe_v_diag.csv", replace
+file validation/stata/output/small_no_fe_v_diag.csv saved
+
+. clear
+
+. set obs 1
+Number of observations (_N) was 0, now 1.
+
+. gen double msize_mean = e(msize_mean)
+
+. gen double msize_mean_prior = e(msize_mean_prior)
+
+. gen double p_always = e(p_always)
+
+. gen double p_groups = e(p_groups)
+
+. gen double g_used = e(g)
+
+. gen double shrinkage = e(shrinkage)
+
+. gen double sigma2 = e(sigma2)
+
+. gen double k_models = e(k_models)
+
+. gen double n_obs = e(N)
+
+. export delimited using "validation/stata/output/small_no_fe_scalars.csv", replace
+(file validation/stata/output/small_no_fe_scalars.csv not found)
+file validation/stata/output/small_no_fe_scalars.csv saved
+
+. restore
+
+. 
+. log close
+      name:  <unnamed>
+       log:  X:\Claude Agentic Tasks\GPU Powered BMA\validation/stata/output/small_no_fixed_effects.log
+  log type:  text
+ closed on:  15 Jul 2026, 20:58:47
+------------------------------------------------------------------------------------------------------------------------

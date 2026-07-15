@@ -7,3 +7,4 @@ dist/
 .venv/
 notebooks/.ipynb_checkpoints/
 reports/benchmarks/raw/
+/*.log

@@ -71,8 +71,10 @@ def main() -> int:
         "(not required for Phase 1; required later for custom CUDA kernels)",
         f"- Stata installed: {diag['summary']['stata_installed']}, "
         f"callable in batch mode: {diag['summary']['stata_callable']} "
-        f"({diag['stata'].get('note') or 'see JSON'}) — validation .do scripts "
-        "are prepared but cannot be executed on this machine",
+        f"({diag['stata'].get('note') or 'see JSON'}) — "
+        + ("the validation oracle scripts have been EXECUTED on this machine"
+           if diag["summary"]["stata_callable"]
+           else "validation .do scripts are prepared but cannot be executed on this machine"),
         "",
     ]
     (reports / "environment_report.md").write_text("\n".join(md), encoding="utf-8")

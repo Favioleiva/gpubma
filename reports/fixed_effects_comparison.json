@@ -36,11 +36,11 @@
         "passed": true
       },
       {
-        "quantity": "BMA log scores (256 models) [max@i=207]",
-        "reference": 627.4734778081228,
-        "candidate": 627.4734778081214,
+        "quantity": "BMA log scores (256 models) [max@i=71]",
+        "reference": 555.0313114950635,
+        "candidate": 555.0313114950621,
         "abs_diff": 1.3642420526593924e-12,
-        "rel_diff": 2.174182815542952e-15,
+        "rel_diff": 2.4579551178555916e-15,
         "tolerance": 1e-08,
         "tolerance_kind": "abs",
         "passed": true
@@ -56,11 +56,11 @@
         "passed": true
       },
       {
-        "quantity": "BMA PIPs [max@i=0]",
-        "reference": 0.9999999999999609,
-        "candidate": 1.0000000000000466,
-        "abs_diff": 8.570921750106208e-14,
-        "rel_diff": 8.570921750105808e-14,
+        "quantity": "BMA PIPs [max@i=4]",
+        "reference": 0.9999999997206994,
+        "candidate": 0.9999999997207738,
+        "abs_diff": 7.438494264988549e-14,
+        "rel_diff": 7.438494267065572e-14,
         "tolerance": 1e-12,
         "tolerance_kind": "abs",
         "passed": true
@@ -68,9 +68,9 @@
       {
         "quantity": "BMA coefficient means [max@i=0]",
         "reference": 1.513325655540661,
-        "candidate": 1.5133256555407903,
-        "abs_diff": 1.2945200467129325e-13,
-        "rel_diff": 8.554140623819219e-14,
+        "candidate": 1.5133256555407733,
+        "abs_diff": 1.1235457009206584e-13,
+        "rel_diff": 7.424348465956388e-14,
         "tolerance": 1e-10,
         "tolerance_kind": "abs",
         "passed": true
@@ -78,9 +78,9 @@
       {
         "quantity": "BMA coefficient sds [max@i=0]",
         "reference": 0.035826101461619506,
-        "candidate": 0.03582610145886766,
-        "abs_diff": 2.7518473610932404e-12,
-        "rel_diff": 7.681124232959854e-11,
+        "candidate": 0.03582610145923333,
+        "abs_diff": 2.3861745912512333e-12,
+        "rel_diff": 6.660436089613439e-11,
         "tolerance": 1e-10,
         "tolerance_kind": "abs",
         "passed": true
@@ -88,9 +88,9 @@
       {
         "quantity": "BMA mean model size",
         "reference": 5.415249768806647,
-        "candidate": 5.415249768807173,
-        "abs_diff": 5.258016244624741e-13,
-        "rel_diff": 9.709646773657375e-14,
+        "candidate": 5.415249768807094,
+        "abs_diff": 4.46753745109163e-13,
+        "rel_diff": 8.249919471536708e-14,
         "tolerance": 1e-12,
         "tolerance_kind": "abs",
         "passed": true
@@ -155,40 +155,40 @@
       },
       {
         "quantity": "BMA PIPs [max@i=0]",
-        "reference": 0.9999999999999563,
-        "candidate": 1.0000000000000229,
-        "abs_diff": 6.661338147750939e-14,
-        "rel_diff": 6.661338147750787e-14,
+        "reference": 0.9999999999999575,
+        "candidate": 0.999999999999999,
+        "abs_diff": 4.1522341120980855e-14,
+        "rel_diff": 4.15223411209809e-14,
         "tolerance": 1e-12,
         "tolerance_kind": "abs",
         "passed": true
       },
       {
         "quantity": "BMA coefficient means [max@i=0]",
-        "reference": 1.5783239055220306,
-        "candidate": 1.5783239055221354,
-        "abs_diff": 1.0480505352461478e-13,
-        "rel_diff": 6.64027536793492e-14,
+        "reference": 1.5783239055220324,
+        "candidate": 1.5783239055220981,
+        "abs_diff": 6.572520305780927e-14,
+        "rel_diff": 4.1642404849762345e-14,
         "tolerance": 1e-10,
         "tolerance_kind": "abs",
         "passed": true
       },
       {
         "quantity": "BMA coefficient sds [max@i=0]",
-        "reference": 0.043479162610029515,
-        "candidate": 0.04347916260813996,
-        "abs_diff": 1.889557954548593e-12,
-        "rel_diff": 4.3458931615042675e-11,
+        "reference": 0.04347916260999887,
+        "candidate": 0.04347916260881407,
+        "abs_diff": 1.1848022563043514e-12,
+        "rel_diff": 2.7249886731532482e-11,
         "tolerance": 1e-10,
         "tolerance_kind": "abs",
         "passed": true
       },
       {
         "quantity": "BMA mean model size",
-        "reference": 5.244940273128501,
-        "candidate": 5.244940273128803,
-        "abs_diff": 3.019806626980426e-13,
-        "rel_diff": 5.757561515908356e-14,
+        "reference": 5.244940273128511,
+        "candidate": 5.244940273128661,
+        "abs_diff": 1.5010215292932116e-13,
+        "rel_diff": 2.861846753495702e-14,
         "tolerance": 1e-12,
         "tolerance_kind": "abs",
         "passed": true
@@ -252,11 +252,11 @@
         "passed": true
       },
       {
-        "quantity": "BMA PIPs [max@i=5]",
-        "reference": 0.11167914838561152,
-        "candidate": 0.11167914838556572,
-        "abs_diff": 4.579669976578771e-14,
-        "rel_diff": 4.10073862738087e-13,
+        "quantity": "BMA PIPs [max@i=7]",
+        "reference": 0.10099369707770489,
+        "candidate": 0.10099369707764355,
+        "abs_diff": 6.13398221105399e-14,
+        "rel_diff": 6.073628739756386e-13,
         "tolerance": 1e-12,
         "tolerance_kind": "abs",
         "passed": true
@@ -264,9 +264,9 @@
       {
         "quantity": "BMA coefficient means [max@i=0]",
         "reference": 1.5276529577244413,
-        "candidate": 1.527652957724425,
-        "abs_diff": 1.6209256159527285e-14,
-        "rel_diff": 1.061056182791165e-14,
+        "candidate": 1.5276529577243876,
+        "abs_diff": 5.3734794391857577e-14,
+        "rel_diff": 3.517473921033725e-14,
         "tolerance": 1e-10,
         "tolerance_kind": "abs",
         "passed": true
@@ -274,9 +274,9 @@
       {
         "quantity": "BMA coefficient sds [max@i=0]",
         "reference": 0.03308483041824723,
-        "candidate": 0.03308483041862307,
-        "abs_diff": 3.758382494112311e-13,
-        "rel_diff": 1.1359836053434207e-11,
+        "candidate": 0.033084830419482125,
+        "abs_diff": 1.2348941313966577e-12,
+        "rel_diff": 3.732508571872521e-11,
         "tolerance": 1e-10,
         "tolerance_kind": "abs",
         "passed": true
@@ -284,9 +284,9 @@
       {
         "quantity": "BMA mean model size",
         "reference": 5.304952051380121,
-        "candidate": 5.304952051379943,
-        "abs_diff": 1.7763568394002505e-13,
-        "rel_diff": 3.3484880206186195e-14,
+        "candidate": 5.304952051379805,
+        "abs_diff": 3.1530333899354446e-13,
+        "rel_diff": 5.943566236598049e-14,
         "tolerance": 1e-12,
         "tolerance_kind": "abs",
         "passed": true

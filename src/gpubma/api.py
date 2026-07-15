@@ -30,6 +30,7 @@ def bma_regress(
     fe_method: str = "dummies",
     entity_col: str = None,
     time_col: str = None,
+    always_prior: str = "shrink",
     backend: str = "cpu",
     method: str = "enumeration",
     precision: str = "float64",
@@ -43,6 +44,18 @@ def bma_regress(
 
     Optional ``predictors`` define the 2^p model space. ``controls`` and
     ``fixed_effects`` are always included and never change the model count.
+
+    ``always_prior`` selects how always-included slopes are treated:
+
+    - "shrink" (default): the Zellner g-prior covers optional AND
+      always-included slopes jointly; only the intercept is flat and
+      df = n - 1. This matches Stata ``bmaregress`` — verified 2026-07-15
+      against StataNow/SE 19.5 exports on six designs (max abs diff ~1e-11).
+      Requires ``fe_method="dummies"`` when fixed effects are present.
+    - "flat": always-included coefficients get flat (improper) priors and
+      df = n - rank(always block). This is gpubma's conditional convention;
+      it is NOT Stata's. It is the only coherent choice for
+      ``fe_method="within"`` because absorption implies flat fixed effects.
     """
     # ---- validation ------------------------------------------------------
     if method != "enumeration":
@@ -85,6 +98,16 @@ def bma_regress(
     X = data[predictors].to_numpy(dtype=np.float64)
     n = len(y)
 
+    if always_prior not in ("shrink", "flat"):
+        raise ValueError(f"unsupported always_prior {always_prior!r}")
+    if always_prior == "shrink" and fixed_effects and fe_method == "within":
+        raise ValueError(
+            "always_prior='shrink' (Stata convention) requires explicit "
+            "fixed-effect dummies; fe_method='within' absorbs the fixed "
+            "effects with an implicitly flat prior. Use fe_method='dummies' "
+            "or always_prior='flat'."
+        )
+
     # ---- always-included block and residualization -----------------------
     block = build_always_block(
         data, controls, fixed_effects, fe_method,
@@ -97,7 +120,18 @@ def bma_regress(
         X_r = _residualize(block["X_work"], Q)
     else:
         y_r, X_r = block["y_work"], block["X_work"]
-    df_resid = n - block["base_rank"] - block["absorbed_rank"]
+
+    if always_prior == "shrink":
+        # Joint g-prior over optional + always slopes; intercept-only flat.
+        yc = y - y.mean()
+        score_kwargs = {
+            "tss_norm": float(yc @ yc),
+            "k_always": block["base_rank"] - 1,  # always slopes excl. intercept
+        }
+        df_resid = n - 1
+    else:
+        score_kwargs = {}
+        df_resid = n - block["base_rank"] - block["absorbed_rank"]
 
     # validate the model count identity N = 2^p explicitly
     n_models_expected = 1 << p
@@ -105,6 +139,7 @@ def bma_regress(
 
     g_spec = resolve_g(g, n_obs=n, n_predictors=p)
     log_prior_fn, prior_desc = log_model_prior_function(model_prior, p)
+    block["info"]["always_prior"] = always_prior
 
     # ---- scoring ---------------------------------------------------------
     hardware = {}
@@ -112,13 +147,14 @@ def bma_regress(
         from gpubma.gpu.batch_scorer import gpu_score_all_models, gpu_hardware_info
 
         gpu_out = gpu_score_all_models(
-            X_r, y_r, df_resid=df_resid, g=g_spec.g, log_model_prior=log_prior_fn
+            X_r, y_r, df_resid=df_resid, g=g_spec.g, log_model_prior=log_prior_fn,
+            **score_kwargs,
         )
         hardware = gpu_hardware_info()
         # Coefficient moments are still computed on CPU in Phase 1.
         cpu_out = enumerate_models(
             X_r, y_r, df_resid=df_resid, g=g_spec.g, log_model_prior=log_prior_fn,
-            compute_coefficients=compute_coefficients, top_k=top_k,
+            compute_coefficients=compute_coefficients, top_k=top_k, **score_kwargs,
         )
         max_diff = float(np.max(np.abs(gpu_out["log_scores"] - cpu_out["log_scores"])))
         out = cpu_out
@@ -137,13 +173,21 @@ def bma_regress(
     else:
         out = enumerate_models(
             X_r, y_r, df_resid=df_resid, g=g_spec.g, log_model_prior=log_prior_fn,
-            compute_coefficients=compute_coefficients, top_k=top_k,
+            compute_coefficients=compute_coefficients, top_k=top_k, **score_kwargs,
         )
         notes = []
-    if g_spec.provisional:
+    if always_prior == "shrink":
         notes.append(
-            "g-prior parameterization is PROVISIONAL; not yet validated "
-            "against Stata bmaregress output (see STATUS.md)"
+            "always_prior='shrink': joint g-prior over optional and "
+            "always-included slopes — matches Stata bmaregress (verified "
+            "2026-07-15 vs StataNow/SE 19.5 on six designs, see "
+            "reports/comparison_report.md)"
+        )
+    else:
+        notes.append(
+            "always_prior='flat': gpubma's conditional convention "
+            "(flat always block, df = n - rank); this is NOT Stata's "
+            "parameterization (see docs/STATISTICAL_SPECIFICATION.md)"
         )
 
     return BMAResult(

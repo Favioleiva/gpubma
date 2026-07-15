@@ -71,9 +71,14 @@ def main() -> int:
         # OLS slope equality (Frisch-Waugh-Lovell)
         rep.add_arrays("OLS slopes (8 predictors)", ols_slopes(b_dum), ols_slopes(b_win), 1e-9)
 
-        # full BMA comparison with identical priors and aligned df
+        # full BMA comparison with identical priors and aligned df.
+        # always_prior="flat" on BOTH sides: the dummies-vs-within score
+        # equivalence only holds under the flat (conditional) convention;
+        # under the Stata "shrink" convention the dummies are g-shrunk and
+        # absorption is not equivalent (docs/FIXED_EFFECTS_DESIGN.md).
         kw = dict(data=df, outcome="y", predictors=PREDICTORS, controls=CONTROLS,
                   fixed_effects=fe, entity_col="individual_id", time_col="period",
+                  always_prior="flat",
                   g="benchmark", model_prior=("betabinomial", 1.0, 1.0))
         r_dum = bma_regress(fe_method="dummies", **kw)
         r_win = bma_regress(fe_method="within", **kw)
