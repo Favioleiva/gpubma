@@ -42,6 +42,7 @@ ESS_joint = ESS_W + ESS_gamma(residualized), the x-block of the joint OLS
 solution equals the residualized solution, and the x-block of the inverse
 joint Gram equals (X̃'X̃)^{-1} — so the residualized fast path computes the
 joint formula exactly. E[sigma^2|gamma] = (TSS_c − s·ESS_joint)/(n−3).
+Full derivation and equivalence proofs: docs/FWL_BLOCK_FORMULATION.md.
 
 ### `always_prior="flat"` — conditional convention (gpubma-specific)
 

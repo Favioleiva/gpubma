@@ -71,3 +71,11 @@ path computationally, but reproducing Stata requires either explicit
 (the FWL identity in docs/STATISTICAL_SPECIFICATION.md gives exactly that:
 joint scores are computable from residualized sufficient statistics plus
 ESS_W, at absorption-like cost).
+
+Phase 2 update (2026-07-16): the full derivation, including posterior
+moments through the block inverse and the proof that flat residualization
+is insufficient, is in docs/FWL_BLOCK_FORMULATION.md; numerical
+equivalence (explicit joint design == FWL fast path == executed Stata,
+q up to 110) is proven in tests/enumeration/test_fwl_block_equivalence.py.
+The GPU enumerator (src/gpubma/gpu/enumerator.py) implements this
+formulation.
