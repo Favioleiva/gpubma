@@ -1,0 +1,118 @@
+{
+  "device": "NVIDIA GeForce RTX 3060",
+  "torch": "2.5.1+cu121",
+  "precision": "float64",
+  "repeats": 5,
+  "direct": [
+    {
+      "k": 4,
+      "batch": 65536,
+      "seconds_per_batch": 0.0031173001043498516,
+      "models_per_second": 21023320.76034376,
+      "gather_s": 0.00019950000569224358,
+      "cholesky_s": 0.0024216999299824238,
+      "solve_s": 0.00037420005537569523,
+      "peak_gpu_mib": 34.1328125
+    },
+    {
+      "k": 8,
+      "batch": 65536,
+      "seconds_per_batch": 0.00748769985511899,
+      "models_per_second": 8752487.582043784,
+      "gather_s": 0.0005908999592065811,
+      "cholesky_s": 0.004700900055468082,
+      "solve_s": 0.0017032998148351908,
+      "peak_gpu_mib": 108.1328125
+    },
+    {
+      "k": 12,
+      "batch": 65536,
+      "seconds_per_batch": 0.011227799812331796,
+      "models_per_second": 5836940.548941747,
+      "gather_s": 0.0012354999780654907,
+      "cholesky_s": 0.007278700126335025,
+      "solve_s": 0.0024026997853070498,
+      "peak_gpu_mib": 230.1328125
+    },
+    {
+      "k": 15,
+      "batch": 65536,
+      "seconds_per_batch": 0.01399519992992282,
+      "models_per_second": 4682748.394317609,
+      "gather_s": 0.001888499828055501,
+      "cholesky_s": 0.008860500063747168,
+      "solve_s": 0.002980699995532632,
+      "peak_gpu_mib": 353.1328125
+    },
+    {
+      "k": 18,
+      "batch": 32768,
+      "seconds_per_batch": 0.014167199842631817,
+      "models_per_second": 2312948.244112066,
+      "gather_s": 0.0013719999697059393,
+      "cholesky_s": 0.010416300036013126,
+      "solve_s": 0.0018013999797403812,
+      "peak_gpu_mib": 255.6328125
+    },
+    {
+      "k": 22,
+      "batch": 32768,
+      "seconds_per_batch": 0.024978700093925,
+      "models_per_second": 1311837.6807754466,
+      "gather_s": 0.0020755999721586704,
+      "cholesky_s": 0.011512500001117587,
+      "solve_s": 0.011266000103205442,
+      "peak_gpu_mib": 379.6328125
+    },
+    {
+      "k": 26,
+      "batch": 16384,
+      "seconds_per_batch": 0.015061900019645691,
+      "models_per_second": 1087777.7689819913,
+      "gather_s": 0.0014170999638736248,
+      "cholesky_s": 0.006571599980816245,
+      "solve_s": 0.006932999938726425,
+      "peak_gpu_mib": 264.8828125
+    },
+    {
+      "k": 30,
+      "batch": 16384,
+      "seconds_per_batch": 0.017302900087088346,
+      "models_per_second": 946893.2905776852,
+      "gather_s": 0.0018637999892234802,
+      "cholesky_s": 0.00817389995791018,
+      "solve_s": 0.007978299865499139,
+      "peak_gpu_mib": 349.3828125
+    }
+  ],
+  "gray": [
+    {
+      "k": 8,
+      "lanes": 65536,
+      "seconds_per_gray_step": 0.004786300007253885,
+      "models_per_second": 13692413.743534004,
+      "peak_gpu_mib": 96.1328125
+    },
+    {
+      "k": 15,
+      "lanes": 65536,
+      "seconds_per_gray_step": 0.011975999921560287,
+      "models_per_second": 5472277.924953566,
+      "peak_gpu_mib": 278.1328125
+    },
+    {
+      "k": 22,
+      "lanes": 32768,
+      "seconds_per_gray_step": 0.023701100144535303,
+      "models_per_second": 1382551.856250235,
+      "peak_gpu_mib": 285.1328125
+    },
+    {
+      "k": 30,
+      "lanes": 16384,
+      "seconds_per_gray_step": 0.021324000088497996,
+      "models_per_second": 768336.1438756232,
+      "peak_gpu_mib": 255.6328125
+    }
+  ]
+}

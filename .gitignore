@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.venv/
+notebooks/.ipynb_checkpoints/
+reports/benchmarks/raw/
+/*.log
+
+# enumerator checkpoints and local run outputs (Colab writes these to Drive)
+*.ckpt.npz
+/results/

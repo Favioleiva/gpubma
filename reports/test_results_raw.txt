@@ -1,0 +1,20 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.6, pytest-9.1.1, pluggy-1.6.0
+rootdir: X:\Claude Agentic Tasks\GPU Powered BMA
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.13.0
+collected 73 items
+
+tests\datasets\test_serialization.py ....                                [  5%]
+tests\datasets\test_synthetic.py .............                           [ 23%]
+tests\enumeration\test_cpu_enumeration.py .........                      [ 35%]
+tests\enumeration\test_formula.py ....                                   [ 41%]
+tests\fixed_effects\test_fe.py ..........                                [ 54%]
+tests\gpu\test_gpu.py ....                                               [ 60%]
+tests\stata_parity\test_stata_artifacts.py .......                       [ 69%]
+tests\stata_parity\test_stata_parity.py ......                           [ 78%]
+tests\unit\test_compare.py ....                                          [ 83%]
+tests\unit\test_priors.py ............                                   [100%]
+
+============================= 73 passed in 3.23s ==============================

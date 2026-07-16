@@ -1,0 +1,1 @@
+mvalue kstock 1b.company 2.company 3.company 4.company 5.company 6.company 7.company 8.company 9.company 10.company _cons

@@ -1,0 +1,317 @@
+{
+  "device": "NVIDIA GeForce RTX 3060",
+  "records": [
+    {
+      "p": 12,
+      "dataset": "panel_12",
+      "g": 1000.0,
+      "n_models_expected": 4096,
+      "label": "Measured",
+      "n_models_processed": 4096,
+      "elapsed_s": 0.33824599999934435,
+      "models_per_second": 12109.529750560065,
+      "peak_gpu_memory_bytes": 10639872,
+      "peak_host_memory_bytes": 988794880,
+      "chunks": 13,
+      "device": "NVIDIA GeForce RTX 3060",
+      "normalization": {
+        "size_distribution_sum": 0.9999999999999999,
+        "pip_max_overshoot": 0.0
+      },
+      "mean_model_size": 5.396759674404954,
+      "log_normalizer": 612.9573897725262,
+      "top_models": [
+        {
+          "mask": 31,
+          "size": 5,
+          "pmp": 0.6733961302090161
+        },
+        {
+          "mask": 543,
+          "size": 6,
+          "pmp": 0.12759069939120887
+        },
+        {
+          "mask": 63,
+          "size": 6,
+          "pmp": 0.029842654188946077
+        },
+        {
+          "mask": 95,
+          "size": 6,
+          "pmp": 0.02570427742189322
+        },
+        {
+          "mask": 159,
+          "size": 6,
+          "pmp": 0.021857307892934795
+        }
+      ],
+      "reproducible_bit_identical": true,
+      "checkpoint_resume_bit_identical": true,
+      "checkpoint_interrupted_at_models": 299,
+      "cpu_validation": {
+        "cpu_seconds": 0.27952719992026687,
+        "cpu_mode": "full (scores + coefficient moments)",
+        "abs_diff_log_normalizer": 0.0,
+        "max_abs_diff_pip": 5.617728504603292e-14,
+        "max_abs_diff_size_distribution": 3.26405569239796e-14,
+        "abs_diff_mean_model_size": 3.1530333899354446e-13,
+        "top_masks_equal": true,
+        "max_abs_diff_per_model_log_score": 9.094947017729282e-13,
+        "max_abs_diff_coef_mean": 8.748557434046234e-14,
+        "max_abs_diff_coef_sd": 1.4666462488932552e-12
+      },
+      "stata_validation": {
+        "max_abs_diff_normalized_logpmp_vs_stata": 3.410605131648481e-12,
+        "max_abs_diff_pip_vs_stata": 5.695444116327053e-14,
+        "max_abs_diff_coef_mean_vs_stata": 4.3125225612783424e-15,
+        "max_abs_diff_coef_sd_vs_stata": 3.470140841344005e-14,
+        "abs_diff_mean_model_size_vs_stata": 1.865174681370263e-13,
+        "stata_k_models_equal": true
+      }
+    },
+    {
+      "p": 18,
+      "dataset": "panel_30",
+      "g": 1000.0,
+      "n_models_expected": 262144,
+      "label": "Measured",
+      "n_models_processed": 262144,
+      "elapsed_s": 0.19479600014165044,
+      "models_per_second": 1345736.051096408,
+      "peak_gpu_memory_bytes": 238038528,
+      "peak_host_memory_bytes": 1010454528,
+      "chunks": 19,
+      "device": "NVIDIA GeForce RTX 3060",
+      "normalization": {
+        "size_distribution_sum": 1.0,
+        "pip_max_overshoot": 0.0
+      },
+      "mean_model_size": 5.479736933837123,
+      "log_normalizer": 610.2759698124564,
+      "top_models": [
+        {
+          "mask": 31,
+          "size": 5,
+          "pmp": 0.6220595813583709
+        },
+        {
+          "mask": 32799,
+          "size": 6,
+          "pmp": 0.09475417585956196
+        },
+        {
+          "mask": 543,
+          "size": 6,
+          "pmp": 0.06346511527004949
+        },
+        {
+          "mask": 8223,
+          "size": 6,
+          "pmp": 0.016518926969046558
+        },
+        {
+          "mask": 63,
+          "size": 6,
+          "pmp": 0.014844087359836075
+        }
+      ],
+      "reproducible_bit_identical": true,
+      "checkpoint_resume_bit_identical": true,
+      "checkpoint_interrupted_at_models": 12616,
+      "cpu_validation": {
+        "cpu_seconds": 19.21235329983756,
+        "cpu_mode": "full (scores + coefficient moments)",
+        "abs_diff_log_normalizer": 0.0,
+        "max_abs_diff_pip": 1.3211653993039363e-14,
+        "max_abs_diff_size_distribution": 1.3322676295501878e-14,
+        "abs_diff_mean_model_size": 1.092459456231154e-13,
+        "top_masks_equal": true,
+        "max_abs_diff_per_model_log_score": 9.094947017729282e-13,
+        "max_abs_diff_coef_mean": 6.994405055138486e-14,
+        "max_abs_diff_coef_sd": 7.16468551154037e-13
+      }
+    },
+    {
+      "p": 20,
+      "dataset": "panel_30",
+      "g": 1000.0,
+      "n_models_expected": 1048576,
+      "label": "Measured",
+      "n_models_processed": 1048576,
+      "elapsed_s": 0.7969347999896854,
+      "models_per_second": 1315761.339589602,
+      "peak_gpu_memory_bytes": 531263488,
+      "peak_host_memory_bytes": 1059569664,
+      "chunks": 31,
+      "device": "NVIDIA GeForce RTX 3060",
+      "normalization": {
+        "size_distribution_sum": 0.9999999999999999,
+        "pip_max_overshoot": 0.0
+      },
+      "mean_model_size": 5.4463710544899975,
+      "log_normalizer": 609.5488663187705,
+      "top_models": [
+        {
+          "mask": 31,
+          "size": 5,
+          "pmp": 0.6435451522509644
+        },
+        {
+          "mask": 32799,
+          "size": 6,
+          "pmp": 0.0849566719593501
+        },
+        {
+          "mask": 543,
+          "size": 6,
+          "pmp": 0.056902874516594
+        },
+        {
+          "mask": 8223,
+          "size": 6,
+          "pmp": 0.014810883498261453
+        },
+        {
+          "mask": 63,
+          "size": 6,
+          "pmp": 0.013309220928000572
+        }
+      ],
+      "reproducible_bit_identical": true,
+      "checkpoint_resume_bit_identical": true,
+      "checkpoint_interrupted_at_models": 203516,
+      "cpu_validation": {
+        "cpu_seconds": 78.3308953999076,
+        "cpu_mode": "full (scores + coefficient moments)",
+        "abs_diff_log_normalizer": 0.0,
+        "max_abs_diff_pip": 5.88418203051333e-15,
+        "max_abs_diff_size_distribution": 1.965094753586527e-14,
+        "abs_diff_mean_model_size": 1.5987211554602254e-14,
+        "top_masks_equal": true,
+        "max_abs_diff_per_model_log_score": 1.3642420526593924e-12,
+        "max_abs_diff_coef_mean": 1.7852386235972517e-13,
+        "max_abs_diff_coef_sd": 2.5447491336372252e-12
+      }
+    },
+    {
+      "p": 22,
+      "dataset": "panel_30",
+      "g": 1000.0,
+      "n_models_expected": 4194304,
+      "label": "Measured",
+      "n_models_processed": 4194304,
+      "elapsed_s": 2.204622299876064,
+      "models_per_second": 1902504.5697105525,
+      "peak_gpu_memory_bytes": 776093184,
+      "peak_host_memory_bytes": 1109602304,
+      "chunks": 79,
+      "device": "NVIDIA GeForce RTX 3060",
+      "normalization": {
+        "size_distribution_sum": 1.0000000000000009,
+        "pip_max_overshoot": 0.0
+      },
+      "mean_model_size": 5.450720444303889,
+      "log_normalizer": 608.9300030697267,
+      "top_models": [
+        {
+          "mask": 31,
+          "size": 5,
+          "pmp": 0.6423419776237261
+        },
+        {
+          "mask": 32799,
+          "size": 6,
+          "pmp": 0.07482162054777836
+        },
+        {
+          "mask": 543,
+          "size": 6,
+          "pmp": 0.050114548827849506
+        },
+        {
+          "mask": 2097183,
+          "size": 6,
+          "pmp": 0.021527322795941155
+        },
+        {
+          "mask": 8223,
+          "size": 6,
+          "pmp": 0.013043993832697538
+        }
+      ],
+      "reproducible_bit_identical": true,
+      "checkpoint_resume_bit_identical": true,
+      "checkpoint_interrupted_at_models": 1228862,
+      "cpu_validation": {
+        "cpu_seconds": 117.31886490015313,
+        "cpu_mode": "scores-only (coefficient moments impractical)",
+        "abs_diff_log_normalizer": 1.1368683772161603e-13,
+        "max_abs_diff_pip": 2.7422508708241367e-14,
+        "max_abs_diff_size_distribution": 3.774758283725532e-14,
+        "abs_diff_mean_model_size": 6.483702463810914e-14,
+        "top_masks_equal": true
+      }
+    },
+    {
+      "p": 24,
+      "dataset": "panel_30",
+      "g": 1000.0,
+      "n_models_expected": 16777216,
+      "label": "Measured",
+      "n_models_processed": 16777216,
+      "elapsed_s": 8.96414709999226,
+      "models_per_second": 1871590.884537636,
+      "peak_gpu_memory_bytes": 1098531328,
+      "peak_host_memory_bytes": 1344593920,
+      "chunks": 274,
+      "device": "NVIDIA GeForce RTX 3060",
+      "normalization": {
+        "size_distribution_sum": 1.0000000000000002,
+        "pip_max_overshoot": 0.0
+      },
+      "mean_model_size": 5.4254854558659655,
+      "log_normalizer": 608.3429415039493,
+      "top_models": [
+        {
+          "mask": 31,
+          "size": 5,
+          "pmp": 0.6585651708446045
+        },
+        {
+          "mask": 32799,
+          "size": 6,
+          "pmp": 0.06863646137697808
+        },
+        {
+          "mask": 543,
+          "size": 6,
+          "pmp": 0.04597180961685957
+        },
+        {
+          "mask": 2097183,
+          "size": 6,
+          "pmp": 0.019747758051963597
+        },
+        {
+          "mask": 8223,
+          "size": 6,
+          "pmp": 0.011965706868481725
+        }
+      ],
+      "reproducible_bit_identical": true,
+      "checkpoint_resume_bit_identical": true,
+      "checkpoint_interrupted_at_models": 5457890,
+      "cpu_validation": {
+        "cpu_seconds": 473.9010427000467,
+        "cpu_mode": "scores-only (coefficient moments impractical)",
+        "abs_diff_log_normalizer": 1.1368683772161603e-13,
+        "max_abs_diff_pip": 3.8746783559417963e-14,
+        "max_abs_diff_size_distribution": 4.463096558993129e-14,
+        "abs_diff_mean_model_size": 2.744471316873387e-13,
+        "top_masks_equal": true
+      }
+    }
+  ]
+}

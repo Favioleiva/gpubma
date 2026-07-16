@@ -1,0 +1,1 @@
+mvalue kstock _cons

@@ -1,0 +1,1 @@
+x1 x2 x3 x4 x5 x6 x7 x8 w1 w2 1b.period 2.period 3.period 4.period 5.period 6.period 7.period 8.period 9.period 10.period _cons

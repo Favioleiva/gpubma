@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gpubma"
+version = "0.1.0.dev0"
+description = "Exhaustive Bayesian Model Averaging for linear regression, GPU-accelerated (Phase 1: CPU reference and diagnostics)"
+readme = "README.md"
+license = { text = "BSD-3-Clause" }
+requires-python = ">=3.10"
+authors = [{ name = "GPUBMA developers" }]
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.1",
+    "scipy>=1.11",
+]
+
+[project.optional-dependencies]
+parquet = ["pyarrow>=14"]
+gpu = ["torch>=2.2"]
+dev = ["pytest>=7.4", "pyarrow>=14"]
+
+[project.scripts]
+gpubma = "gpubma.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

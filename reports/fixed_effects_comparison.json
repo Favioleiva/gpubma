@@ -1,0 +1,296 @@
+[
+  {
+    "title": "Fixed effects: explicit dummies vs within residualization (individual)",
+    "reference": "explicit dummies (reference approach)",
+    "candidate": "within transform (candidate production approach)",
+    "passed": true,
+    "rows": [
+      {
+        "quantity": "effective always-block rank",
+        "reference": 102.0,
+        "candidate": 102.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 0.0,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "OLS slopes (8 predictors) [max@i=4]",
+        "reference": 0.2685011346794338,
+        "candidate": 0.2685011346794328,
+        "abs_diff": 9.992007221626409e-16,
+        "rel_diff": 3.721402233013267e-15,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA effective df",
+        "reference": 898.0,
+        "candidate": 898.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 0.0,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA log scores (256 models) [max@i=71]",
+        "reference": 555.0313114950635,
+        "candidate": 555.0313114950621,
+        "abs_diff": 1.3642420526593924e-12,
+        "rel_diff": 2.4579551178555916e-15,
+        "tolerance": 1e-08,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA posterior model probs [max@i=95]",
+        "reference": 0.09100982438195782,
+        "candidate": 0.0910098243819992,
+        "abs_diff": 4.138356324290271e-14,
+        "rel_diff": 4.547153400626488e-13,
+        "tolerance": 1e-12,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA PIPs [max@i=4]",
+        "reference": 0.9999999997206994,
+        "candidate": 0.9999999997207738,
+        "abs_diff": 7.438494264988549e-14,
+        "rel_diff": 7.438494267065572e-14,
+        "tolerance": 1e-12,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA coefficient means [max@i=0]",
+        "reference": 1.513325655540661,
+        "candidate": 1.5133256555407733,
+        "abs_diff": 1.1235457009206584e-13,
+        "rel_diff": 7.424348465956388e-14,
+        "tolerance": 1e-10,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA coefficient sds [max@i=0]",
+        "reference": 0.035826101461619506,
+        "candidate": 0.03582610145923333,
+        "abs_diff": 2.3861745912512333e-12,
+        "rel_diff": 6.660436089613439e-11,
+        "tolerance": 1e-10,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA mean model size",
+        "reference": 5.415249768806647,
+        "candidate": 5.415249768807094,
+        "abs_diff": 4.46753745109163e-13,
+        "rel_diff": 8.249919471536708e-14,
+        "tolerance": 1e-12,
+        "tolerance_kind": "abs",
+        "passed": true
+      }
+    ]
+  },
+  {
+    "title": "Fixed effects: explicit dummies vs within residualization (time)",
+    "reference": "explicit dummies (reference approach)",
+    "candidate": "within transform (candidate production approach)",
+    "passed": true,
+    "rows": [
+      {
+        "quantity": "effective always-block rank",
+        "reference": 12.0,
+        "candidate": 12.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 0.0,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "OLS slopes (8 predictors) [max@i=0]",
+        "reference": 1.5780613704734365,
+        "candidate": 1.5780613704734345,
+        "abs_diff": 1.9984014443252818e-15,
+        "rel_diff": 1.2663648459538291e-15,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA effective df",
+        "reference": 988.0,
+        "candidate": 988.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 0.0,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA log scores (256 models) [max@i=7]",
+        "reference": 499.6888908094748,
+        "candidate": 499.68889080947525,
+        "abs_diff": 4.547473508864641e-13,
+        "rel_diff": 9.100609584291384e-16,
+        "tolerance": 1e-08,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA posterior model probs [max@i=31]",
+        "reference": 0.7857167146274285,
+        "candidate": 0.7857167146275179,
+        "abs_diff": 8.93729534823251e-14,
+        "rel_diff": 1.1374704370988702e-13,
+        "tolerance": 1e-12,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA PIPs [max@i=0]",
+        "reference": 0.9999999999999575,
+        "candidate": 0.999999999999999,
+        "abs_diff": 4.1522341120980855e-14,
+        "rel_diff": 4.15223411209809e-14,
+        "tolerance": 1e-12,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA coefficient means [max@i=0]",
+        "reference": 1.5783239055220324,
+        "candidate": 1.5783239055220981,
+        "abs_diff": 6.572520305780927e-14,
+        "rel_diff": 4.1642404849762345e-14,
+        "tolerance": 1e-10,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA coefficient sds [max@i=0]",
+        "reference": 0.04347916260999887,
+        "candidate": 0.04347916260881407,
+        "abs_diff": 1.1848022563043514e-12,
+        "rel_diff": 2.7249886731532482e-11,
+        "tolerance": 1e-10,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA mean model size",
+        "reference": 5.244940273128511,
+        "candidate": 5.244940273128661,
+        "abs_diff": 1.5010215292932116e-13,
+        "rel_diff": 2.861846753495702e-14,
+        "tolerance": 1e-12,
+        "tolerance_kind": "abs",
+        "passed": true
+      }
+    ]
+  },
+  {
+    "title": "Fixed effects: explicit dummies vs within residualization (individual+time)",
+    "reference": "explicit dummies (reference approach)",
+    "candidate": "within transform (candidate production approach)",
+    "passed": true,
+    "rows": [
+      {
+        "quantity": "effective always-block rank",
+        "reference": 111.0,
+        "candidate": 111.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 0.0,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "OLS slopes (8 predictors) [max@i=6]",
+        "reference": 0.02772530452088455,
+        "candidate": 0.02772530452088342,
+        "abs_diff": 1.1310397063368782e-15,
+        "rel_diff": 4.079449174254889e-14,
+        "tolerance": 1e-09,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA effective df",
+        "reference": 889.0,
+        "candidate": 889.0,
+        "abs_diff": 0.0,
+        "rel_diff": 0.0,
+        "tolerance": 0.0,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA log scores (256 models) [max@i=31]",
+        "reference": 709.8679773479666,
+        "candidate": 709.867977347968,
+        "abs_diff": 1.3642420526593924e-12,
+        "rel_diff": 1.921825038165736e-15,
+        "tolerance": 1e-08,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA posterior model probs [max@i=31]",
+        "reference": 0.7427171834720729,
+        "candidate": 0.7427171834721574,
+        "abs_diff": 8.448797217397441e-14,
+        "rel_diff": 1.1375524096399427e-13,
+        "tolerance": 1e-12,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA PIPs [max@i=7]",
+        "reference": 0.10099369707770489,
+        "candidate": 0.10099369707764355,
+        "abs_diff": 6.13398221105399e-14,
+        "rel_diff": 6.073628739756386e-13,
+        "tolerance": 1e-12,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA coefficient means [max@i=0]",
+        "reference": 1.5276529577244413,
+        "candidate": 1.5276529577243876,
+        "abs_diff": 5.3734794391857577e-14,
+        "rel_diff": 3.517473921033725e-14,
+        "tolerance": 1e-10,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA coefficient sds [max@i=0]",
+        "reference": 0.03308483041824723,
+        "candidate": 0.033084830419482125,
+        "abs_diff": 1.2348941313966577e-12,
+        "rel_diff": 3.732508571872521e-11,
+        "tolerance": 1e-10,
+        "tolerance_kind": "abs",
+        "passed": true
+      },
+      {
+        "quantity": "BMA mean model size",
+        "reference": 5.304952051380121,
+        "candidate": 5.304952051379805,
+        "abs_diff": 3.1530333899354446e-13,
+        "rel_diff": 5.943566236598049e-14,
+        "tolerance": 1e-12,
+        "tolerance_kind": "abs",
+        "passed": true
+      }
+    ]
+  }
+]
