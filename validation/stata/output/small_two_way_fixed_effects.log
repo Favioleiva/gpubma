@@ -212,7 +212,7 @@ macros:
         e(gprior_dist) : "fixed"
          e(gprior_lab) : "g = {res:1,000}"
          e(alwaysvars) : "w1 w2 2.individual_id 3.individual_id 4.individual_id 5.individual_id 6.individual_id 7.in.."
-      e(modelfilename) : "C:\Users\FAVIOL~1\AppData\Local\Temp\STB88a8_000001.tmp"
+      e(modelfilename) : "C:\Users\REDACTED\AppData\Local\Temp\STB88a8_000001.tmp"
            e(rngstate) : "XAA000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.."
 
 matrices:

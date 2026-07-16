@@ -120,7 +120,7 @@ macros:
              e(gprior) : "fixed 200"
         e(gprior_dist) : "fixed"
          e(gprior_lab) : "g = {res:200}"
-      e(modelfilename) : "C:\Users\FAVIOL~1\AppData\Local\Temp\STBc6a0_000001.tmp"
+      e(modelfilename) : "C:\Users\REDACTED\AppData\Local\Temp\STBc6a0_000001.tmp"
            e(rngstate) : "XAA000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.."
 
 matrices:
@@ -368,7 +368,7 @@ macros:
         e(gprior_dist) : "fixed"
          e(gprior_lab) : "g = {res:200}"
          e(alwaysvars) : "2.company 3.company 4.company 5.company 6.company 7.company 8.company 9.company 10.company"
-      e(modelfilename) : "C:\Users\FAVIOL~1\AppData\Local\Temp\STBc6a0_000001.tmp"
+      e(modelfilename) : "C:\Users\REDACTED\AppData\Local\Temp\STBc6a0_000001.tmp"
            e(rngstate) : "XAA3b8ba9cd046ba5ba4fb08a4cdddb806275fbf6adf94193b2a4be96d8ed674e75b0165bdfff6f96b5446446f.."
 
 matrices:
