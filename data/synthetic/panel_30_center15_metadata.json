@@ -1,0 +1,547 @@
+{
+  "dataset_name": "panel_30_center15",
+  "dataset_version": 1,
+  "purpose": "Central-layer correlated-proxy benchmark: tests exact exhaustive BMA posterior recovery under collinearity and proxy substitution (true model of size 15 inside the central Pascal layer), not merely sparse variable selection.",
+  "distinction_from_panel_30": "panel_30 (unchanged) has a sparse size-5 truth with independent i.i.d. predictors and unmodeled individual/time effects; panel_30_center15 has k_true = 15, three correlated latent-factor blocks, 15 structural-zero proxies, no individual or time effects, and n = 2,000.",
+  "canonical_format": "parquet",
+  "no_csv_or_dta": "No CSV or Stata .dta copy is provided: GPUBMA consumes the data in Python, Parquet stores float64 exactly, and duplicate formats would add storage and validation complexity.",
+  "generator_path": "scripts/generate_panel_30_center15.py",
+  "generator_module": "gpubma.datasets.center15.generate_panel_30_center15",
+  "seed": 20260724,
+  "rng": "numpy.random.default_rng([seed, n_individuals, n_periods, stream_tag]), one independent stream per random column",
+  "n_individuals": 200,
+  "n_periods": 10,
+  "n_observations": 2000,
+  "panel_effects": "NONE by design \u2014 individual_id/period exist only for schema compatibility with panel_30; the benchmark isolates the correlated-predictor and proxy challenge.",
+  "n_candidate_regressors": 30,
+  "true_model_size": 15,
+  "true_variables": [
+    "x1",
+    "x2",
+    "x3",
+    "x4",
+    "x5",
+    "x6",
+    "x7",
+    "x8",
+    "x9",
+    "x10",
+    "x11",
+    "x12",
+    "x13",
+    "x14",
+    "x15"
+  ],
+  "proxy_variables": [
+    "x16",
+    "x17",
+    "x18",
+    "x19",
+    "x20",
+    "x21",
+    "x22",
+    "x23",
+    "x24",
+    "x25",
+    "x26",
+    "x27",
+    "x28",
+    "x29",
+    "x30"
+  ],
+  "structural_beta": [
+    1.2,
+    -1.1,
+    1.0,
+    -0.9,
+    0.8,
+    0.75,
+    -0.7,
+    0.65,
+    -0.6,
+    0.55,
+    0.5,
+    -0.45,
+    0.4,
+    -0.35,
+    0.3,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "structural_zero_proxies": "x16-x30 have structural coefficients exactly 0 in the outcome equation.",
+  "always_included_controls": {
+    "names": [
+      "w1",
+      "w2"
+    ],
+    "delta": [
+      0.8,
+      -0.6
+    ],
+    "distribution": "i.i.d. N(0,1), independent of all candidate regressors"
+  },
+  "latent_factor_blocks": {
+    "A": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5"
+    ],
+    "B": [
+      "x6",
+      "x7",
+      "x8",
+      "x9",
+      "x10"
+    ],
+    "C": [
+      "x11",
+      "x12",
+      "x13",
+      "x14",
+      "x15"
+    ]
+  },
+  "factor_loadings": [
+    0.85,
+    0.72,
+    0.66,
+    0.78,
+    0.61,
+    0.83,
+    0.64,
+    0.75,
+    0.69,
+    0.8,
+    0.62,
+    0.84,
+    0.71,
+    0.77,
+    0.65
+  ],
+  "true_regressor_equation": "x_j_raw = loading_j * F_block + sqrt(1 - loading_j^2) * eta_j; F_block, eta_j ~ N(0,1)",
+  "proxy_equation": "proxy_raw = a * primary_true_raw + b * partner_true_raw + noise_scale * nu; nu ~ N(0,1)",
+  "proxy_mappings": [
+    {
+      "proxy": "x16",
+      "primary_true_variable": "x1",
+      "secondary_partner": "x2",
+      "primary_coefficient": 0.88,
+      "secondary_coefficient": 0.15,
+      "noise_scale": 0.5,
+      "realized_correlation_with_primary": 0.8835030086395729,
+      "realized_correlation_with_secondary": 0.625424959339959
+    },
+    {
+      "proxy": "x17",
+      "primary_true_variable": "x2",
+      "secondary_partner": "x3",
+      "primary_coefficient": 0.74,
+      "secondary_coefficient": 0.32,
+      "noise_scale": 0.62,
+      "realized_correlation_with_primary": 0.7915722279977484,
+      "realized_correlation_with_secondary": 0.5970500704008134
+    },
+    {
+      "proxy": "x18",
+      "primary_true_variable": "x3",
+      "secondary_partner": "x4",
+      "primary_coefficient": 0.81,
+      "secondary_coefficient": 0.1,
+      "noise_scale": 0.45,
+      "realized_correlation_with_primary": 0.8806808769550416,
+      "realized_correlation_with_secondary": 0.5166430071967357
+    },
+    {
+      "proxy": "x19",
+      "primary_true_variable": "x4",
+      "secondary_partner": "x5",
+      "primary_coefficient": 0.7,
+      "secondary_coefficient": 0.27,
+      "noise_scale": 0.58,
+      "realized_correlation_with_primary": 0.8033130548430218,
+      "realized_correlation_with_secondary": 0.6031641849324683
+    },
+    {
+      "proxy": "x20",
+      "primary_true_variable": "x5",
+      "secondary_partner": "x1",
+      "primary_coefficient": 0.85,
+      "secondary_coefficient": 0.2,
+      "noise_scale": 0.52,
+      "realized_correlation_with_primary": 0.8735487796428532,
+      "realized_correlation_with_secondary": 0.563374550014084
+    },
+    {
+      "proxy": "x21",
+      "primary_true_variable": "x6",
+      "secondary_partner": "x7",
+      "primary_coefficient": 0.77,
+      "secondary_coefficient": 0.34,
+      "noise_scale": 0.47,
+      "realized_correlation_with_primary": 0.8756769170767585,
+      "realized_correlation_with_secondary": 0.6693425031060627
+    },
+    {
+      "proxy": "x22",
+      "primary_true_variable": "x7",
+      "secondary_partner": "x8",
+      "primary_coefficient": 0.9,
+      "secondary_coefficient": 0.12,
+      "noise_scale": 0.6,
+      "realized_correlation_with_primary": 0.8428977866148901,
+      "realized_correlation_with_secondary": 0.4875427140655544
+    },
+    {
+      "proxy": "x23",
+      "primary_true_variable": "x8",
+      "secondary_partner": "x9",
+      "primary_coefficient": 0.72,
+      "secondary_coefficient": 0.25,
+      "noise_scale": 0.55,
+      "realized_correlation_with_primary": 0.8263034435746517,
+      "realized_correlation_with_secondary": 0.6111579910736524
+    },
+    {
+      "proxy": "x24",
+      "primary_true_variable": "x9",
+      "secondary_partner": "x10",
+      "primary_coefficient": 0.79,
+      "secondary_coefficient": 0.18,
+      "noise_scale": 0.49,
+      "realized_correlation_with_primary": 0.868801557781586,
+      "realized_correlation_with_secondary": 0.5873437492299896
+    },
+    {
+      "proxy": "x25",
+      "primary_true_variable": "x10",
+      "secondary_partner": "x6",
+      "primary_coefficient": 0.86,
+      "secondary_coefficient": 0.3,
+      "noise_scale": 0.63,
+      "realized_correlation_with_primary": 0.8446350033875302,
+      "realized_correlation_with_secondary": 0.6959981311603974
+    },
+    {
+      "proxy": "x26",
+      "primary_true_variable": "x11",
+      "secondary_partner": "x12",
+      "primary_coefficient": 0.71,
+      "secondary_coefficient": 0.14,
+      "noise_scale": 0.53,
+      "realized_correlation_with_primary": 0.8183159394880544,
+      "realized_correlation_with_secondary": 0.5337707167206314
+    },
+    {
+      "proxy": "x27",
+      "primary_true_variable": "x12",
+      "secondary_partner": "x13",
+      "primary_coefficient": 0.83,
+      "secondary_coefficient": 0.22,
+      "noise_scale": 0.46,
+      "realized_correlation_with_primary": 0.8872537742500828,
+      "realized_correlation_with_secondary": 0.6377157330388076
+    },
+    {
+      "proxy": "x28",
+      "primary_true_variable": "x13",
+      "secondary_partner": "x14",
+      "primary_coefficient": 0.76,
+      "secondary_coefficient": 0.35,
+      "noise_scale": 0.59,
+      "realized_correlation_with_primary": 0.8237295325060482,
+      "realized_correlation_with_secondary": 0.6454717825509099
+    },
+    {
+      "proxy": "x29",
+      "primary_true_variable": "x14",
+      "secondary_partner": "x15",
+      "primary_coefficient": 0.89,
+      "secondary_coefficient": 0.11,
+      "noise_scale": 0.51,
+      "realized_correlation_with_primary": 0.8798328038718413,
+      "realized_correlation_with_secondary": 0.5585878568803808
+    },
+    {
+      "proxy": "x30",
+      "primary_true_variable": "x15",
+      "secondary_partner": "x11",
+      "primary_coefficient": 0.73,
+      "secondary_coefficient": 0.28,
+      "noise_scale": 0.56,
+      "realized_correlation_with_primary": 0.8041804595002369,
+      "realized_correlation_with_secondary": 0.5576589408225617
+    }
+  ],
+  "standardization": "all 30 candidate columns standardized AFTER generation: (x - sample mean) / sample sd with ddof = 1; controls w1, w2 are left as drawn (raw N(0,1))",
+  "outcome_equation": "y = sum_{j=1..15} beta_j * x_j_std + 0.8*w1 - 0.6*w2 + sigma_eps * eps; eps ~ N(0,1); beta_j = 0 for j = 16..30",
+  "noise_calibration": {
+    "procedure": "analytic closed form, single fixed seed (no seed search): signal lies in span([1, w1, w2, x1..x15]), hence RSS(sigma) = sigma^2 ||M eps||^2 with M the design annihilator; setting R2(sigma) = 1 - RSS/TSS = 0.700 gives a quadratic in sigma whose positive root is sigma_eps",
+    "r2_regression_variables": [
+      "intercept",
+      "w1",
+      "w2",
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x6",
+      "x7",
+      "x8",
+      "x9",
+      "x10",
+      "x11",
+      "x12",
+      "x13",
+      "x14",
+      "x15"
+    ],
+    "theoretical_target_r2": 0.7,
+    "realized_r2": 0.7,
+    "sigma_eps": 1.5865231659868915,
+    "signal_variance": 5.854312719173711,
+    "target_noise_variance": 2.5170557562130695,
+    "realized_noise_variance": 2.510271350747893
+  },
+  "model_space_statements": {
+    "total_models": 1073741824,
+    "total_models_note": "the complete model space contains 2^30 = 1,073,741,824 models",
+    "central_layer_size": 155117520,
+    "central_layer_note": "the true model lies in the central layer C(30,15) = 155,117,520"
+  },
+  "row_order": "sorted by (individual_id, period)",
+  "column_order": [
+    "individual_id",
+    "period",
+    "y",
+    "x1",
+    "x2",
+    "x3",
+    "x4",
+    "x5",
+    "x6",
+    "x7",
+    "x8",
+    "x9",
+    "x10",
+    "x11",
+    "x12",
+    "x13",
+    "x14",
+    "x15",
+    "x16",
+    "x17",
+    "x18",
+    "x19",
+    "x20",
+    "x21",
+    "x22",
+    "x23",
+    "x24",
+    "x25",
+    "x26",
+    "x27",
+    "x28",
+    "x29",
+    "x30",
+    "w1",
+    "w2"
+  ],
+  "validation": {
+    "in_memory": {
+      "validated_on": "in-memory dataframe",
+      "n_rows": 2000,
+      "n_columns": 35,
+      "design_rank": 30,
+      "residualized_design_rank": 30,
+      "gram_min_eigenvalue": 187.45807347340053,
+      "gram_max_eigenvalue": 12510.30332201775,
+      "gram_condition_number": 66.73654055125509,
+      "cholesky_float64_models_checked": [
+        "true_15 (x1-x15)",
+        "sparse_1 (x1)",
+        "sparse_3 (x1,x6,x11)",
+        "central_true+proxyA (x1-x10, x16-x20)",
+        "central_all_proxies (x16-x30)",
+        "dense_25",
+        "dense_30 (all)"
+      ],
+      "within_block_abs_correlation": {
+        "A": {
+          "mean_abs": 0.5212505277122543,
+          "min_abs": 0.39959837862877956,
+          "max_abs": 0.662110226489535
+        },
+        "B": {
+          "mean_abs": 0.55220454566839,
+          "min_abs": 0.4590276850163192,
+          "max_abs": 0.6639888522226988
+        },
+        "C": {
+          "mean_abs": 0.508226435249315,
+          "min_abs": 0.3971226472839558,
+          "max_abs": 0.6386529524609277
+        }
+      },
+      "across_block_abs_correlation": {
+        "mean_abs": 0.017488809560382065,
+        "max_abs": 0.046250553054040154
+      },
+      "proxy_primary_correlation_min": 0.7915722279977484,
+      "proxy_primary_correlation_max": 0.8872537742500828,
+      "strongest_absolute_pairwise_correlations": [
+        {
+          "pair": [
+            "x12",
+            "x27"
+          ],
+          "abs_corr": 0.8872537742500828
+        },
+        {
+          "pair": [
+            "x1",
+            "x16"
+          ],
+          "abs_corr": 0.8835030086395729
+        },
+        {
+          "pair": [
+            "x3",
+            "x18"
+          ],
+          "abs_corr": 0.8806808769550416
+        },
+        {
+          "pair": [
+            "x14",
+            "x29"
+          ],
+          "abs_corr": 0.8798328038718413
+        },
+        {
+          "pair": [
+            "x6",
+            "x21"
+          ],
+          "abs_corr": 0.8756769170767585
+        }
+      ],
+      "max_offdiagonal_abs_correlation": 0.8872537742500828,
+      "realized_r2_true_specification": 0.7,
+      "y_mean": 0.06137043995178291,
+      "y_sd": 2.868572877179567,
+      "y_variance": 8.228710351690259
+    },
+    "reloaded_parquet": {
+      "validated_on": "reloaded parquet file",
+      "n_rows": 2000,
+      "n_columns": 35,
+      "design_rank": 30,
+      "residualized_design_rank": 30,
+      "gram_min_eigenvalue": 187.45807347340053,
+      "gram_max_eigenvalue": 12510.30332201775,
+      "gram_condition_number": 66.73654055125509,
+      "cholesky_float64_models_checked": [
+        "true_15 (x1-x15)",
+        "sparse_1 (x1)",
+        "sparse_3 (x1,x6,x11)",
+        "central_true+proxyA (x1-x10, x16-x20)",
+        "central_all_proxies (x16-x30)",
+        "dense_25",
+        "dense_30 (all)"
+      ],
+      "within_block_abs_correlation": {
+        "A": {
+          "mean_abs": 0.5212505277122543,
+          "min_abs": 0.39959837862877956,
+          "max_abs": 0.662110226489535
+        },
+        "B": {
+          "mean_abs": 0.55220454566839,
+          "min_abs": 0.4590276850163192,
+          "max_abs": 0.6639888522226988
+        },
+        "C": {
+          "mean_abs": 0.508226435249315,
+          "min_abs": 0.3971226472839558,
+          "max_abs": 0.6386529524609277
+        }
+      },
+      "across_block_abs_correlation": {
+        "mean_abs": 0.017488809560382065,
+        "max_abs": 0.046250553054040154
+      },
+      "proxy_primary_correlation_min": 0.7915722279977484,
+      "proxy_primary_correlation_max": 0.8872537742500828,
+      "strongest_absolute_pairwise_correlations": [
+        {
+          "pair": [
+            "x12",
+            "x27"
+          ],
+          "abs_corr": 0.8872537742500828
+        },
+        {
+          "pair": [
+            "x1",
+            "x16"
+          ],
+          "abs_corr": 0.8835030086395729
+        },
+        {
+          "pair": [
+            "x3",
+            "x18"
+          ],
+          "abs_corr": 0.8806808769550416
+        },
+        {
+          "pair": [
+            "x14",
+            "x29"
+          ],
+          "abs_corr": 0.8798328038718413
+        },
+        {
+          "pair": [
+            "x6",
+            "x21"
+          ],
+          "abs_corr": 0.8756769170767585
+        }
+      ],
+      "max_offdiagonal_abs_correlation": 0.8872537742500828,
+      "realized_r2_true_specification": 0.7,
+      "y_mean": 0.06137043995178291,
+      "y_sd": 2.868572877179567,
+      "y_variance": 8.228710351690259
+    }
+  },
+  "parquet_file": "panel_30_center15.parquet",
+  "parquet_sha256": "7b468ca0c09249a83b05638b53c884bc444fdd535ba5f698b8fa92c24f7dd6e0",
+  "generator_sha256": "378002be2e6b208a1290842cacfb3d8066c0eb85b2e0dbd165031f5f3710a165",
+  "parquet_byte_stability_note": "Parquet stores the float64 values exactly, but physical bytes embed the writer version (pyarrow 'created_by' footer) and may differ across pyarrow/pandas versions even when the numerical dataset is bit-identical; the numerical content is what the tests compare.",
+  "creation_environment": {
+    "python_version": "3.12.6",
+    "package_versions": {
+      "numpy": "2.4.4",
+      "pandas": "3.0.2",
+      "pyarrow": "24.0.0"
+    }
+  }
+}
