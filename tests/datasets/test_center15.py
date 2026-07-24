@@ -7,6 +7,7 @@ reload parity, metadata consistency and SHA-256 recording, and protection
 of the pre-existing frozen panel_30 artifacts.
 """
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -136,9 +137,14 @@ def test_metadata_consistency(frozen, meta):
 
 
 def test_sha256_recorded_and_matches(meta):
-    assert meta["parquet_sha256"] == file_sha256(PARQUET)
+    assert meta["parquet_sha256"] == file_sha256(PARQUET)  # binary: raw bytes
+    # The generator is TEXT: git's autocrlf may materialize the working copy
+    # with CRLF on Windows while the recorded hash was computed on the LF
+    # content (= the git blob). Compare the line-ending-normalized content,
+    # which is checkout-invariant; the generator content itself is unchanged.
     gen = ROOT / "scripts" / "generate_panel_30_center15.py"
-    assert meta["generator_sha256"] == file_sha256(gen)
+    normalized = gen.read_bytes().replace(b"\r\n", b"\n")
+    assert meta["generator_sha256"] == hashlib.sha256(normalized).hexdigest()
     assert len(meta["parquet_sha256"]) == 64
     int(meta["parquet_sha256"], 16)  # valid hex
 
