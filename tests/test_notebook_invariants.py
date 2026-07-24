@@ -109,6 +109,81 @@ def test_checkpoints_cannot_be_committed():
     assert ".ckpt.npz" in code  # notebook uses the ignored suffix
 
 
+def test_drive_optional_and_disabled_by_default():
+    code_cells = [_src(c) for c in _code_cells(_nb())]
+    code = "\n".join(code_cells)
+    assert re.search(r"^USE_GOOGLE_DRIVE\s*=\s*False", code, re.M)
+    # Drive functionality may appear only inside a guarded (indented) branch
+    # of a cell that tests USE_GOOGLE_DRIVE — never unconditionally.
+    for src in code_cells:
+        for line in src.splitlines():
+            if line.lstrip().startswith("#"):
+                continue  # comments may mention Drive (e.g. "never touches")
+            if "drive.mount" in line or "/content/drive" in line:
+                assert line[:1] in (" ", "\t"), f"unguarded Drive use: {line!r}"
+                assert "if USE_GOOGLE_DRIVE" in src, "Drive use outside guard"
+    assert re.search(r"^RESTORE_CHECKPOINT_UPLOAD\s*=\s*False", code, re.M)
+
+
+def test_local_storage_outside_git_clone():
+    code = "\n".join(_src(c) for c in _code_cells(_nb()))
+    m = re.search(r"^LOCAL_RUN_ROOT\s*=\s*'([^']+)'", code, re.M)
+    assert m, "LOCAL_RUN_ROOT missing"
+    root = m.group(1)
+    assert root.startswith("/content/")
+    assert not root.startswith("/content/gpubma"), "run root inside the clone"
+    assert "def export_checkpoint_bundle" in code
+    assert "def download_checkpoint_bundle" in code
+    assert "def restore_checkpoint_bundle" in code
+    assert "def _safe_extract_zip" in code
+
+
+def test_checkpoint_bundle_functions_execute_safely(tmp_path=None):
+    """Exec the checkpoint-tools and restore cells and verify: empty export
+    is a no-op, ZIP path traversal is rejected, and an incompatible bundle
+    manifest is rejected before any checkpoint file is restored."""
+    import shutil, tempfile, zipfile
+    work = Path(tempfile.mkdtemp(prefix="gpubma-nbtest-"))
+    try:
+        cells = [_src(c) for c in _code_cells(_nb())]
+        tools = [s for s in cells if "def export_checkpoint_bundle" in s]
+        restore = [s for s in cells if "def restore_checkpoint_bundle" in s]
+        assert len(tools) == 1 and len(restore) == 1
+        ns = {
+            "PASS1_CKPT": work / "enum.ckpt.npz",
+            "PASS2_CKPT": work / "pass2.ckpt.npz",
+            "CKPT_DIR": work, "TMP_DIR": work, "WORK_DIR": work,
+            "PARQUET_SHA256": "a" * 64, "METADATA_SHA256": "b" * 64,
+            "RESOLVED_COMMIT": "c" * 40, "P": 30, "n": 2000, "G": 2000.0,
+            "MODEL_PRIOR": ("betabinomial", 1.0, 1.0), "DTYPE": "float64",
+            "TOP_K_MODELS": 10000, "GRID_POINTS": 257,
+            "COMPUTE_COEF_DENSITIES": True,
+        }
+        exec(tools[0], ns)
+        exec(restore[0], ns)
+        assert ns["export_checkpoint_bundle"]() is None  # nothing to export
+        evil = work / "evil.zip"
+        with zipfile.ZipFile(evil, "w") as z:
+            z.writestr("../escape.txt", "x")
+        try:
+            ns["_safe_extract_zip"](evil, work / "dest")
+            raise AssertionError("path traversal was accepted")
+        except ValueError:
+            pass
+        wrong = work / "wrong.zip"
+        with zipfile.ZipFile(wrong, "w") as z:
+            z.writestr("checkpoint_bundle_manifest.json", json.dumps(
+                {"schema_version": 1, "parquet_sha256": "MISMATCH",
+                 "stages": {}}))
+        try:
+            ns["restore_checkpoint_bundle"](wrong)
+            raise AssertionError("incompatible bundle was accepted")
+        except ValueError as exc:
+            assert "INCOMPATIBLE" in str(exc)
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+
+
 def test_expected_seed_and_dataset_constants():
     code = "\n".join(_src(c) for c in _code_cells(_nb()))
     assert "EXPECTED_SEED = 20260724" in code
