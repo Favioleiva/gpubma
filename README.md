@@ -22,22 +22,47 @@ pip install "gpubma[gpu] @ git+https://github.com/Favioleiva/gpubma"
 Requires Python ≥ 3.10, NumPy, SciPy, pandas (PyArrow for Parquet, PyTorch
 with CUDA for the GPU enumerator).
 
-## Run the 2^30 enumeration on Google Colab
+## Run the exact 2^30 enumeration on Google Colab (`panel_30_center15`)
 
-`notebooks/GPUBMA_A100_p30.ipynb` runs the full exhaustive p = 30
-enumeration plus exact BMA postestimation graphics (PMP, model size,
-variable-inclusion map, coefficient densities, PIP) on an A100:
-open it in Colab via `File → Open notebook → GitHub` (or add a badge
-pointing at `notebooks/GPUBMA_A100_p30.ipynb` once the repository URL is
-final), select an **A100 GPU** runtime, and Run all. Checkpoints and
-outputs persist on your Google Drive; reopening after a disconnect resumes
-automatically.
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Favioleiva/gpubma/blob/main/notebooks/GPUBMA_A100_p30.ipynb)
 
-**Cost warning (measured on an A100-SXM4-40GB):** the enumeration itself
-takes ~95 s, but the *optional* second streaming pass for exact
-coefficient densities (`[PASS2]`) sweeps the full model space again and
-takes **~10–12 minutes** of A100 time. All stages are idempotent and skip
-finished work.
+The canonical notebook is **`notebooks/GPUBMA_A100_p30.ipynb`**
+(<https://github.com/Favioleiva/gpubma/blob/main/notebooks/GPUBMA_A100_p30.ipynb>).
+It targets the frozen **`panel_30_center15`** benchmark, published in this
+repository at `data/synthetic/panel_30_center15.parquet` (+ metadata at
+`data/synthetic/panel_30_center15_metadata.json`) — a fresh Colab clone
+loads it directly, no external downloads or private access.
+
+Requirements and workflow (**select an A100 GPU runtime** — the A100 40 GB
+runtime is the validated target; do not run on CPU):
+
+1. open the notebook in Colab (badge above) and pick the A100 runtime;
+2. run bootstrap (clones this repo at a pinned public commit) and the
+   canonical input-validation cell;
+3. run the **mandatory CPU/GPU smoke test** (the expensive cell refuses to
+   start without a PASS);
+4. optionally mount Google Drive for checkpoint persistence;
+5. set `RUN_FULL_EXACT_P30 = True` (it defaults to **False**) and run the
+   clearly labelled expensive cell — the exact enumeration of all
+   2^30 = 1,073,741,824 models;
+6. after a disconnect, reopen and Run all: SHA-256-gated checkpoints on
+   Drive resume the run with at most ~1 minute lost;
+7. validate the completed posterior and download the compact results ZIP.
+
+**Compute cost:** the full run consumes Colab compute units.
+`panel_30_center15` (n = 2,000, correlated true regressors x1–x15 plus 15
+structural-zero proxies x16–x30) is a harder design than the original
+sparse benchmark, and **no runtime claim exists for it until the A100 run
+is actually completed**. *Historical note:* the ~95 s / ~10–12 min PASS2
+figures measured earlier on an A100-SXM4-40GB belong to the OLD
+`panel_30` sparse benchmark (n = 1,000) and must not be attributed to
+`panel_30_center15`.
+
+**Scientific expectation:** because proxies correlate 0.79–0.89 with their
+true sources, posterior mass may legitimately spread across
+observationally similar models — **the exact true model need not have the
+highest PMP**; family-level (true+proxy) recovery is the meaningful
+outcome. See `reports/panel_30_center15_dgp_validation.md`.
 
 ## Quick start
 
