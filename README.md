@@ -41,13 +41,28 @@ runtime is the validated target; do not run on CPU):
    canonical input-validation cell;
 3. run the **mandatory CPU/GPU smoke test** (the expensive cell refuses to
    start without a PASS);
-4. optionally mount Google Drive for checkpoint persistence;
-5. set `RUN_FULL_EXACT_P30 = True` (it defaults to **False**) and run the
+4. set `RUN_FULL_EXACT_P30 = True` (it defaults to **False**) and run the
    clearly labelled expensive cell — the exact enumeration of all
    2^30 = 1,073,741,824 models;
-6. after a disconnect, reopen and Run all: SHA-256-gated checkpoints on
-   Drive resume the run with at most ~1 minute lost;
-7. validate the completed posterior and download the compact results ZIP.
+5. protect progress at any time with `download_checkpoint_bundle()` (a
+   compact ZIP to your computer) and, after a destroyed runtime, restore
+   it through the upload cell;
+6. validate the completed posterior and download the compact results ZIP.
+
+**Storage modes — Google Drive is optional and OFF by default
+(`USE_GOOGLE_DRIVE = False`); no paid Drive plan is required.**
+
+- *Default, free mode:* GitHub inputs → Colab local runtime (`/content`)
+  → manual checkpoint/result downloads. The dataset is hosted publicly in
+  this repository and read from the cloned copy — no uploads, credentials,
+  or tokens. Colab local storage is **ephemeral**: checkpoints survive
+  cell reruns in the same active runtime but are lost if the runtime is
+  destroyed; downloading checkpoint bundles protects progress without
+  Drive.
+- *Optional persistence mode* (`USE_GOOGLE_DRIVE = True`): checkpoints and
+  results live on your Drive, and a destroyed session resumes
+  automatically after Run all. Scientific and numerical behavior is
+  identical in both modes.
 
 **Compute cost:** the full run consumes Colab compute units.
 `panel_30_center15` (n = 2,000, correlated true regressors x1–x15 plus 15
