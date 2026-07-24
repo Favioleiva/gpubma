@@ -12,3 +12,6 @@ reports/benchmarks/raw/
 # enumerator checkpoints and local run outputs (Colab writes these to Drive)
 *.ckpt.npz
 /results/
+
+# internal operational prompts — never publish
+prompts/
