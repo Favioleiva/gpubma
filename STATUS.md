@@ -1,102 +1,80 @@
 # GPUBMA — STATUS
 
-Last updated: 2026-07-16 (Controlled Phase 2: exhaustive GPU enumerator
-implemented and validated through p = 24; p = 30 NOT run — awaits explicit
-user authorization).
+Last updated: 2026-08-20. Controlled Phase 2 and the canonical
+`panel_30_center15` exact run are complete.
 
-## Phase 2 state (all Measured, never projected)
+## Canonical exact p = 30 run (measured)
 
-- **panel_12 Stata oracle EXECUTED** (StataNow/SE 19.5, bmaregress 1.0.2,
-  batch mode): 12 optional predictors, 4,096 models enumerated. New:
-  `bmaregress, saving()` exports the complete per-model dataset (inclusion
-  states, log posterior, log model prior, conditional moments) —
-  `validation/stata/output/medium_no_fe_models.dta`. Compared per model:
-  normalized log PMPs, PMPs, exact once-only mask coverage, full
-  model-size distribution, mean model size, plus PIPs/means/sds from e().
-  Worst |diff| 3.4e-12 at tolerance 1e-9. Total Stata designs: 7/7 PASS
-  (`reports/comparison_report.md`). `bmastats models, top()` cannot export
-  the full space (numlist cap ~2,500 / 50-row r(summary)) — documented in
-  the .do file.
-- **FWL/block-matrix formulation derived and proven**
-  (`docs/FWL_BLOCK_FORMULATION.md`): the joint (Stata "shrink") score and
-  posterior moments are computed exactly from residualized sufficient
-  statistics via Schur-complement identities; per-model cost is a k × k
-  solve independent of the always-block size q and of n. Numerical chain
-  proven in `tests/enumeration/test_fwl_block_equivalence.py`:
-  explicit joint design == FWL fast path == executed Stata (q up to 110,
-  including all 110 always-block posterior means/sds by name); flat
-  residualization demonstrably NOT sufficient (executable test).
-- **ADR 0001 accepted on measured evidence**
-  (`docs/ADR_0001_GPU_ENUMERATOR.md`,
-  `reports/enumerator_candidates_bench.json`): Gray-code rank-1
-  update/downdate is launch-bound and NOT faster than batched direct
-  Cholesky on this hardware (768k vs 947k models/s at k = 30, favourable
-  Gray case) → **streamed direct batching** with combinadic unranking.
-- **Bounded-memory exhaustive GPU enumerator implemented**
-  (`src/gpubma/gpu/enumerator.py`): float64 only; size-grouped chunks over
-  colex combination ranks unranked ON DEVICE (exact int64 combinadics);
-  batched Cholesky on gathered Gram submatrices (validated formula,
-  unchanged); streaming running-rescale log-sum-exp reductions (O(p)
-  device state — normalizer, PIPs, moment numerators, size distribution,
-  top-K); deterministic reductions (scatter + fixed-shape sums, no
-  atomics); atomic checkpoint/resume with SHA-256 config verification;
-  VRAM budget caps chunk size; exact model counting asserted.
+The frozen `data/synthetic/panel_30_center15.parquet` benchmark was executed
+on an NVIDIA A100-SXM4-80GB using commit
+`ef9d68af462564b5cbdce268be1ff2b43317dd24`:
 
-## Progressive validation ladder (Measured, RTX 3060, float64)
+- 30 optional predictors and exactly 2^30 = 1,073,741,824 models;
+- exhaustive enumeration in float64, with no sampling, pruning, truncation,
+  approximation, or rejected models;
+- beta-binomial(1,1) model prior, `g = 2000`, and the validated Stata-compatible
+  shrink convention;
+- PASS1: 115.7 s cumulative, 9,277,815 models/s, 1.93 GiB peak GPU memory;
+- exact PASS2: 896 s, including top-model ranks, family posteriors and
+  coefficient-density grids;
+- exact model count, posterior normalization, finite scores and zero Cholesky
+  failures verified.
 
-Full table: `reports/enumeration_ladder.md` (+ .json). Summary:
+The executed notebook with retained scientific outputs is
+`notebooks/GPUBMA_A100_p30_middle15_stata_figures.ipynb`. The compact archive
+is `reports/artifacts/panel_30_center15_exact_results.zip`; its inventory and
+hashes are documented in `reports/CANONICAL_P30_RESULTS.md`.
 
-| p | models | elapsed | models/s | peak GPU | CPU check | Stata check |
-|---|---|---|---|---|---|---|
-| 12 | 4,096 | 0.34 s | 12,110 | 10 MiB | 1.5e-12 (full) | 3.4e-12 (complete) |
-| 18 | 262,144 | 0.19 s | 1.35M | 227 MiB | 9.1e-13 (full) | — |
-| 20 | 1,048,576 | 0.80 s | 1.32M | 507 MiB | 2.5e-12 (full) | — |
-| 22 | 4,194,304 | 2.20 s | 1.90M | 740 MiB | 1.1e-13 (scores) | — |
-| 24 | 16,777,216 | 8.96 s | 1.87M | 1,048 MiB | 2.7e-13 (scores) | — |
+## Scientific result
 
-At every level: exact model counts verified, size distribution sums to 1
-within 1e-15, PIP overshoot < 1e-12, second run BIT-IDENTICAL, and
-interrupt + resume from checkpoint BIT-IDENTICAL to the uninterrupted run.
-CPU checks: full per-model scores + coefficient moments up to p = 20;
-scores-only aggregates at p = 22/24 (CPU coefficient pass impractical).
-Host peak working set grew from 943 MiB to 1,282 MiB across the whole
-ladder (process-lifetime, cumulative).
+The relevant recovery criterion is signal and family-level uncertainty, not
+whether the single data-generating model ranks first. Variables x1–x13 have
+PIP approximately 1, x14 has PIP 0.9235, and the only material substitution is
+the deliberately difficult x15/x30 family:
 
-## Tests
+- x15 PIP = 0.0905 and its correlated proxy x30 PIP = 0.9638;
+- the MAP model replaces x15 with x30 and has PMP 0.4715;
+- the exact generating model remains plausible, ranking 8th with PMP 0.0188;
+- the x15/x30 family has posterior probability 0.99998 of including at least
+  one member;
+- the top 10 and top 100 models hold 0.7267 and 0.9370 posterior mass;
+- posterior model size is concentrated at 15–17 (mean 15.637, mode 15).
 
-`python -m pytest`: **97 passed, 0 skipped, 0 failed** (5.9 s). GPU tests
-execute real float64 work on the detected RTX 3060; they skip with
-explicit reasons when CUDA is absent.
+This is scientifically reasonable BMA behavior under strong collinearity:
+the signal is recovered while posterior mass records uncertainty between
+observationally similar substitutes.
 
-## Resolved statistical questions (Phase 1, unchanged)
+## Validation chain
 
-1. Stata `bmaregress` applies the Zellner g-prior JOINTLY to optional and
-   always-included slopes (flat intercept, df = n − 1) —
-   `always_prior="shrink"`, gpubma default, verified to ~1e-12.
-2. Export names: `e(b_bma)`, `e(V_bma)`, `e(pip)`; no `e(b)`. Stata counts
-   always variables in model size (subtract `e(p_always)`).
-3. Posterior sd = sqrt(diag(e(V_bma))) reproduced by law-of-total-variance.
-4. Default g = max(n, p²) (= `e(g)`); `mprior(betabinomial 1 1)` matches.
+- Complete Stata oracle parity at p = 12: all 4,096 models, worst absolute
+  difference 3.4e-12.
+- Progressive RTX 3060 ladder at p = 12/18/20/22/24: exact counts,
+  bit-identical repeated runs and checkpoint/resume, CPU parity through the
+  documented feasible levels.
+- Mandatory p = 15 CPU/GPU smoke test on the canonical data before p = 30:
+  all scores within 9.095e-13; PIPs within 5.329e-15; coefficient SDs within
+  6.113e-14; identical top-10 masks.
+- Current local suite: 147 passed, 1 intentionally skipped, 0 failed. The only
+  warning is inability to write pytest's cache in the sandbox.
 
-## Remaining caveats (honest list)
+## Implementation state
 
-- Dummies-vs-absorption equivalence does NOT hold under "shrink" (different
-  prior on the FE); `bma_regress` rejects shrink+within. The FWL path gives
-  Stata-exact results at absorption-like cost (now proven and implemented).
-- Unbalanced two-way within transform unsupported (explicit error).
-- The enumerator aggregates optional-predictor moments; always-block BMA
-  moments are available via the documented O(kq)-per-model extension
-  (docs/FWL_BLOCK_FORMULATION.md §3) but not yet implemented on GPU.
-- CPU coefficient-moment validation stops at p = 20 (pass-2 loop cost);
-  p = 22/24 validated on scores-only aggregates.
-- Multi-GPU sharding is designed for (stateless rank-range chunks) but NOT
-  implemented (out of scope).
-- `e(rngstate)` note from Phase 1 stands (irrelevant for enumeration).
+- The bounded-memory exact enumerator is implemented in
+  `src/gpubma/gpu/enumerator.py` using size-grouped streamed batches,
+  on-device combinadic unranking, batched Cholesky, deterministic reductions,
+  float64-only arithmetic and atomic checkpoint/resume.
+- The FWL/block derivation and Stata-compatible shrink convention remain
+  documented and tested in `docs/FWL_BLOCK_FORMULATION.md`.
+- The p = 30 enumerator remains standalone; integration into the high-level
+  `bma_regress` API has not been performed.
 
-## Hard limits still in force
+## Remaining caveats and hard limits
 
-- **p = 30 / 2^30 NOT run.** All Phase-2 gates through p = 24 now pass;
-  the production run still requires explicit user authorization after
-  reviewing `reports/enumeration_ladder.md`.
-- No MC3/MCMC, no Tournament GPUBMA, no multi-GPU, no mixed precision,
-  no silent float32, projections always labelled.
+- Always-block BMA moments are documented but are not aggregated by the GPU
+  enumerator.
+- CPU coefficient-moment validation stops at p = 20; p = 22/24 use the
+  documented scores-only check, and p = 30 relies on the validated ladder plus
+  the mandatory p = 15 smoke test.
+- Multi-GPU sharding, MC3/MCMC, Tournament GPUBMA and mixed precision remain
+  out of scope. Never report projections as measurements or silently use
+  float32.

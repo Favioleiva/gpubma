@@ -1,6 +1,6 @@
 # panel_30_center15 — DGP validation report
 
-Audited from the canonical Parquet artifact (`data/synthetic/panel_30_center15.parquet`). Local phase only — **the full p = 30 exhaustive enumeration was NOT run**.
+Audited from the canonical Parquet artifact (`data/synthetic/panel_30_center15.parquet`). This report records the local DGP-validation phase, which did not itself run p = 30. The later canonical exact run is documented in `reports/CANONICAL_P30_RESULTS.md`.
 
 ## Structure
 - 2,000 observations x 35 columns; 30 candidates (15 true x1-x15, 15 proxies x16-x30); no missing/non-finite values; dtypes as frozen.

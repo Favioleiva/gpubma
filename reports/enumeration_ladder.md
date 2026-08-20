@@ -2,7 +2,7 @@
 
 Device: NVIDIA GeForce RTX 3060; float64 throughout; g = 1000 = max(n, p^2) for every level; beta-binomial(1,1) model prior; shrink (Stata) convention with always block [1, w1, w2].
 
-Every number below is **Measured** (never projected). p = 30 was NOT run (requires explicit authorization).
+Every number below is **Measured** (never projected). This ladder stops at p = 24 by design; the later standalone p = 30 canonical run is complete and documented separately in `reports/CANONICAL_P30_RESULTS.md`.
 
 | p | models | elapsed s | models/s | peak GPU MiB | peak host MiB | size-dist sum | reproducible | ckpt/resume | CPU check | Stata check |
 |---|---|---|---|---|---|---|---|---|---|---|

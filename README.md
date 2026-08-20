@@ -5,12 +5,13 @@ toward single-GPU enumeration of 2^30 = 1,073,741,824 candidate models.
 Open source, BSD-3-Clause, Python-first. Stata is used only as an external
 validation oracle on small datasets — never as a dependency.
 
-**Status: Phase 2 complete** — exact float64 CPU reference (Stata-verified
-to ~1e-12 on seven designs), plus a bounded-memory exhaustive single-GPU
-enumerator validated at p = 12…24 and executed at **p = 30
-(1,073,741,824 models, ~95 s measured on an A100-SXM4-40GB)**. See
-`STATUS.md`, `docs/ADR_0001_GPU_ENUMERATOR.md`, and
-`docs/FWL_BLOCK_FORMULATION.md`.
+**Status: canonical Phase 2 experiment complete** — exact float64 CPU
+reference (Stata-verified to ~1e-12 on seven designs), a bounded-memory
+single-GPU enumerator validated progressively at p = 12…24, and the exact
+`panel_30_center15` run at **p = 30 (1,073,741,824 models)**. On an
+NVIDIA A100-SXM4-80GB, measured PASS1 was 115.7 s (9.28M models/s), exact
+PASS2 was 896 s, and peak GPU memory was 1.93 GiB. See `STATUS.md` and
+`reports/CANONICAL_P30_RESULTS.md`.
 
 ## Install
 
@@ -26,15 +27,15 @@ with CUDA for the GPU enumerator).
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Favioleiva/gpubma/blob/main/notebooks/GPUBMA_A100_p30.ipynb)
 
-The canonical notebook is **`notebooks/GPUBMA_A100_p30.ipynb`**
+The clean runnable notebook is **`notebooks/GPUBMA_A100_p30.ipynb`**
 (<https://github.com/Favioleiva/gpubma/blob/main/notebooks/GPUBMA_A100_p30.ipynb>).
 It targets the frozen **`panel_30_center15`** benchmark, published in this
 repository at `data/synthetic/panel_30_center15.parquet` (+ metadata at
 `data/synthetic/panel_30_center15_metadata.json`) — a fresh Colab clone
 loads it directly, no external downloads or private access.
 
-Requirements and workflow (**select an A100 GPU runtime** — the A100 40 GB
-runtime is the validated target; do not run on CPU):
+Requirements and workflow (**select an A100 GPU runtime** — the completed
+canonical measurement used an A100-SXM4-80GB; do not run on CPU):
 
 1. open the notebook in Colab (badge above) and pick the A100 runtime;
 2. run bootstrap (clones this repo at a pinned public commit) and the
@@ -64,20 +65,19 @@ runtime is the validated target; do not run on CPU):
   automatically after Run all. Scientific and numerical behavior is
   identical in both modes.
 
-**Compute cost:** the full run consumes Colab compute units.
-`panel_30_center15` (n = 2,000, correlated true regressors x1–x15 plus 15
-structural-zero proxies x16–x30) is a harder design than the original
-sparse benchmark, and **no runtime claim exists for it until the A100 run
-is actually completed**. *Historical note:* the ~95 s / ~10–12 min PASS2
-figures measured earlier on an A100-SXM4-40GB belong to the OLD
-`panel_30` sparse benchmark (n = 1,000) and must not be attributed to
-`panel_30_center15`.
+**Completed canonical evidence:** the executed notebook with retained outputs
+and 23 final figures is
+`notebooks/GPUBMA_A100_p30_middle15_stata_figures.ipynb`. Its compact,
+versioned export is `reports/artifacts/panel_30_center15_exact_results.zip`.
+The earlier ~95 s figure belongs to the old sparse `panel_30` benchmark and
+must not be attributed to `panel_30_center15`.
 
-**Scientific expectation:** because proxies correlate 0.79–0.89 with their
-true sources, posterior mass may legitimately spread across
-observationally similar models — **the exact true model need not have the
-highest PMP**; family-level (true+proxy) recovery is the meaningful
-outcome. See `reports/panel_30_center15_dgp_validation.md`.
+**Scientific result:** x1–x14 are essentially recovered, while strong
+substitution remains within the deliberately correlated x15/x30 family. The
+MAP model uses x30 instead of x15 (PMP 47.15%); the exact generating model
+ranks 8th (PMP 1.88%). Family-level recovery and posterior uncertainty are
+therefore the meaningful criteria—not whether the generating model ranks
+first. See `reports/CANONICAL_P30_RESULTS.md`.
 
 ## Quick start
 
@@ -124,7 +124,7 @@ python scripts/download_grunfeld.py           # regenerate Grunfeld snapshot
 python scripts/compare_fixed_effects.py       # dummies vs absorption report
 python scripts/compare_stata_python.py        # deterministic comparisons
 python scripts/run_enumeration_ladder.py      # GPU validation ladder p=12..24
-python -m pytest                              # 97 tests (GPU tests skip cleanly without CUDA)
+python -m pytest                              # 148 collected; GPU-dependent checks skip explicitly when needed
 ```
 
 ## Honesty rules

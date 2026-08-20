@@ -283,8 +283,10 @@ def to_markdown(rep: dict) -> str:
         "# panel_30_center15 — DGP validation report",
         "",
         "Audited from the canonical Parquet artifact "
-        "(`data/synthetic/panel_30_center15.parquet`). Local phase only — "
-        "**the full p = 30 exhaustive enumeration was NOT run**.",
+        "(`data/synthetic/panel_30_center15.parquet`). This report records "
+        "the local DGP-validation phase, which did not itself run p = 30. "
+        "The later canonical exact run is documented in "
+        "`reports/CANONICAL_P30_RESULTS.md`.",
         "",
         "## Structure",
         f"- 2,000 observations x 35 columns; 30 candidates (15 true x1-x15, "
