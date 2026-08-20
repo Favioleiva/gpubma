@@ -16,9 +16,11 @@ compact export is versioned at
 `reports/CANONICAL_P30_RESULTS.md` for provenance, inventory and SHA-256.
 
 For reproducible plotting outside Colab, call
-`gpubma.generate_canonical_figures(results_zip, output_dir)`. It consumes the
-stored post-BMA tables, generates all 23 PNGs and writes the verified manifest
-only after every figure exists.
+`gpubma.generate_canonical_figures(results_zip, output_dir,
+variable_names=...)`. It consumes the stored post-BMA tables, generates all 23
+PNGs and writes the verified manifest only after every figure exists. Omit
+`variable_names` to preserve the stored labels (`x1` through `x30` for the
+synthetic benchmark).
 
 The notebooks are not required for Phase 1 reproduction; those results still
 regenerate from `scripts/` and `python -m pytest`.

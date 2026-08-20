@@ -54,7 +54,7 @@ observationally similar substitutes.
 - Mandatory p = 15 CPU/GPU smoke test on the canonical data before p = 30:
   all scores within 9.095e-13; PIPs within 5.329e-15; coefficient SDs within
   6.113e-14; identical top-10 masks.
-- Current local suite: 150 passed, 1 intentionally skipped, 0 failed. The only
+- Current local suite: 154 passed, 1 intentionally skipped, 0 failed. The only
   warning is inability to write pytest's cache in the sandbox.
 
 ## Implementation state

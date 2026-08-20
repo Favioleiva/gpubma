@@ -12,6 +12,7 @@ from io import BytesIO
 import json
 from pathlib import Path, PurePosixPath
 import sys
+import textwrap
 from zipfile import ZipFile
 
 import numpy as np
@@ -55,6 +56,39 @@ _COLORS = {
 
 class CanonicalFigureError(ValueError):
     """Raised when computed results cannot produce the canonical figure set."""
+
+
+def resolve_variable_names(
+    p: int,
+    *,
+    stored_names=None,
+    variable_names=None,
+) -> list[str]:
+    """Resolve one presentation label for each statistical position.
+
+    An explicit ``variable_names`` override takes precedence. Otherwise,
+    names stored with the results are preserved; if neither is available,
+    the backward-compatible labels ``x1, ..., xp`` are returned.
+    """
+    if not isinstance(p, int) or p < 1:
+        raise ValueError(f"p must be a positive integer; got {p!r}")
+    candidate = variable_names if variable_names is not None else stored_names
+    source = "variable_names" if variable_names is not None else "stored names"
+    if candidate is None:
+        return [f"x{i + 1}" for i in range(p)]
+    if isinstance(candidate, (str, bytes)):
+        raise ValueError(f"{source} must be a sequence of exactly {p} strings")
+    names = list(candidate)
+    if len(names) != p:
+        raise ValueError(
+            f"{source} must contain exactly {p} names; received {len(names)}"
+        )
+    invalid = [i for i, name in enumerate(names) if not isinstance(name, str) or not name.strip()]
+    if invalid:
+        raise ValueError(f"{source} contains invalid labels at positions {invalid}")
+    if len(set(names)) != p:
+        raise ValueError(f"{source} must contain {p} unique names")
+    return names
 
 
 @dataclass
@@ -122,7 +156,7 @@ def _require_columns(frame: pd.DataFrame, name: str, columns: set[str]) -> None:
         raise CanonicalFigureError(f"{name} is missing columns: {sorted(missing)}")
 
 
-def _load_inputs(source: str | Path) -> _Inputs:
+def _load_inputs(source: str | Path, *, variable_names=None) -> _Inputs:
     reader = _ResultReader(source)
     try:
         summary = reader.json("results/panel_30_center15_exact_summary.json")
@@ -213,10 +247,62 @@ def _load_inputs(source: str | Path) -> _Inputs:
     if set(pip["variable"]) != set(densities["predictor"]):
         raise CanonicalFigureError("PIP and density predictor sets differ")
 
+    pip = pip.reset_index(drop=True).copy()
+    stored_names = pip["variable"].astype(str).tolist()
+    if len(set(stored_names)) != p:
+        raise CanonicalFigureError("stored predictor names must be unique")
+    names = resolve_variable_names(
+        p,
+        stored_names=stored_names,
+        variable_names=variable_names,
+    )
+    name_by_position = dict(enumerate(names))
+    name_by_stored = dict(zip(stored_names, names))
+    pip["variable"] = names
+
+    densities = densities.copy()
+    density_positions = densities["predictor_index"].astype(int)
+    if not density_positions.between(0, p - 1).all():
+        raise CanonicalFigureError("density predictor_index is outside 0..p-1")
+    densities["predictor"] = density_positions.map(name_by_position)
+
+    varmap = varmap.copy()
+    varmap_positions = varmap["predictor_index"].astype(int)
+    if not varmap_positions.between(0, p - 1).all():
+        raise CanonicalFigureError("varmap predictor_index is outside 0..p-1")
+    varmap["predictor"] = varmap_positions.map(name_by_position)
+
+    def relabel_summary(frame: pd.DataFrame, table_name: str) -> pd.DataFrame:
+        frame = frame.copy()
+        unknown = set(frame["predictor"]).difference(name_by_stored)
+        if unknown:
+            raise CanonicalFigureError(
+                f"{table_name} contains unknown predictor labels: {sorted(unknown)}"
+            )
+        frame["predictor"] = frame["predictor"].map(name_by_stored)
+        return frame
+
+    coefsummary = relabel_summary(coefsummary, "coefficient summary")
+    coefsummary_exact = relabel_summary(
+        coefsummary_exact, "exact coefficient summary"
+    )
+    coefridge = relabel_summary(coefridge, "coefficient ridgeline summary")
+
+    corr = corr.copy()
+    missing_corr = [name for name in stored_names if name not in corr.columns]
+    if missing_corr:
+        raise CanonicalFigureError(
+            f"correlation table is missing predictors: {missing_corr}"
+        )
+    corr = corr.rename(columns=name_by_stored)
+    corr["predictor"] = corr["predictor"].map(name_by_stored)
+    if corr["predictor"].isna().any():
+        raise CanonicalFigureError("correlation row labels do not match PIP positions")
+
     return _Inputs(
         dataset=str(summary.get("dataset", "gpubma_results")),
         n_models=int(summary["n_models"]),
-        pip=pip.sort_values("variable", key=lambda s: s.str.extract(r"(\d+)")[0].astype(int)),
+        pip=pip,
         top=top.sort_values("rank"),
         size=size.sort_values("k"),
         densities=densities.sort_values(["predictor_index", "x"]),
@@ -226,6 +312,14 @@ def _load_inputs(source: str | Path) -> _Inputs:
         coefridge=coefridge.sort_values("display_order"),
         corr=corr,
     )
+
+
+def _label_layout(labels) -> tuple[float, float]:
+    """Return modest extra width and left margin for scientific labels."""
+    longest = max(len(str(label)) for label in labels)
+    extra_width = min(6.0, max(0.0, (longest - 8) * 0.065))
+    left_margin = min(0.42, max(0.12, 0.10 + longest * 0.006))
+    return extra_width, left_margin
 
 
 def _save(fig, path: Path, dpi: int, plt) -> None:
@@ -241,7 +335,8 @@ def _plot_pip(data: _Inputs, out: Path, dpi: int, plt) -> None:
     pip = frame["pip"].to_numpy(float)
     order = np.argsort(pip)
     p = len(frame)
-    fig, ax = plt.subplots(figsize=(7, 0.28 * p + 1.5))
+    extra_width, left_margin = _label_layout(predictors)
+    fig, ax = plt.subplots(figsize=(7 + extra_width, 0.28 * p + 1.5))
     ax.barh(np.arange(p), pip[order], color="#1f77b4")
     ax.axvline(0.5, color="0.4", ls="--", label="prior inclusion probability = 0.50 (beta-binomial(1,1))")
     ax.set_yticks(np.arange(p), predictors[order], fontsize=8)
@@ -251,6 +346,7 @@ def _plot_pip(data: _Inputs, out: Path, dpi: int, plt) -> None:
     ax.set_xlabel(f"posterior inclusion probability (exact, all {data.n_models:,} models)")
     ax.set_title(f"Posterior inclusion probabilities, p = {p}")
     ax.legend(fontsize=8, loc="lower right")
+    fig.subplots_adjust(left=left_margin)
     _save(fig, out / "pip.png", dpi, plt)
 
 
@@ -323,7 +419,10 @@ def _plot_densities(data: _Inputs, out: Path, dpi: int, plt) -> None:
         ax.fill_between(grid[j], density[j], color="#1f77b4", alpha=0.22)
         ax.axvline(0.0, color="0.72", linewidth=0.8, linestyle=":")
         ax.tick_params(axis="both", labelsize=7)
-        ax.set_title(f"{predictors[j]}   PIP = {pip[j]:.2f}", fontsize=9)
+        ax.set_title(
+            f"{textwrap.fill(predictors[j], width=24)}\nPIP = {pip[j]:.2f}",
+            fontsize=9,
+        )
         ax2 = ax.twinx()
         ax2.set_ylim(0, 1)
         zero = float(np.clip(1.0 - pip[j], 0.0, 1.0))
@@ -352,12 +451,14 @@ def _plot_densities(data: _Inputs, out: Path, dpi: int, plt) -> None:
         if zero > 1e-6:
             ax2.vlines(0.0, 0.0, zero, color="#d62728", linewidth=4)
             ax2.plot([0.0], [zero], marker="v", markersize=9, color="#d62728")
-        fig.suptitle(predictors[j], fontsize=24, y=0.97)
+        fig.suptitle(textwrap.fill(predictors[j], width=48), fontsize=24, y=0.97)
         fig.text(0.5, 0.915, f"Posterior coefficient density | PIP = {pip[j]:.2f} | P(β=0) = {zero:.2f}",
                  ha="center", fontsize=14)
         fig.text(0.01, 0.015, f"Rank by PIP: {rank} of 10 shown", fontsize=11, color="0.35")
         fig.tight_layout(rect=[0.03, 0.05, 0.97, 0.88])
-        _save(fig, out / f"coefdensity_slide_{rank:02d}_{predictors[j]}.png", dpi, plt)
+        # Filenames identify the statistical position, while visible labels
+        # may contain spaces, Unicode, or other presentation characters.
+        _save(fig, out / f"coefdensity_slide_{rank:02d}_x{j + 1}.png", dpi, plt)
 
 
 def _plot_varmap(data: _Inputs, proportional: bool, out: Path, dpi: int, plt) -> None:
@@ -372,7 +473,8 @@ def _plot_varmap(data: _Inputs, proportional: bool, out: Path, dpi: int, plt) ->
     row_order = sorted(predictors, key=lambda name: -float(pip_map[name]))
     lookup = frame.set_index(["model_rank", "predictor"])
     p = len(predictors)
-    fig, (ax, axp) = plt.subplots(1, 2, figsize=(12.8, 11.8), sharey=True,
+    extra_width, left_margin = _label_layout(predictors)
+    fig, (ax, axp) = plt.subplots(1, 2, figsize=(12.8 + extra_width, 11.8), sharey=True,
                                   gridspec_kw={"width_ratios": [5.6, 1.1], "wspace": 0.20})
     for edge in range(p + 1):
         ax.axhline(edge, color="0.85", linewidth=0.45, zorder=0)
@@ -409,7 +511,7 @@ def _plot_varmap(data: _Inputs, proportional: bool, out: Path, dpi: int, plt) ->
     for ri, value in enumerate(ordered_pip):
         axp.text(min(float(value) + 0.012, 1.065), ri + 0.5, f"{value:.2f}",
                  va="center", fontsize=7, clip_on=False)
-    fig.subplots_adjust(left=0.18, right=0.96, top=0.92, bottom=0.08)
+    fig.subplots_adjust(left=max(0.18, left_margin), right=0.96, top=0.92, bottom=0.08)
     name = "varmap_proportional.png" if proportional else "varmap_equal_width.png"
     _save(fig, out / name, dpi, plt)
 
@@ -433,7 +535,8 @@ def _plot_coefsummary(data: _Inputs, exact: bool, out: Path, dpi: int, plt) -> N
         filename = "coefsummary_ordered.png"
     p = len(frame)
     y = np.arange(p)
-    fig, (ax, axp) = plt.subplots(1, 2, figsize=(12.8, 0.34 * p + 2.6), sharey=True,
+    extra_width, left_margin = _label_layout(predictors)
+    fig, (ax, axp) = plt.subplots(1, 2, figsize=(12.8 + extra_width, 0.34 * p + 2.6), sharey=True,
                                   gridspec_kw={"width_ratios": [4.8, 1.35], "wspace": 0.08})
     n_high = int(np.count_nonzero(pip >= 0.5))
     for yi in y:
@@ -466,7 +569,7 @@ def _plot_coefsummary(data: _Inputs, exact: bool, out: Path, dpi: int, plt) -> N
         fontsize=13,
         y=0.985,
     )
-    fig.subplots_adjust(left=0.20, right=0.95, top=0.91, bottom=0.10)
+    fig.subplots_adjust(left=max(0.20, left_margin), right=0.95, top=0.91, bottom=0.10)
     _save(fig, out / filename, dpi, plt)
 
 
@@ -481,7 +584,8 @@ def _plot_ridgeline(data: _Inputs, out: Path, dpi: int, plt) -> None:
     means = frame["posterior_mean_conditional_on_inclusion"].to_numpy(float)
     p = len(frame)
     n_high = int(np.count_nonzero(pip >= 0.5))
-    fig, (ax, axp) = plt.subplots(1, 2, figsize=(13.5, 0.38 * p + 2.8), sharey=True,
+    extra_width, _ = _label_layout(predictors)
+    fig, (ax, axp) = plt.subplots(1, 2, figsize=(13.5 + extra_width, 0.38 * p + 2.8), sharey=True,
                                   gridspec_kw={"width_ratios": [5.8, 1.35], "wspace": 0.08})
     for yi, (name, color) in enumerate(zip(predictors, colors)):
         j = index[name]
@@ -524,7 +628,8 @@ def _plot_corrmap(data: _Inputs, out: Path, dpi: int, plt) -> None:
     predictors = frame["predictor"].tolist()
     corr = frame[predictors].to_numpy(float)
     p = len(predictors)
-    fig, ax = plt.subplots(figsize=(9, 8))
+    extra_width, left_margin = _label_layout(predictors)
+    fig, ax = plt.subplots(figsize=(9 + extra_width, 8 + 0.25 * extra_width))
     image = ax.imshow(corr, vmin=-1, vmax=1, cmap="coolwarm", interpolation="nearest")
     if p == 30:
         ax.axhline(14.5, color="#1f77b4", linewidth=1.2)
@@ -534,6 +639,7 @@ def _plot_corrmap(data: _Inputs, out: Path, dpi: int, plt) -> None:
     ax.set_title(f"Predictor correlation structure of {data.dataset}")
     cbar = fig.colorbar(image, ax=ax)
     cbar.set_label("Pearson correlation")
+    fig.subplots_adjust(left=left_margin, bottom=min(0.42, left_margin + 0.04))
     _save(fig, out / "corrmap.png", dpi, plt)
 
 
@@ -561,6 +667,7 @@ def _write_manifest(data: _Inputs, output_dir: Path) -> Path:
             {
                 "dataset": data.dataset,
                 "n_models": data.n_models,
+                "variable_names": data.pip["variable"].tolist(),
                 "figures": records,
             },
             indent=2,
@@ -575,6 +682,7 @@ def generate_canonical_figures(
     results: str | Path,
     output_dir: str | Path,
     *,
+    variable_names=None,
     dpi: int = 180,
 ) -> Path:
     """Generate the 23 canonical PNGs from already-computed GPUBMA results.
@@ -585,6 +693,10 @@ def generate_canonical_figures(
         Path to the canonical results ZIP or an extracted results directory.
     output_dir:
         Destination for the PNG files and final SHA-256 manifest.
+    variable_names:
+        Optional presentation labels in exact statistical position order.
+        Spaces and Unicode are accepted. Stored result labels are used when
+        omitted, with ``x1, ..., xp`` as the resolver's final fallback.
     dpi:
         Raster resolution. The canonical default is 180; tests may use a lower
         value to keep lightweight fixtures fast.
@@ -609,7 +721,7 @@ def generate_canonical_figures(
 
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
-    data = _load_inputs(results)
+    data = _load_inputs(results, variable_names=variable_names)
     style = {
         "figure.dpi": 120,
         "savefig.dpi": dpi,
@@ -637,4 +749,5 @@ __all__ = [
     "CANONICAL_FIGURE_FILENAMES",
     "CanonicalFigureError",
     "generate_canonical_figures",
+    "resolve_variable_names",
 ]

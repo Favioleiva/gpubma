@@ -18,7 +18,7 @@ the retained notebook and compact results archive.
   `reports/CANONICAL_P30_RESULTS.md`.
 - The runnable, output-cleared and safety-gated Colab workflow remains
   `notebooks/GPUBMA_A100_p30.ipynb`.
-- Current tests: 150 passed, 1 intentionally skipped, 0 failed.
+- Current tests: 154 passed, 1 intentionally skipped, 0 failed.
 
 ## Scientific conclusion
 

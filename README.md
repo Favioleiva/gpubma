@@ -91,16 +91,31 @@ pip install -e .[plots]
 ```python
 from gpubma import generate_canonical_figures
 
+variable_names = [f"Variable {i}" for i in range(1, 31)]
+variable_names[:5] = [
+    "Initial income",
+    "Mining production",
+    "W × Mining production",
+    "Capital stock",
+    "W × Capital stock",
+]
+
 manifest = generate_canonical_figures(
     "reports/artifacts/panel_30_center15_exact_results.zip",
     "canonical_figures",
+    variable_names=variable_names,
 )
 ```
 
 This writes the complete set of 23 PNGs followed by
 `panel_30_center15_figure_manifest.json`. Generation fails if the manifest and
 actual PNG filenames differ; every manifest record includes byte size and
-SHA-256. No enumerator or posterior calculation is called.
+SHA-256. Labels are positional, accept spaces and Unicode, and must contain
+exactly one unique non-empty string per predictor. If `variable_names` is
+omitted, names stored with the results are used; the resolver's final fallback
+is `x1, ..., xp`. `BMAResult.predictor_names` already preserves the predictor
+column names supplied to `bma_regress`. No enumerator or posterior calculation
+is called.
 
 ## Quick start
 
@@ -147,7 +162,7 @@ python scripts/download_grunfeld.py           # regenerate Grunfeld snapshot
 python scripts/compare_fixed_effects.py       # dummies vs absorption report
 python scripts/compare_stata_python.py        # deterministic comparisons
 python scripts/run_enumeration_ladder.py      # GPU validation ladder p=12..24
-python -m pytest                              # 151 collected; expensive CPU checks skip explicitly when documented
+python -m pytest                              # 155 collected; expensive CPU checks skip explicitly when documented
 ```
 
 ## Honesty rules
