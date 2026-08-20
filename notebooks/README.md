@@ -15,5 +15,10 @@ compact export is versioned at
 `reports/artifacts/panel_30_center15_exact_results.zip`; see
 `reports/CANONICAL_P30_RESULTS.md` for provenance, inventory and SHA-256.
 
+For reproducible plotting outside Colab, call
+`gpubma.generate_canonical_figures(results_zip, output_dir)`. It consumes the
+stored post-BMA tables, generates all 23 PNGs and writes the verified manifest
+only after every figure exists.
+
 The notebooks are not required for Phase 1 reproduction; those results still
 regenerate from `scripts/` and `python -m pytest`.

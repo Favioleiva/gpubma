@@ -7,8 +7,15 @@ enumerator is intentionally not implemented yet.
 
 from gpubma.api import bma_regress
 from gpubma.estimator import GPUBMARegressor
+from gpubma.plots import generate_canonical_figures
 from gpubma.result import BMAResult
 
 __version__ = "0.1.0.dev0"
 
-__all__ = ["bma_regress", "GPUBMARegressor", "BMAResult", "__version__"]
+__all__ = [
+    "bma_regress",
+    "GPUBMARegressor",
+    "BMAResult",
+    "generate_canonical_figures",
+    "__version__",
+]

@@ -49,9 +49,9 @@ uncertainty between observationally similar variables.
 
 - Executed notebook:
   `notebooks/GPUBMA_A100_p30_middle15_stata_figures.ipynb`
-  - size: 2,718,714 bytes
+  - size: 2,718,906 bytes
   - SHA-256:
-    `58a022d492e32cf05efb3047aba712cdb34b49e62d794c1e146a4a244f35a108`
+    `970ffca537a31416dcd00c3e97b3d4d1d1a14e09d6538d4a97b044ec51685207`
 - Final compact archive:
   `reports/artifacts/panel_30_center15_exact_results.zip`
   - size: 3,731,062 bytes

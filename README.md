@@ -79,6 +79,29 @@ ranks 8th (PMP 1.88%). Family-level recovery and posterior uncertainty are
 therefore the meaningful criteria—not whether the generating model ranks
 first. See `reports/CANONICAL_P30_RESULTS.md`.
 
+### Regenerate the canonical figures without rerunning BMA
+
+Install the plotting extra and point the generator at an existing results ZIP
+or its extracted directory:
+
+```bash
+pip install -e .[plots]
+```
+
+```python
+from gpubma import generate_canonical_figures
+
+manifest = generate_canonical_figures(
+    "reports/artifacts/panel_30_center15_exact_results.zip",
+    "canonical_figures",
+)
+```
+
+This writes the complete set of 23 PNGs followed by
+`panel_30_center15_figure_manifest.json`. Generation fails if the manifest and
+actual PNG filenames differ; every manifest record includes byte size and
+SHA-256. No enumerator or posterior calculation is called.
+
 ## Quick start
 
 ```python
@@ -124,7 +147,7 @@ python scripts/download_grunfeld.py           # regenerate Grunfeld snapshot
 python scripts/compare_fixed_effects.py       # dummies vs absorption report
 python scripts/compare_stata_python.py        # deterministic comparisons
 python scripts/run_enumeration_ladder.py      # GPU validation ladder p=12..24
-python -m pytest                              # 148 collected; GPU-dependent checks skip explicitly when needed
+python -m pytest                              # 151 collected; expensive CPU checks skip explicitly when documented
 ```
 
 ## Honesty rules
