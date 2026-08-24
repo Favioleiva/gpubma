@@ -77,13 +77,48 @@ def _check_balanced(data: pd.DataFrame, entity_col: str, time_col: str) -> None:
         )
 
 
+def two_way_residualize(
+    values: np.ndarray,
+    entity_codes: np.ndarray,
+    time_codes: np.ndarray,
+    tolerance: float = 1e-11,
+    max_iter: int = 10000,
+) -> tuple[np.ndarray, int, float]:
+    """Iterative Frisch-Waugh-Lovell alternating projections two-way within transformation.
+
+    Exact numerical equivalence to absorbing full two-way dummy matrix on arbitrary panels.
+    """
+    residual = np.asarray(values, dtype=np.float64, copy=True)
+    if residual.ndim == 1:
+        residual = residual[:, None]
+        squeeze = True
+    else:
+        squeeze = False
+    scales = np.maximum(1.0, np.max(np.abs(residual), axis=0))
+    nd, nt = int(entity_codes.max()) + 1, int(time_codes.max()) + 1
+    count_d = np.bincount(entity_codes, minlength=nd).astype(np.float64)
+    count_t = np.bincount(time_codes, minlength=nt).astype(np.float64)
+    for iteration in range(1, max_iter + 1):
+        final_scaled = 0.0
+        for codes, counts, groups in ((entity_codes, count_d, nd), (time_codes, count_t, nt)):
+            for column in range(residual.shape[1]):
+                sums = np.bincount(codes, weights=residual[:, column], minlength=groups)
+                means = np.divide(sums, counts, out=np.zeros_like(sums), where=counts > 0)
+                adjustment = means[codes]
+                residual[:, column] -= adjustment
+                final_scaled = max(final_scaled, float(np.max(np.abs(adjustment))) / scales[column])
+        if final_scaled <= tolerance:
+            return (residual.squeeze(1) if squeeze else residual), iteration, final_scaled
+    raise RuntimeError(f"FWL alternating projection did not converge: {final_scaled}")
+
+
 def within_transform(values: np.ndarray, data: pd.DataFrame, fixed_effects,
-                     entity_col=None, time_col=None):
+                     entity_col=None, time_col=None, allow_unbalanced: bool = True):
     """Residualize the columns of ``values`` on the given fixed effects.
 
     Returns ``(transformed, absorbed_rank)`` where ``absorbed_rank`` is the
     rank of the span of {intercept, FE dummies} absorbed by the transform:
-      individual only: N_i;  time only: N_t;  both (balanced): N_i + N_t - 1.
+      individual only: N_i;  time only: N_t;  both: N_i + N_t - 1.
     """
     fixed_effects = list(fixed_effects)
     for fe in fixed_effects:
@@ -101,10 +136,17 @@ def within_transform(values: np.ndarray, data: pd.DataFrame, fixed_effects,
         out = V - frame.groupby(data[time_col], observed=True).transform("mean").to_numpy()
         rank = data[time_col].nunique()
     elif sorted(fixed_effects) == ["individual", "time"]:
-        _check_balanced(data, entity_col, time_col)
-        mean_i = frame.groupby(data[entity_col], observed=True).transform("mean").to_numpy()
-        mean_t = frame.groupby(data[time_col], observed=True).transform("mean").to_numpy()
-        out = V - mean_i - mean_t + V.mean(axis=0, keepdims=True)
+        try:
+            _check_balanced(data, entity_col, time_col)
+            mean_i = frame.groupby(data[entity_col], observed=True).transform("mean").to_numpy()
+            mean_t = frame.groupby(data[time_col], observed=True).transform("mean").to_numpy()
+            out = V - mean_i - mean_t + V.mean(axis=0, keepdims=True)
+        except ValueError:
+            if not allow_unbalanced:
+                raise
+            ent_codes = pd.factorize(data[entity_col], sort=True)[0].astype(np.int64)
+            tm_codes = pd.factorize(data[time_col], sort=True)[0].astype(np.int64)
+            out, _, _ = two_way_residualize(V, ent_codes, tm_codes)
         rank = data[entity_col].nunique() + data[time_col].nunique() - 1
     else:
         raise ValueError(f"unsupported fixed_effects combination: {fixed_effects}")
