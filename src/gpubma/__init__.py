@@ -7,6 +7,7 @@ enumerator is intentionally not implemented yet.
 
 from gpubma.adapters import load_bma_run_as_inputs
 from gpubma.api import bma_regress
+from gpubma.bfg import fit_bfg, BFGResult, BFGConfig
 from gpubma.estimator import GPUBMARegressor
 from gpubma.fixed_effects.design import two_way_residualize, within_transform
 from gpubma.gpu.enumerator import enumerate_models_gpu
@@ -27,10 +28,13 @@ from gpubma.plots import (
 )
 from gpubma.result import BMAResult
 
-__version__ = "0.1.0.dev0"
+__version__ = "0.2.0.dev0"
 
 __all__ = [
     "bma_regress",
+    "fit_bfg",
+    "BFGResult",
+    "BFGConfig",
     "GPUBMARegressor",
     "BMAResult",
     "enumerate_models_gpu",

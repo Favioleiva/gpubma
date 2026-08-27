@@ -15,3 +15,5 @@ reports/benchmarks/raw/
 
 # internal operational prompts — never publish
 prompts/
+contracts/
+slides/

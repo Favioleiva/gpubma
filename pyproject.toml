@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gpubma"
-version = "0.1.0.dev0"
-description = "Exhaustive Bayesian Model Averaging for linear regression, GPU-accelerated (Phase 1: CPU reference and diagnostics)"
+version = "0.2.0.dev0"
+description = "Exhaustive and Budgeted Fast GPU Bayesian Model Averaging for linear regression"
 readme = "README.md"
 license = { text = "BSD-3-Clause" }
 requires-python = ">=3.10"
@@ -24,6 +24,7 @@ dev = ["pytest>=7.4", "pyarrow>=14", "matplotlib>=3.8"]
 
 [project.scripts]
 gpubma = "gpubma.cli:main"
+gpubma-bfg = "gpubma.bfg.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

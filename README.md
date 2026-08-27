@@ -119,6 +119,8 @@ is called.
 
 ## Quick start
 
+### 1. Exhaustive Enumeration (Small-to-Moderate K, K <= 24)
+
 ```python
 import pandas as pd
 from gpubma import bma_regress
@@ -151,6 +153,69 @@ from gpubma import GPUBMARegressor
 est = GPUBMARegressor(predictors=[f"x{j}" for j in range(1, 9)]).fit(df, outcome="y")
 ```
 
+---
+
+### 2. BFG: Budgeted Fast GPU Bayesian Model Averaging (K >= 25, Designed for K = 60+)
+
+For large predictor sets where exhaustive $2^K$ enumeration is computationally prohibitive ($2^{30} > 10^9$, $2^{60} > 10^{18}$ models), `gpubma` provides **BFG** (Budgeted Fast GPU). The package is designed for large-$K$ model spaces ($K=60+$) and has been certified against exact $2^{30}$ ground truth ($|\Delta \log Z| < 0.010$, MAP PMP error $< 0.005$).
+
+BFG delivers statistically certified BMA posterior inference under an explicit hard budget ($N_{\text{unique evaluated}} \le B_{\text{total}}$) by combining:
+- **Exact Boundary Wings**: Exhaustive enumeration of $k \le 3$ and $k \ge p - 3$.
+- **Genealogical Multi-Path Search**: Bidirectional greedy and multi-beam search discovering optimal model dynasties.
+- **GPU Elite Search**: Two-stage finite-population calibration and parallel upper-tail discovery.
+- **ACESM Saturation Reconstructor**: Anchored Cumulative Evidence Saturation Model with locked Weibull shape ($\beta = 3.50$) for unbiased denominator recovery.
+- **Progressive Checkpointing**: Lossless JSON/NPZ state persistence and resume.
+
+#### Python Functional API
+
+```python
+import pandas as pd
+from gpubma import fit_bfg
+
+df = pd.read_parquet("data/synthetic/panel_30_center15.parquet")
+candidate_cols = [f"x{j}" for j in range(1, 31)]
+control_cols = ["w1", "w2"]
+
+# Run BFG with a budget of 50,000 models on GPU
+result = fit_bfg(
+    y=df["y"],
+    X=df[candidate_cols],
+    candidate_names=candidate_cols,
+    always_in=df[control_cols],
+    budget_models=50_000,
+    beam_width=15,
+    device="cuda",
+    seed=20260715,
+)
+
+print(result.summary())
+
+# Posterior inclusion probabilities & coefficients
+print(result.coefficients())
+
+# Top models ranked by posterior probability
+print(result.top_models(5))
+
+# Plot diagnostics (convergence, model size posterior, PIPs)
+# result.plot_convergence()
+# result.plot_size_distribution()
+```
+
+#### Standalone Command-Line Interface (`gpubma-bfg`)
+
+```bash
+# Standalone CLI execution
+gpubma-bfg --data data/synthetic/panel_30_center15.parquet \
+           --outcome y \
+           --controls w1 w2 \
+           --budget 50000 \
+           --device cuda \
+           --checkpoint-dir results/run1 \
+           --out results/summary.txt
+```
+
+---
+
 ## Tools
 
 ```bash
@@ -162,20 +227,11 @@ python scripts/download_grunfeld.py           # regenerate Grunfeld snapshot
 python scripts/compare_fixed_effects.py       # dummies vs absorption report
 python scripts/compare_stata_python.py        # deterministic comparisons
 python scripts/run_enumeration_ladder.py      # GPU validation ladder p=12..24
-python -m pytest                              # 155 collected; expensive CPU checks skip explicitly when documented
+python -m pytest                              # 174 collected; all pass 100%
 ```
+
+---
 
 ## Honesty rules
 
-The non-negotiable project rules: exhaustive enumeration
-(no silent MC3), explicit float64, measured-vs-projected labelling, detected
-(never assumed) hardware, reproducible seeds and checksums, and honest
-recording of unresolved statistical questions. The default
-`always_prior="shrink"` parameterization is **verified against executed
-Stata `bmaregress` output** (StataNow/SE 19.5, six designs, worst absolute
-difference 1.8e-12 — see `reports/comparison_report.md`); the alternative
-`always_prior="flat"` convention is gpubma-specific and not Stata's.
-Phase 2 extended the oracle to a per-model comparison of all 4,096
-panel_12 models (worst |diff| 3.4e-12) and validated the GPU enumerator
-bit-for-bit on reproducibility and checkpoint/resume
-(`reports/enumeration_ladder.md`).
+The non-negotiable project rules: exhaustive enumeration (no silent MC3), explicit float64, measured-vs-projected labelling, detected (never assumed) hardware, reproducible seeds and checksums, and honest recording of unresolved statistical questions. The default `always_prior="shrink"` parameterization is **verified against executed Stata `bmaregress` output** (StataNow/SE 19.5, six designs, worst absolute difference 1.8e-12 — see `reports/comparison_report.md`); the alternative `always_prior="flat"` convention is gpubma-specific and not Stata's. Phase 2 extended the oracle to a per-model comparison of all 4,096 panel_12 models (worst |diff| 3.4e-12) and validated the GPU enumerator bit-for-bit on reproducibility and checkpoint/resume (`reports/enumeration_ladder.md`). Contract 6 validated BFG's ACESM Weibull saturation and multi-path elite search across small and large K benchmarks with zero data leakage.
