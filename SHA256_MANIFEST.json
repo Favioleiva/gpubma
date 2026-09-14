@@ -258,8 +258,8 @@
       "bytes": 510
     },
     "examples/Exact_BMA_Canonical_p30_Figures.ipynb": {
-      "sha256": "17b14eaf68263c5cc8c4c5ffacfee523bd0a6e26012951cb775a44c2d8be3ccf",
-      "bytes": 12473
+      "sha256": "2b154cede2668c77031fb0bf34111ff032f589b70b170a470873a89aef26496c",
+      "bytes": 12884
     },
     "examples/exact_reference_figures.py": {
       "sha256": "60096dcba41bd201d653c79c273c953838c553794816adb534ce5dc749447583",
