@@ -16,21 +16,31 @@ Python 3.10+ and PyTorch are required. Install the appropriate PyTorch CPU/CUDA 
 
 ### Exact p=30 BMA reference
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Favioleiva/gpubma/blob/main/examples/Exact_BMA_Canonical_p30_Figures.ipynb)
+
 [Exact_BMA_Canonical_p30_Figures.ipynb](examples/Exact_BMA_Canonical_p30_Figures.ipynb) reproduces nine publication figures and the regression comparison table from the **complete 1,073,741,824-model universe**. Default `REGENERATE_FULL_ENUMERATION = False`. Compact hash-checked exact artifacts are committed under [benchmark/exact_p30/reference](benchmark/exact_p30/reference). No raw-score download or six-minute GPU run is needed. See [artifact provenance and workflow](docs/exact_p30_reference.md).
 
 ### BFG canonical p=30 example
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Favioleiva/gpubma/blob/main/examples/BFG_Canonical_p30_Example.ipynb)
 
 [BFG_Canonical_p30_Example.ipynb](examples/BFG_Canonical_p30_Example.ipynb) runs the canonical synthetic benchmark with a user-controlled evaluation budget. The preserved B=5,000 profile found MAP, truth, 10/10 exact top models, and 98/100 exact top models. These are benchmark observations, not guarantees on new data.
 
 ### BFG + shell recovery
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Favioleiva/gpubma/blob/main/examples/BFG_Canonical_p30_Shell_Recovery.ipynb)
+
 [BFG_Canonical_p30_Shell_Recovery.ipynb](examples/BFG_Canonical_p30_Shell_Recovery.ipynb) pairs targeted BFG discovery (B=5,000) with representative uniform random shell recovery (recommended default cap 100,000 per shell) to reconstruct reticular score distributions across all 31 shells without equal-pooling bias. See [shell recovery documentation](docs/random_shell_recovery.md).
 
 ### Use BFG on your own data
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Favioleiva/gpubma/blob/main/examples/BFG_User_Dataset_Example.ipynb)
+
 [BFG_User_Dataset_Example.ipynb](examples/BFG_User_Dataset_Example.ipynb): change `DATA_PATH`, `TARGET`, `EXPLANATORY_VARIABLES`, and `BUDGET`. CSV, Parquet and Stata are supported; always-in controls are configured separately.
 
 ### Stata compatibility
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Favioleiva/gpubma/blob/main/examples/BFG_Public_Stata_Example.ipynb)
 
 [BFG_Public_Stata_Example.ipynb](examples/BFG_Public_Stata_Example.ipynb) is a Grunfeld `.dta` compatibility / econometric parity example. Its two candidates give only four models; it is not a large model-space BFG demonstration.
 

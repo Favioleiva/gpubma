@@ -1,12 +1,12 @@
 # Example inventory
 
-| Notebook | Purpose | Default work |
-|---|---|---|
-| [Exact_BMA_Canonical_p30_Figures](Exact_BMA_Canonical_p30_Figures.ipynb) | Complete exact p30 reference | Load compact frozen data; nine PNGs and exact tables; zero model evaluations |
-| [BFG_Canonical_p30_Example](BFG_Canonical_p30_Example.ipynb) | Budgeted p30 discovery | Hard global BUDGET=5,000 |
-| [BFG_Canonical_p30_Shell_Recovery](BFG_Canonical_p30_Shell_Recovery.ipynb) | Post-BFG reticular recovery | Budgeted BFG discovery + representative random shell sampling (default cap 100k) |
-| [BFG_User_Dataset_Example](BFG_User_Dataset_Example.ipynb) | User data | Configure DATA_PATH, TARGET, EXPLANATORY_VARIABLES, BUDGET |
-| [BFG_Public_Stata_Example](BFG_Public_Stata_Example.ipynb) | Grunfeld Stata compatibility / econometric parity | Four possible models; not a large-space demonstration |
+| Notebook | Purpose | Launch | Default work |
+|---|---|---|---|
+| [Exact_BMA_Canonical_p30_Figures](Exact_BMA_Canonical_p30_Figures.ipynb) | Complete exact p30 reference | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Favioleiva/gpubma/blob/main/examples/Exact_BMA_Canonical_p30_Figures.ipynb) | Load compact frozen data; nine PNGs and exact tables; zero model evaluations |
+| [BFG_Canonical_p30_Example](BFG_Canonical_p30_Example.ipynb) | Budgeted p30 discovery | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Favioleiva/gpubma/blob/main/examples/BFG_Canonical_p30_Example.ipynb) | Hard global BUDGET=5,000 |
+| [BFG_Canonical_p30_Shell_Recovery](BFG_Canonical_p30_Shell_Recovery.ipynb) | Post-BFG reticular recovery | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Favioleiva/gpubma/blob/main/examples/BFG_Canonical_p30_Shell_Recovery.ipynb) | Budgeted BFG discovery + representative random shell sampling (default cap 100k) |
+| [BFG_User_Dataset_Example](BFG_User_Dataset_Example.ipynb) | User data | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Favioleiva/gpubma/blob/main/examples/BFG_User_Dataset_Example.ipynb) | Configure DATA_PATH, TARGET, EXPLANATORY_VARIABLES, BUDGET |
+| [BFG_Public_Stata_Example](BFG_Public_Stata_Example.ipynb) | Grunfeld Stata compatibility / econometric parity | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Favioleiva/gpubma/blob/main/examples/BFG_Public_Stata_Example.ipynb) | Four possible models; not a large-space demonstration |
 
 Open a notebook in Jupyter or Colab and Run All. The exact notebook checks for a local public checkout first; standalone Colab downloads the committed, checksum-verified reference inputs and rendering helpers after this candidate has been published to the public repository. Install dependencies requires network access when not already available. No Drive mount is needed.
 
