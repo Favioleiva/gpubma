@@ -1,10 +1,4 @@
-"""GPUBMA: exhaustive Bayesian Model Averaging for linear regression.
-
-Phase 1 provides an exact float64 CPU reference implementation, deterministic
-datasets, diagnostics, and a GPU feasibility layer. The production CUDA
-enumerator is intentionally not implemented yet.
-"""
-
+"""BFG discovery and separate exhaustive BMA reference APIs."""
 from gpubma.adapters import load_bma_run_as_inputs
 from gpubma.api import bma_regress
 from gpubma.bfg import fit_bfg, BFGResult, BFGConfig
@@ -28,7 +22,7 @@ from gpubma.plots import (
 )
 from gpubma.result import BMAResult
 
-__version__ = "0.2.0.dev0"
+__version__ = "0.3.0rc1"
 
 __all__ = [
     "bma_regress",

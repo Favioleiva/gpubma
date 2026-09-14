@@ -1,0 +1,12 @@
+include README.md LICENSE CITATION.cff CHANGELOG.md RELEASE_NOTES.md
+include PUBLIC_API.md SCIENTIFIC_SCOPE.md LIMITATIONS.md BENCHMARK_SUMMARY.md
+recursive-include docs *.md *.json
+recursive-include tests *.py *.csv
+recursive-include data *.parquet *.dta *.json
+recursive-include benchmark *.md *.py *.csv *.json *.npz *.gz
+recursive-include examples *.py *.ipynb *.csv *.md
+global-exclude __pycache__ *.py[cod]
+
+include CANONICAL_P30_REPLICATION_REPORT.md canonical_p30_replication.csv
+recursive-include benchmark/exact_p30 *.csv *.json *.npz *.tex *.md *.sha256
+include TEST_REPORT.md PUBLIC_EXCLUSIONS.md EXAMPLE_INVENTORY.md FILE_CHANGES.csv

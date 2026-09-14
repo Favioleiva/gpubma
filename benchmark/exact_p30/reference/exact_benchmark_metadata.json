@@ -1,0 +1,250 @@
+{
+  "dataset": "data/synthetic/panel_30_center15.parquet",
+  "dataset_sha256": "7b468ca0c09249a83b05638b53c884bc444fdd535ba5f698b8fa92c24f7dd6e0",
+  "candidate_variables": [
+    "x1",
+    "x2",
+    "x3",
+    "x4",
+    "x5",
+    "x6",
+    "x7",
+    "x8",
+    "x9",
+    "x10",
+    "x11",
+    "x12",
+    "x13",
+    "x14",
+    "x15",
+    "x16",
+    "x17",
+    "x18",
+    "x19",
+    "x20",
+    "x21",
+    "x22",
+    "x23",
+    "x24",
+    "x25",
+    "x26",
+    "x27",
+    "x28",
+    "x29",
+    "x30"
+  ],
+  "always_in": [
+    "w1",
+    "w2"
+  ],
+  "target": "y",
+  "n": 2000,
+  "p": 30,
+  "g": 2000,
+  "model_prior": [
+    "betabinomial",
+    1.0,
+    1.0
+  ],
+  "always_prior": "shrink",
+  "precision": "float64",
+  "score_convention": "FWL on [1,w1,w2], df=n-1, centered-y TSS; common-constant log marginal likelihood plus log model prior",
+  "models": 1073741824,
+  "log_normalizer": 1119.2735769221408,
+  "posterior_expected_model_size": 15.636704137983042,
+  "quantile_convention": "NumPy linear empirical quantiles from every float64 shell score; no histogram quantile approximation",
+  "cloud_rendering": "Exact 2000-bin counts for every shell, common [50,1150] grid; log-count color; no point thinning",
+  "ridge_rendering": "Full-count histograms smoothed sigma=3 bins for display only; exact support endpoints; singleton spikes",
+  "complete_score_order": "k ascending then colex rank; all 2^30 float64 scores retained",
+  "timing": {
+    "models": 1073741824,
+    "shell_counts": [
+      1,
+      30,
+      435,
+      4060,
+      27405,
+      142506,
+      593775,
+      2035800,
+      5852925,
+      14307150,
+      30045015,
+      54627300,
+      86493225,
+      119759850,
+      145422675,
+      155117520,
+      145422675,
+      119759850,
+      86493225,
+      54627300,
+      30045015,
+      14307150,
+      5852925,
+      2035800,
+      593775,
+      142506,
+      27405,
+      4060,
+      435,
+      30,
+      1
+    ],
+    "shell_champions": [
+      {
+        "mask": 0,
+        "log_score": 157.7019707907617
+      },
+      {
+        "mask": 4,
+        "log_score": 339.1601085255122
+      },
+      {
+        "mask": 132,
+        "log_score": 467.11140258733195
+      },
+      {
+        "mask": 134,
+        "log_score": 517.6953793379369
+      },
+      {
+        "mask": 135,
+        "log_score": 618.666774917742
+      },
+      {
+        "mask": 143,
+        "log_score": 689.9760718865384
+      },
+      {
+        "mask": 159,
+        "log_score": 779.3386536458935
+      },
+      {
+        "mask": 1183,
+        "log_score": 820.3978912773988
+      },
+      {
+        "mask": 255,
+        "log_score": 890.365907739611
+      },
+      {
+        "mask": 511,
+        "log_score": 947.5527360927629
+      },
+      {
+        "mask": 1535,
+        "log_score": 1003.0882019662213
+      },
+      {
+        "mask": 2047,
+        "log_score": 1048.886514732459
+      },
+      {
+        "mask": 4095,
+        "log_score": 1088.5008327343576
+      },
+      {
+        "mask": 8191,
+        "log_score": 1104.4376080752793
+      },
+      {
+        "mask": 536879103,
+        "log_score": 1110.9798140602459
+      },
+      {
+        "mask": 536887295,
+        "log_score": 1118.521780616737
+      },
+      {
+        "mask": 545275903,
+        "log_score": 1116.3120487555068
+      },
+      {
+        "mask": 545538047,
+        "log_score": 1114.170793865672
+      },
+      {
+        "mask": 547635199,
+        "log_score": 1111.3966390584746
+      },
+      {
+        "mask": 547651583,
+        "log_score": 1108.7995170227473
+      },
+      {
+        "mask": 564428799,
+        "log_score": 1106.3020036697044
+      },
+      {
+        "mask": 832864255,
+        "log_score": 1103.7078208826417
+      },
+      {
+        "mask": 967081983,
+        "log_score": 1101.0897016982094
+      },
+      {
+        "mask": 971276287,
+        "log_score": 1098.5965868624387
+      },
+      {
+        "mask": 1038385151,
+        "log_score": 1096.278894584943
+      },
+      {
+        "mask": 1038417919,
+        "log_score": 1094.0996924079939
+      },
+      {
+        "mask": 1038942207,
+        "log_score": 1092.0393182789328
+      },
+      {
+        "mask": 1039007743,
+        "log_score": 1090.1702615072134
+      },
+      {
+        "mask": 1039138815,
+        "log_score": 1088.6059915743451
+      },
+      {
+        "mask": 1040187391,
+        "log_score": 1087.4807895799738
+      },
+      {
+        "mask": 1073741823,
+        "log_score": 1087.0813230296385
+      }
+    ],
+    "true_score": 1115.3003957189062,
+    "enumeration_core_s": 379.811713000061,
+    "pure_model_scoring_s": 346.9673057823675,
+    "posterior_aggregation_s": 19.891233691363595,
+    "score_export_s": 12.248745313263498,
+    "other_enumeration_overhead_s": 0.7044282130664214,
+    "final_score_flush_s": 3.153575100004673,
+    "score_order": "size k ascending; colex rank within shell",
+    "timing_note": "CUDA-synchronized host times; imports, input loading, warm-up, allocation and final file flush excluded from core time."
+  },
+  "engine_runtime": {
+    "backend": "gpu-enumerator",
+    "precision": "float64",
+    "device": "NVIDIA GeForce RTX 3060",
+    "elapsed_s": 379.5595827999059,
+    "scoring_s": 379.11672259203624,
+    "models_per_second": 2828915.0706703383,
+    "peak_gpu_memory_bytes": 1718852096,
+    "chunks": 16405,
+    "resumed": false
+  },
+  "postprocessing_s": 91.18073629995342,
+  "historical_A100_timings": {
+    "data_load_s": 0.5535838400001012,
+    "smoke_s": 4.144395216000248,
+    "pass1_cumulative_s": 115.73218119600006,
+    "pass1_models_per_s": 9277815.495255789,
+    "pass2_this_session_s": 895.76881980896
+  },
+  "reference_distribution": "Compact exact summaries and histograms included with the public repository."
+}

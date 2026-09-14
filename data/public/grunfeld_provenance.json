@@ -7,16 +7,8 @@
   "source_bytes_sha256": "be844fe819788af680c8c7bb44f0a86f6726fb440081bd2de4a102679ebbc939",
   "failed_sources": [],
   "local_files": {
-    "grunfeld.csv": {
-      "path": "X:\\Claude Agentic Tasks\\GPU Powered BMA\\data\\public\\grunfeld.csv",
-      "sha256": "c30e6532ecf09ce903fd0498aa3ccbb7e172a096d187cf77bcdb84a08369f642"
-    },
-    "grunfeld.parquet": {
-      "path": "X:\\Claude Agentic Tasks\\GPU Powered BMA\\data\\public\\grunfeld.parquet",
-      "sha256": "b92deb842f67222de7b18fead2a30d39ad231665202b53f30eb2dea520285e2d"
-    },
     "grunfeld.dta": {
-      "path": "X:\\Claude Agentic Tasks\\GPU Powered BMA\\data\\public\\grunfeld.dta",
+      "path": "data/public/grunfeld.dta",
       "sha256": "be844fe819788af680c8c7bb44f0a86f6726fb440081bd2de4a102679ebbc939"
     }
   },
@@ -43,5 +35,17 @@
     "kstock": 0,
     "time": 0
   },
-  "notes": "Observations were downloaded, never manually recreated. When the Stata Press source is used, grunfeld.dta preserves the original downloaded bytes; CSV/Parquet are derived from it."
+  "notes": "Observations were downloaded, never manually recreated. When the Stata Press source is used, grunfeld.dta preserves the original downloaded bytes; CSV/Parquet are derived from it.",
+  "baseline": {
+    "source": "tests/stata_parity/test_stata_parity.py: grunfeld_no_fe",
+    "target": "invest",
+    "candidates": [
+      "mvalue",
+      "kstock"
+    ],
+    "always_in": [],
+    "fixed_effects": [],
+    "g": 200.0,
+    "rows": "All 200 supplied rows; no transforms or row deletion"
+  }
 }

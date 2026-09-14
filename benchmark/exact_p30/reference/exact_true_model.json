@@ -1,0 +1,17 @@
+{
+  "model_id": 32767,
+  "model_size": 15,
+  "log_score": 1115.3003957189062,
+  "pmp": 0.01881348830750715,
+  "exact_posterior_rank": 8,
+  "score_ties": 0,
+  "cumulative_pmp_through_rank": 0.6951200301187114,
+  "log_score_gap_from_top": 3.2213848978308306,
+  "hamming_from_top_model": 2,
+  "note": "New exact rank counted over all saved RTX 3060 scores; no second model-scoring pass.",
+  "variables": "x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15",
+  "log_model_prior": -22.293680785633526,
+  "log_marginal_likelihood_common_constant_omitted": 1137.5940765045398,
+  "true_model_equals_map": false,
+  "exact_global_rank": 8
+}

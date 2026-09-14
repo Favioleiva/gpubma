@@ -1,0 +1,62 @@
+{
+  "schema": "gpubma-exact-p30-reference-v1",
+  "frozen_scientific_values": true,
+  "files": {
+    "coefficient_densities.npz": "2f4348cd69911c4d1de0496fc45de23cca2543921761ec175583026b7801ebd7",
+    "exact_benchmark_metadata.json": "73097c840470d791eff7302c8a00300c35d5ff9c8bb90bf141c2ce6e6f4b7790",
+    "exact_frontiers.csv": "bb8fe753d5c4773a23bd636c58a88c6759f62795eddb2aca2a5e259f99c6f6af",
+    "exact_global_pips.csv": "2ebdcdc08a5e33bbe3cba6348ee9508874fbacf311d85c1078b984a3b7fa308d",
+    "exact_map.json": "0570ddf4fb1f5324d70e4c5faeced4d88b3adf403e537535146f8e0647db499a",
+    "exact_model_size_distribution.csv": "0b11c9e9dcfd46b5b5a433a5e792ba6f8e8d8d6d50abfe8fe41aaccaf52836a2",
+    "exact_shell_histograms.npz": "ee0ef9f082ff508864b7a79040330c56d9c31cbc58bfdfc36d7f978f4d0a923f",
+    "exact_top10000_models.csv": "0f45acb1f8d53606792d57768d458d0587eae7a4ada9bfd6780e514e086e9089",
+    "exact_top100_models.csv": "d3a1390d57f198ce0859f9c4ba627c898cda7f8141612daa2edb709b048b7af0",
+    "exact_top10_models.csv": "e0d71df90ccbc3ac43e4f7175066bd16ef6346b2169a893b3dab3d40c3b88187",
+    "exact_top5_ols_coefficients.csv": "ed5e357d99f3902d23c9f97759500426552e69fa55b72dc134629f6c53320856",
+    "exact_top5_regression_comparison.tex": "3b500861ff4f882c7ba829dccb716e1b84bd660c6acf453bd6eac272f484760d",
+    "exact_top5_regression_diagnostics.csv": "25db84dbd2ed5416b5b5ae8a3d022260b26743bed11bb886faeefc5cea27b155",
+    "exact_true_model.json": "e05f6cc9d34a0f73a9d464066edd5aa8177a8086608b5c008769f8bc869f9851",
+    "exhaustive_reticular_summary.csv": "96bb4b520417c383194beb144083598aa75504ec5d36cbb12f5d02f1900bfbf5",
+    "model_sign_display.json": "66772b5ae8149b71a702c3c462bd1616fa11cf32413619787d4fa0d19b97d17e",
+    "predictor_correlations.csv": "65fabaedd8ae0682431a6aed5a1b03977a2092bb1cfce73de830ab25ec30de5a"
+  },
+  "original_frozen_sha256": {
+    "coefficient_densities.npz": "2f4348cd69911c4d1de0496fc45de23cca2543921761ec175583026b7801ebd7",
+    "exact_benchmark_metadata.json": "fe688274b458b4538a9b7c1afa366b911d3b56ff0c351bcfc38e69f035827723",
+    "exact_global_pips.csv": "2ebdcdc08a5e33bbe3cba6348ee9508874fbacf311d85c1078b984a3b7fa308d",
+    "exact_map.json": "0570ddf4fb1f5324d70e4c5faeced4d88b3adf403e537535146f8e0647db499a",
+    "exact_model_size_distribution.csv": "0b11c9e9dcfd46b5b5a433a5e792ba6f8e8d8d6d50abfe8fe41aaccaf52836a2",
+    "exact_shell_histograms.npz": "ee0ef9f082ff508864b7a79040330c56d9c31cbc58bfdfc36d7f978f4d0a923f",
+    "exact_top10000_models.csv": "0f45acb1f8d53606792d57768d458d0587eae7a4ada9bfd6780e514e086e9089",
+    "exact_top5_regression_comparison.tex": "3b500861ff4f882c7ba829dccb716e1b84bd660c6acf453bd6eac272f484760d",
+    "exact_true_model.json": "e05f6cc9d34a0f73a9d464066edd5aa8177a8086608b5c008769f8bc869f9851",
+    "exhaustive_reticular_summary.csv": "96bb4b520417c383194beb144083598aa75504ec5d36cbb12f5d02f1900bfbf5",
+    "model_sign_display.json": "66772b5ae8149b71a702c3c462bd1616fa11cf32413619787d4fa0d19b97d17e",
+    "predictor_correlations.csv": "65fabaedd8ae0682431a6aed5a1b03977a2092bb1cfce73de830ab25ec30de5a",
+    "exact_top10_models.csv": "e0d71df90ccbc3ac43e4f7175066bd16ef6346b2169a893b3dab3d40c3b88187",
+    "exact_top100_models.csv": "d3a1390d57f198ce0859f9c4ba627c898cda7f8141612daa2edb709b048b7af0",
+    "exact_top5_ols_coefficients.csv": "ed5e357d99f3902d23c9f97759500426552e69fa55b72dc134629f6c53320856",
+    "exact_top5_regression_diagnostics.csv": "25db84dbd2ed5416b5b5ae8a3d022260b26743bed11bb886faeefc5cea27b155",
+    "exact_frontiers.csv": "bb8fe753d5c4773a23bd636c58a88c6759f62795eddb2aca2a5e259f99c6f6af"
+  },
+  "source_renderer_sha256": "47824d42da4c0e7cbe1f5df32a238c362a3e36b850a5b297bf47732c19bbb247",
+  "public_renderer_sha256": "60096dcba41bd201d653c79c273c953838c553794816adb534ce5dc749447583",
+  "packaging_changes": [
+    "Removed private storage pointers from metadata; all numerical values unchanged.",
+    "Renderer quote syntax supports Python 3.10; trapezoid imported from SciPy for NumPy 1.26 compatibility."
+  ],
+  "optional_full_arrays": [
+    {
+      "filename": "all_log_scores_colex.npy",
+      "sha256": "9789a5a2d06b536cf4d926ecaa338e98334de25918eb7bb78d415f8dbbc59df8",
+      "public_download_url": null,
+      "availability": "Not included; no public full-array download is asserted by this candidate."
+    },
+    {
+      "filename": "exact_cumulative_pmp_all_ranks.npy",
+      "sha256": "4d9d620a02b4066f87aaa83c1ca01f364d28046a39b6c47544ba6659ab03b16f",
+      "public_download_url": null,
+      "availability": "Not included; no public full-array download is asserted by this candidate."
+    }
+  ]
+}

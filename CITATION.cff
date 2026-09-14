@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "Please cite the approved software version and commit. No paper DOI is assigned."
+title: "gpubma: BFG budgeted model discovery"
+type: software
+authors:
+  - family-names: Leiva
+    given-names: Favio
+version: 0.3.0rc1
+license: BSD-3-Clause
+repository-code: "https://github.com/Favioleiva/gpubma"

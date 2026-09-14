@@ -1,0 +1,114 @@
+[
+  {
+    "evidence_id": "E02",
+    "path": "archived-source:CONTRACT1_FINAL_REPORT.md",
+    "bytes": 14907,
+    "sha256": "ac8e31c2ed3c99d8353c6964c599c9fd4dbad33cd9e5128145effee4e1e598e3",
+    "scope": "Closed canonical p30 geometry and enumeration; bounded empirical statements"
+  },
+  {
+    "evidence_id": "E03",
+    "path": "archived-source:CONTRACT2_FINAL_REPORT.md",
+    "bytes": 15173,
+    "sha256": "dbec4891c7ece6f0ef3f833e4c20553ba6d32e1fd4509ecd6a835cc2b83fbf4d",
+    "scope": "Researcher-approved canonical genealogy; normalize historical M* notation to M_MAP"
+  },
+  {
+    "evidence_id": "E05",
+    "path": "archived-source:table_true_vs_map_divergence.csv",
+    "bytes": 1311,
+    "sha256": "3a3f46954e64ffce2db39f326d98f98ec79a35d5a6c0fe4717a9a22f9d9f685d",
+    "scope": "Retained canonical true/proxy branch scores"
+  },
+  {
+    "evidence_id": "E14",
+    "path": "archived-source:BFG_BENCHMARK_REPORT.md",
+    "bytes": 20096,
+    "sha256": "44d6d32af005974fd8911192ef7a36d2687f3e08212db090268bf99b32f5d9a8",
+    "scope": "Historical DEVELOPMENT narrative; not blanket-accepted where contradicted by tables"
+  },
+  {
+    "evidence_id": "E15",
+    "path": "archived-source:benchmark_results.csv",
+    "bytes": 80284,
+    "sha256": "511e3323dadec306864734a2a5aa6c1e500693eeac5adc2e437800b10392eb82",
+    "scope": "Retained 90 configuration aggregates; acceptance receipt not separately located"
+  },
+  {
+    "evidence_id": "E16",
+    "path": "archived-source:seed_level_results.csv",
+    "bytes": 360242,
+    "sha256": "0e792adb2adecee37d0557bf92608165c4e5d0d0f21d88b83e8db943e9a08202",
+    "scope": "Retained 900 runs; 10 search seeds per configuration, not 10 DGPs"
+  },
+  {
+    "evidence_id": "E20",
+    "path": "archived-source:ASTRA_BFG_SCALING_SCIENTIFIC_AUDIT.md",
+    "bytes": 33132,
+    "sha256": "8c9861735268076952b492d492d6f4dd07e91fc4909658d5979ab3c08f5e881e",
+    "scope": "Independent audit; selective discovery/oracle corroboration, overall material-claims FAIL"
+  },
+  {
+    "evidence_id": "E21",
+    "path": "archived-source:DISCOVERY_ENDPOINT_RECONSTRUCTION.csv",
+    "bytes": 7013,
+    "sha256": "8379361d1032dee6a93a12b62579429000027fb9b21c554d8e9de9814d0ddeb7",
+    "scope": "Audited saved-order endpoints and actual censoring horizons"
+  },
+  {
+    "evidence_id": "E22",
+    "path": "archived-source:discovery_summary.csv",
+    "bytes": 8381,
+    "sha256": "6efe5c6307ae52bc5e86840bdf92c8a328682e29e0a880438918f118daab36f8",
+    "scope": "Retained per-dataset discovery values corroborated in E20/E21"
+  },
+  {
+    "evidence_id": "E23",
+    "path": "archived-source:true_vs_map_results.csv",
+    "bytes": 5823,
+    "sha256": "b195fc1168888882048e63320e0db14d54eca29f25e0664c88ac6fe8518d8f6f",
+    "scope": "Retained exact reference rank/PMP and model identities; taxonomy corrected by E24"
+  },
+  {
+    "evidence_id": "E24",
+    "path": "archived-source:TRUE_VS_MAP_VERIFICATION.csv",
+    "bytes": 3098,
+    "sha256": "4fc146541a874fc9f1fdc83ce24a9d741a8fc0401a46e3aa2c2d36a19a3d4e92",
+    "scope": "Audited proxy/noise/omission taxonomy"
+  },
+  {
+    "evidence_id": "E46",
+    "path": "archived-source:table_beam_search.md",
+    "bytes": 3568,
+    "sha256": "a4fac63c3751cc06282ec457e530b281c945a3eb5cf3c89fcd8fe283cf72ee07",
+    "scope": "Beam widths/directions and evaluated counts; not per-checkpoint exact first hit"
+  },
+  {
+    "evidence_id": "E04",
+    "path": "archived-source:table_algorithm_comparison.csv",
+    "bytes": 2128,
+    "sha256": "2cfc87f686bffc79c5570b2c76b0fbdfa2cd1cec396eae0c80fe14488813ef30",
+    "scope": "Retained algorithm table; full-run evaluations are not necessarily first-hit counts"
+  },
+  {
+    "evidence_id": "E06",
+    "path": "archived-source:table_elite_network_summary.md",
+    "bytes": 337,
+    "sha256": "d33f89acce59013f646fb476930f793b45faeda6f69ab16bb2c8b601a72650f2",
+    "scope": "Exact top-100-per-shell network; not a BFG-discovered mass guarantee"
+  },
+  {
+    "evidence_id": "E09",
+    "path": "archived-source:global_reconstruction_summary.json",
+    "bytes": 606,
+    "sha256": "1703e238f443c260aa58d94d08c132a97475f2d3d06474677052b01a8dec4a23",
+    "scope": "Historical single-benchmark ACESM result; not W-PCS"
+  },
+  {
+    "evidence_id": "E49",
+    "path": "archived-source:PROXY_BLOCK_VERIFICATION.csv",
+    "bytes": 18425,
+    "sha256": "a2bb28e00a75ad72bd2081abd9f26087befcdee7008a2b6a98032167df9418d4",
+    "scope": "Existing exact union support diagnostic; not causal identification"
+  }
+]

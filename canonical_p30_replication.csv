@@ -1,0 +1,13 @@
+metric,reference,observed,classification,note
+MAP model identity,536887295.0,536887295.0,EXACTLY REPLICATED,
+MAP log numerator,1118.521780616737,1118.521780616737,NUMERICALLY REPLICATED WITHIN TOLERANCE,absolute difference=0.0; fixed tolerance=1e-09
+Exact top-10 discovered,10.0,10.0,EXACTLY REPLICATED,
+Top-10 rank-list overlap,10.0,10.0,EXACTLY REPLICATED,
+Historical milestone top-10 recall at 5000,0.9,1.0,BEHAVIORALLY REPLICATED,"Milestone table reports top-10 recall 0.90 at 5000 evaluations; different engine/configuration history, behavioral comparator only. Not the exact-top10 target."
+True model explicitly discovered,32767.0,32767.0,BEHAVIORALLY REPLICATED,
+N_MAP,,1203.0,REFERENCE NOT AVAILABLE,New run first-hit count; no verified historical canonical first-hit target was found.
+N_TRUE,,2742.0,REFERENCE NOT AVAILABLE,New run first-hit count; no verified historical canonical first-hit target was found.
+requested_budget,,5000.0,REFERENCE NOT AVAILABLE,"Run descriptor, not a claim to match another engine or hardware runtime."
+unique_models,,5000.0,REFERENCE NOT AVAILABLE,"Run descriptor, not a claim to match another engine or hardware runtime."
+fraction_of_universe,,4.656612873077393e-06,REFERENCE NOT AVAILABLE,"Run descriptor, not a claim to match another engine or hardware runtime."
+algorithm_runtime_seconds,,0.629453899920918,REFERENCE NOT AVAILABLE,"Run descriptor, not a claim to match another engine or hardware runtime."

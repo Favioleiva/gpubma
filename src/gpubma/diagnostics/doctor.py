@@ -118,38 +118,13 @@ def _torch_cuda_probe() -> dict:
 
 
 def _stata_probe() -> dict:
-    """Detect Stata and whether it is actually callable in batch mode.
-
-    A functional Windows install exposes Stata{SE,MP,BE}-64.exe. Renamed
-    leftovers (e.g. StataSE-64_old.exe) are recorded but treated as not
-    callable: on this machine they were tested and produce no batch output.
-    """
+    """Detect executable presence on PATH without claiming batch verification."""
     candidates = ["stata", "stata-mp", "stata-se", "StataMP-64", "StataSE-64", "StataBE-64"]
     on_path = {c: shutil.which(c) for c in candidates}
     on_path = {k: v for k, v in on_path.items() if v}
-    dirs = {}
-    callable_exes = []
-    for root in (r"C:\Program Files\StataNow19", r"C:\Program Files\Stata19",
-                 r"C:\Program Files\Stata18", r"C:\Program Files\Stata17",
-                 r"C:\Program Files (x86)\Stata18"):
-        if os.path.isdir(root):
-            exes = [f for f in os.listdir(root) if f.lower().endswith(".exe")]
-            dirs[root] = exes
-            callable_exes += [os.path.join(root, f) for f in exes
-                              if f in ("StataSE-64.exe", "StataMP-64.exe", "StataBE-64.exe")]
-    callable_exes += list(on_path.values())
-    return {
-        "installed": bool(on_path or dirs),
-        "callable": bool(callable_exes),
-        "callable_executables": callable_exes,
-        "on_path": on_path,
-        "directories": dirs,
-        "note": ("directories contain only renamed '*_old.exe' leftovers; batch "
-                 "execution was tested and produced no output — treated as NOT callable"
-                 if dirs and not callable_exes else
-                 ("verified working in batch mode (validation oracle executed "
-                  "2026-07-15)" if callable_exes else None)),
-    }
+    return {"installed": bool(on_path), "callable": bool(on_path),
+            "callable_executables": list(on_path.values()), "on_path": on_path,
+            "directories": {}, "note": "PATH discovery only; no batch execution verified"}
 
 
 def collect_diagnostics() -> dict:

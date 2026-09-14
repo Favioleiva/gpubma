@@ -1,26 +1,23 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "gpubma"
-version = "0.2.0.dev0"
-description = "Exhaustive and Budgeted Fast GPU Bayesian Model Averaging for linear regression"
+version = "0.3.0rc1"
+description = "Budgeted high-evidence model discovery, with separate exhaustive BMA reference tools"
 readme = "README.md"
-license = { text = "BSD-3-Clause" }
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
 requires-python = ">=3.10"
-authors = [{ name = "GPUBMA developers" }]
-dependencies = [
-    "numpy>=1.26",
-    "pandas>=2.1",
-    "scipy>=1.11",
-]
+authors = [{name = "Favio Leiva"}]
+dependencies = ["numpy>=1.26", "pandas>=2.1", "scipy>=1.11", "torch>=2.2"]
 
 [project.optional-dependencies]
 parquet = ["pyarrow>=14"]
-gpu = ["torch>=2.2"]
-plots = ["matplotlib>=3.8", "pyarrow>=14"]
-dev = ["pytest>=7.4", "pyarrow>=14", "matplotlib>=3.8"]
+plots = ["matplotlib>=3.7", "pyarrow>=14"]
+notebooks = ["matplotlib>=3.7", "pyarrow>=14", "jupyter>=1", "nbclient>=0.10"]
+dev = ["pytest>=8", "build>=1", "nbclient>=0.10", "nbformat>=5", "ipykernel>=6", "Pillow>=10"]
 
 [project.scripts]
 gpubma = "gpubma.cli:main"
@@ -29,6 +26,10 @@ gpubma-bfg = "gpubma.bfg.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+"gpubma.benchmarks" = ["canonical_p30_reference.json"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q"
+pythonpath = ["src"]
+addopts = "-ra"

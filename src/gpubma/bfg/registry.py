@@ -35,6 +35,7 @@ class ModelRecord:
     parent_id: Optional[int] = None
     generation: int = 0
     discovery_order: int = 0
+    initial_provenance: str = ""
     source_tags: Set[str] = field(default_factory=set)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -46,7 +47,8 @@ class ModelRecord:
             "parent_id": self.parent_id,
             "generation": self.generation,
             "discovery_order": self.discovery_order,
-            "source_tags": list(self.source_tags),
+            "initial_provenance": self.initial_provenance,
+            "source_tags": sorted(self.source_tags),
         }
 
     @classmethod
@@ -86,6 +88,10 @@ class EliteRegistry:
         if k is None:
             k = count_set_bits(model_id)
 
+        # Budget-exhaustion sentinels are not evaluated/discovered models.
+        if not np.isfinite(log_score):
+            return False
+
         if model_id in self.records:
             rec = self.records[model_id]
             if source_tag:
@@ -100,6 +106,7 @@ class EliteRegistry:
             model_size=k,
             log_score=float(log_score),
             provenance=provenance,
+            initial_provenance=provenance.value,
             parent_id=parent_id,
             generation=generation,
             discovery_order=self._next_discovery_order,

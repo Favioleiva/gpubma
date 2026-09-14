@@ -1,8 +1,10 @@
-"""Core pipeline engine and functional API for BFG Bayesian Model Averaging."""
+"""Core pipeline engine and functional API for BFG model discovery."""
 
 from __future__ import annotations
 
 import math
+import hashlib
+import json
 import time
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
@@ -11,14 +13,13 @@ import numpy as np
 import pandas as pd
 from scipy.special import logsumexp
 
-from gpubma.bfg.acesm import ACESMFitResult, ACESMReconstructor, CumulativeCurveBuilder
 from gpubma.bfg.allocation import BudgetAllocator
 from gpubma.bfg.checkpoint import CheckpointManager
 from gpubma.bfg.config import BFGConfig
 from gpubma.bfg.elite_search import GPUEliteSearch
 from gpubma.bfg.genealogy import GenealogicalSearch
 from gpubma.bfg.registry import EliteRegistry, ModelProvenance
-from gpubma.bfg.results import BFGResult, LatticeResult
+from gpubma.bfg.results import BFGResult
 from gpubma.bfg.sampling import ExactWingEnumerator, LatticeSampler
 from gpubma.bfg.scorer import (
     BFGScorer,
@@ -123,10 +124,29 @@ def validate_inputs(
 
 
 class BFGEngine:
-    """Master pipeline orchestrator for BFG model-space search and evidence reconstruction."""
+    """Master pipeline orchestrator for BFG budgeted model-space discovery."""
 
     def __init__(self, config: Optional[BFGConfig] = None):
         self.config = config if config is not None else BFGConfig()
+        self.config.__post_init__()
+
+    @staticmethod
+    def _allocation_information(scorer, p):
+        """Known-score mass priorities and actual unscored lattice capacities.
+
+        Directed-search mass is a lower bound, NOT a certified posterior/grid
+        estimate. It is used only for allocating exploration, never inference.
+        """
+        grouped = [[] for _ in range(p + 1)]
+        for model_id, score in scorer.cache.items():
+            grouped[model_id.bit_count()].append(score)
+        log_mass = np.array([logsumexp(s) if s else -np.inf for s in grouped])
+        if np.isfinite(log_mass).any():
+            priorities = np.exp(log_mass - logsumexp(log_mass))
+        else:
+            priorities = np.full(p + 1, 1.0 / (p + 1))
+        remaining = {k: math.comb(p, k) - len(grouped[k]) for k in range(p + 1)}
+        return priorities, remaining
 
     def fit(
         self,
@@ -136,7 +156,7 @@ class BFGEngine:
         always_in: Optional[Any] = None,
         outcome_name: str = "y",
     ) -> BFGResult:
-        """Execute full BFG search and Bayesian model averaging."""
+        """Execute model discovery without global posterior estimation."""
         t0_total = time.perf_counter()
 
         # 1. Validation & Data Preparation
@@ -190,11 +210,39 @@ class BFGEngine:
         elite_searcher = GPUEliteSearch(scorer=scorer, registry=registry)
         checkpoint_mgr = CheckpointManager(checkpoint_dir=self.config.checkpoint_dir)
 
+        fingerprint_config = self.config.to_dict()
+        for key in ('resume', 'checkpoint_dir', 'checkpoints', 'verbose', 'progress_interval'):
+            fingerprint_config.pop(key, None)
+        identity = hashlib.sha256(json.dumps(fingerprint_config, sort_keys=True).encode())
+        identity.update(json.dumps(names).encode())
+        identity.update(b'bfg-discovery-resume-schema-1')
+        for module in sorted(Path(__file__).parent.glob('*.py')):
+            identity.update(module.name.encode())
+            identity.update(module.read_bytes())
+        for array in (y_raw, X_raw, A_raw):
+            if array is not None:
+                identity.update(str(array.shape).encode())
+                identity.update(np.ascontiguousarray(array).tobytes())
+        fingerprint = identity.hexdigest()
+        execution = dict(next_wing=0, genealogy_done=False, next_lattice=0,
+            exact_wings=[], wing_log_Z={}, allocation=None,
+            allocation_priorities=None, allocation_capacities=None, remaining_budget=None,
+            completed_thresholds=[], final_reconnaissance=None, final_reconnaissance_reserve=None)
+        elapsed_before_resume = 0.0
+
         # Resume state if requested
         ckpt_history = []
         if self.config.resume and self.config.checkpoint_dir is not None:
-            prev_state = checkpoint_mgr.load_latest_checkpoint(scorer=scorer, registry=registry)
+            prev_state = checkpoint_mgr.load_latest_checkpoint(scorer=scorer, registry=registry,
+                                                               expected_fingerprint=fingerprint)
+            if prev_state is None:
+                raise ValueError('resume=True requires a complete committed checkpoint')
             if prev_state is not None:
+                if 'execution' not in prev_state.metadata or 'rng_state' not in prev_state.metadata:
+                    raise ValueError('Checkpoint lacks resumable execution/RNG state')
+                execution = prev_state.metadata['execution']
+                rng.bit_generator.state = prev_state.metadata['rng_state']
+                elapsed_before_resume = prev_state.elapsed_seconds
                 ckpt_history.append(prev_state.to_dict())
                 if self.config.verbose:
                     print(
@@ -203,30 +251,69 @@ class BFGEngine:
                     )
 
         # 3. Identify Exact Wings (under hard budget ceiling)
-        exact_wings: Set[int] = set()
-        wing_log_Z: Dict[int, float] = {}
+        exact_wings = set(execution['exact_wings'])
+        wing_log_Z = {int(k): v for k, v in execution['wing_log_Z'].items()}
+
+        def save_progress(stage):
+            """Commit an entire resumable search boundary; no partially updated phase."""
+            if self.config.checkpoint_dir is None:
+                return
+            thresholds = self.config.checkpoints
+            crossed = [v for v in (thresholds or []) if v <= scorer.n_unique_evaluated
+                       and v not in execution['completed_thresholds']]
+            if thresholds and not crossed and stage != 'complete':
+                return
+            if scorer.n_unique_evaluated == 0:
+                return
+            execution['completed_thresholds'].extend(crossed)
+            execution['exact_wings'] = sorted(exact_wings)
+            execution['wing_log_Z'] = wing_log_Z
+            # Checkpoint summaries are explicitly observed-mass diagnostics, not
+            # global posterior estimates. The cache is the discovery ledger.
+            masses, _ = self._allocation_information(scorer, p)
+            ids = list(scorer.cache)
+            scores = np.array([scorer.cache[m] for m in ids])
+            logz = float(logsumexp(scores))
+            pip = np.zeros(p)
+            for m, weight in zip(ids, np.exp(scores-logz)):
+                pip[model_id_to_indices(m, p)] += weight
+            best = ids[int(np.argmax(scores))]
+            path = checkpoint_mgr.save_checkpoint(
+                checkpoint_id=(ckpt_history[-1]['checkpoint_id']+1 if ckpt_history else 1),
+                eval_count=scorer.n_unique_evaluated,
+                elapsed_seconds=elapsed_before_resume+time.perf_counter()-t0_total,
+                log_Z_seen=logz, exact_wing_log_mass=wing_log_Z, discovered_size_weights=masses, discovered_set_pips=pip,
+                best_model_id=best, best_log_score=scorer.cache[best],
+                best_discovered_weight=float(np.exp(scorer.cache[best]-logz)), scorer=scorer, registry=registry,
+                metadata=dict(fingerprint=fingerprint, rng_state=rng.bit_generator.state,
+                    execution=execution, stage=stage, summary_semantics='evaluated-model conditional diagnostics'))
+            ckpt_history.append(json.loads((path/'state.json').read_text(encoding='utf-8')))
         t_wings_start = time.perf_counter()
 
         max_wing_budget = self.config.budget_models if self.config.budget_semantics != "hard" else int(self.config.budget_models * 0.35)
 
-        for k in range(p + 1):
+        for k in range(execution['next_wing'], p + 1):
             n_k_comb = math.comb(p, k)
             if wing_enum.is_exact_wing(k, max_wing_size=self.config.wing_max_size):
                 if scorer.n_unique_evaluated + n_k_comb <= max_wing_budget or n_k_comb <= 64:
-                    exact_wings.add(k)
                     models, scores, log_Z_exact = wing_enum.enumerate_lattice(k)
-                    wing_log_Z[k] = log_Z_exact
                     registry.register_batch(models, scores, ModelProvenance.EXACT_WING, source_tag=f"exact_wing_k{k}")
+                    if all(m in scorer.cache for m in models) and len(models) == n_k_comb:
+                        exact_wings.add(k)
+                        wing_log_Z[k] = log_Z_exact
+            execution['next_wing'] = k + 1
+            save_progress('wings')
 
         t_wings = time.perf_counter() - t_wings_start
 
         # 4. Genealogical Multi-Path Search (Greedy + Forward/Backward Beam Search)
         t_genealogy_start = time.perf_counter()
-        fwd_res = genealogy.forward_greedy(start_model_id=0)
-        bwd_res = genealogy.backward_greedy(start_model_id=(1 << p) - 1)
+        if not execution['genealogy_done']:
+            fwd_res = genealogy.forward_greedy(start_model_id=0)
+            bwd_res = genealogy.backward_greedy(start_model_id=(1 << p) - 1)
 
         # Run beam search if budget allows
-        if self.config.budget_semantics != "hard" or scorer.n_unique_evaluated < self.config.budget_models:
+        if not execution['genealogy_done'] and (self.config.budget_semantics != "hard" or scorer.n_unique_evaluated < self.config.budget_models):
             beam_fwd = genealogy.forward_beam(
                 start_seeds=[0], beam_width=self.config.beam_width
             )
@@ -234,6 +321,8 @@ class BFGEngine:
                 start_seeds=[(1 << p) - 1], beam_width=self.config.beam_width
             )
         t_genealogy = time.perf_counter() - t_genealogy_start
+        execution['genealogy_done'] = True
+        save_progress('genealogy')
 
         # 5. Adaptive Budget Allocation for Non-Wing Lattices
         t_sampling_start = time.perf_counter()
@@ -242,30 +331,52 @@ class BFGEngine:
         else:
             remaining_budget = self.config.budget_models
 
+        allocation_priorities, allocation_capacities = self._allocation_information(scorer, p)
+        # Preserve the historical final-sample reserve and RNG trajectory.
+        # These evaluations now serve discovery only; no mass estimator runs.
+        nonempty = sum(v > 0 for v in allocation_capacities.values())
+        reserve = min(remaining_budget, max(nonempty, remaining_budget // 3))
+        if execution['final_reconnaissance_reserve'] is not None:
+            reserve = execution['final_reconnaissance_reserve']
+        else:
+            execution['final_reconnaissance_reserve'] = reserve
         budget_allocated = BudgetAllocator.allocate(
-            total_budget=remaining_budget,
+            total_budget=max(0, remaining_budget-reserve),
             p=p,
             exact_wings=exact_wings,
             strategy=self.config.allocation_strategy,
             min_per_lattice=min(self.config.recon_sample_per_lattice, max(50, remaining_budget // max(1, p + 1 - len(exact_wings)))),
+            P_k_hat=allocation_priorities,
+            remaining_by_k=allocation_capacities,
         )
+        if execution['allocation'] is not None:
+            budget_allocated = {int(k): v for k, v in execution['allocation'].items()}
+            allocation_priorities = np.array(execution['allocation_priorities'])
+            allocation_capacities = {int(k): v for k, v in execution['allocation_capacities'].items()}
+            remaining_budget = execution['remaining_budget']
+        else:
+            execution.update(allocation=budget_allocated, allocation_priorities=allocation_priorities.tolist(),
+                allocation_capacities=allocation_capacities, remaining_budget=remaining_budget)
+
+        original_scorer_limit = scorer.max_eval_budget
+        if original_scorer_limit is not None:
+            scorer.max_eval_budget = max(scorer.n_unique_evaluated, original_scorer_limit-reserve)
 
         # 6. Random Reconnaissance & GPU Elite Search per Non-Wing Lattice
         curves_by_k: Dict[int, Any] = {}
-        sample_scores_by_k: Dict[int, np.ndarray] = {}
         sample_models_by_k: Dict[int, List[int]] = {}
 
-        for k in range(p + 1):
+        for k in range(execution['next_lattice'], p + 1):
             if k in exact_wings:
                 continue
 
             n_k_budget = budget_allocated.get(k, 0)
             if self.config.budget_semantics == "hard":
-                curr_rem = max(0, self.config.budget_models - scorer.n_unique_evaluated)
+                curr_rem = max(0, scorer.max_eval_budget - scorer.n_unique_evaluated)
                 n_k_budget = min(n_k_budget, curr_rem)
 
             if n_k_budget > 0:
-                r_k = min(self.config.elite_calibration_size, max(2, n_k_budget // 2))
+                r_k = min(n_k_budget, self.config.elite_calibration_size, max(2, n_k_budget // 2))
                 m_k = max(0, n_k_budget - r_k)
 
                 # GPU Elite Search (Calibration + Sequential Exploration)
@@ -286,337 +397,63 @@ class BFGEngine:
                         start_seeds=elite_res.retained_model_ids[: self.config.beam_width],
                         beam_width=self.config.beam_width,
                     )
-                calib_scores = elite_res.calibration_scores
-            else:
-                calib_scores = np.array([], dtype=np.float64)
-
-            sample_scores_by_k[k] = calib_scores
-
-            # Retrieve discovered elite models vs random sample models for lattice k
-            known_scores = registry.get_elite_scores(k)
-            if not known_scores:
-                champ_k = registry.get_champion(k)
-                if champ_k is not None:
-                    known_scores = [champ_k.log_score]
-
-            # Build empirical cumulative evidence curve C_k^obs(d)
-            curve = CumulativeCurveBuilder.build_empirical_curve(
-                k=k,
-                discovered_scores=known_scores,
-                sampled_scores=calib_scores,
-                N_k=math.comb(p, k),
-                n_grid_points=80,
-            )
-            curves_by_k[k] = curve
+            execution['next_lattice'] = k + 1
+            save_progress('sampling')
 
         t_sampling = time.perf_counter() - t_sampling_start
+        scorer.max_eval_budget = original_scorer_limit
 
-        # 7. ACESM Denominator Saturation Fitting
-        t_acesm_start = time.perf_counter()
-        log_Z_hat_by_k: Dict[int, float] = {}
-        lattice_results: Dict[int, LatticeResult] = {}
-
-        for k in range(p + 1):
-            N_k = math.comb(p, k)
-            champ_rec = registry.get_champion(k)
-            best_id = champ_rec.model_id if champ_rec else 0
-            best_score = champ_rec.log_score if champ_rec else float("-inf")
-            n_eval_k = len(registry.by_k[k])
-
-            if k in exact_wings:
-                log_Z_hat_by_k[k] = wing_log_Z[k]
-                lattice_results[k] = LatticeResult(
-                    k=k,
-                    N_k=N_k,
-                    log_Z_hat=wing_log_Z[k],
-                    best_model_id=best_id,
-                    best_score=best_score,
-                    evaluated_count=N_k,
-                    elite_count=N_k,
-                    acesm_parameters={"is_exact_wing": 1.0},
-                    is_wing=True,
-                    is_boundary_collapsed=False,
-                    budget_spent=N_k,
-                )
-            else:
-                curve = curves_by_k[k]
-                acesm_res = ACESMReconstructor.fit_lattice(
-                    curve=curve,
-                    beta=self.config.acesm_beta,
-                    lambda_momentum=self.config.acesm_lambda_momentum,
-                )
-                log_Z_hat_by_k[k] = acesm_res.log_Z_hat
-                lattice_results[k] = LatticeResult(
-                    k=k,
-                    N_k=N_k,
-                    log_Z_hat=acesm_res.log_Z_hat,
-                    best_model_id=best_id,
-                    best_score=best_score,
-                    evaluated_count=n_eval_k,
-                    elite_count=curve.n_elites,
-                    acesm_parameters={
-                        "delta_Z_hat": acesm_res.delta_Z_hat,
-                        "alpha_hat": acesm_res.alpha_hat,
-                        "beta_hat": acesm_res.beta_hat,
-                        "final_loss": acesm_res.final_loss,
-                    },
-                    is_wing=False,
-                    is_boundary_collapsed=acesm_res.is_boundary_collapsed,
-                    budget_spent=budget_allocated.get(k, self.config.recon_sample_per_lattice),
-                )
-
-        t_acesm = time.perf_counter() - t_acesm_start
-
-        # 8. Global Normalization & Evidence Aggregation
-        all_log_Z_k = [log_Z_hat_by_k[k] for k in range(p + 1)]
-        global_log_Z = float(logsumexp(all_log_Z_k))
-        P_hat_k = np.exp(np.array(all_log_Z_k, dtype=np.float64) - global_log_Z)
-        P_hat_k = P_hat_k / np.sum(P_hat_k)
-
-        # 9. Statistically Valid PIP & Coefficient Reconstruction
-        pips_array = np.zeros(p, dtype=np.float64)
-        coef_mean_array = np.zeros(p, dtype=np.float64)
-        coef_m2_array = np.zeros(p, dtype=np.float64)
-        sign_pos_array = np.zeros(p, dtype=np.float64)
-
-        # Accumulate lattice-conditional inclusion mass
-        for k in range(p + 1):
-            p_k_weight = P_hat_k[k]
-            if k == 0 or p_k_weight <= 1e-15:
-                continue
-
-            if k in exact_wings:
-                # Exact wing: sum over all models in lattice
-                models_k = [m for m in registry.by_k[k].keys()]
-                scores_k = np.array([registry.by_k[k][m].log_score for m in models_k], dtype=np.float64)
-                pmp_k = np.exp(scores_k - wing_log_Z[k])
-                for m, w in zip(models_k, pmp_k):
-                    idx = model_id_to_indices(m, p)
-                    pips_array[idx] += p_k_weight * w
-            else:
-                # ACESM lattice: known elites + weighted probability sample
-                curve = curves_by_k[k]
-                U_k = curve.U_obs
-                known_recs = list(registry.by_k[k].values())
-
-                if known_recs:
-                    known_ids = [r.model_id for r in known_recs]
-                    known_scores = [r.log_score for r in known_recs]
-                    known_rel_mass = np.exp(np.array(known_scores, dtype=np.float64) - U_k)
-                    z_known_rel = float(np.sum(known_rel_mass))
-                else:
-                    known_ids, known_rel_mass, z_known_rel = [], np.array([]), 0.0
-
-                samp_scores = sample_scores_by_k.get(k, np.array([]))
-                if len(samp_scores) > 0:
-                    n_non_elite = max(math.comb(p, k) - len(known_ids), 1)
-                    samp_wgt = float(n_non_elite) / float(len(samp_scores))
-                    samp_rel_mass = np.exp(samp_scores - U_k) * samp_wgt
-                    z_samp_rel = float(np.sum(samp_rel_mass))
-                else:
-                    samp_rel_mass, z_samp_rel = np.array([]), 0.0
-
-                z_total_rel = max(z_known_rel + z_samp_rel, 1e-300)
-
-                for m, m_rel in zip(known_ids, known_rel_mass):
-                    prob_in_k = m_rel / z_total_rel
-                    idx = model_id_to_indices(m, p)
-                    pips_array[idx] += p_k_weight * prob_in_k
-
-        pips_array = np.clip(pips_array, 0.0, 1.0)
-
-        # Posterior coefficients computed over registered models holding posterior mass
-        all_registered = list(registry.records.values())
-        if all_registered:
-            reg_scores = np.array([r.log_score for r in all_registered], dtype=np.float64)
-            reg_weights = np.exp(np.clip(reg_scores - global_log_Z, -700.0, 0.0))
-            sum_reg_weights = max(float(np.sum(reg_weights)), 1e-12)
-
-            for r, w in zip(all_registered, reg_weights):
-                if r.model_id == 0 or w < 1e-8:
-                    continue
-                norm_w = w / sum_reg_weights
-                moments = scorer.compute_model_coefficients(r.model_id)
-                idx = moments["indices"]
-                b_mean = moments["coef_mean"]
-                b_sd = moments["coef_sd"]
-
-                coef_mean_array[idx] += norm_w * b_mean
-                coef_m2_array[idx] += norm_w * (b_sd ** 2 + b_mean ** 2)
-                pos_mask = b_mean > 0
-                sign_pos_array[np.array(idx)[pos_mask]] += norm_w
-
-        coef_sd_array = np.sqrt(np.maximum(coef_m2_array - coef_mean_array ** 2, 0.0))
-        sign_pos_array = np.clip(sign_pos_array, 0.0, 1.0)
-
-        # 10. Global MAP Model
-        global_champ = registry.get_champion()
-        map_model_id = global_champ.model_id if global_champ else 0
-        map_log_score = global_champ.log_score if global_champ else float("-inf")
-        map_pmp = float(math.exp(min(map_log_score - global_log_Z, 0.0)))
-        map_vars = model_id_to_vars(map_model_id, names)
-
-        t_total = time.perf_counter() - t0_total
-
-        # 11. Checkpoint Final State
-        if self.config.checkpoint_dir is not None:
-            checkpoint_mgr.save_checkpoint(
-                checkpoint_id=len(ckpt_history) + 1,
-                eval_count=scorer.n_unique_evaluated,
-                elapsed_seconds=t_total,
-                log_Z_hat=global_log_Z,
-                log_Z_by_k=log_Z_hat_by_k,
-                P_hat_k=P_hat_k,
-                pips=pips_array,
-                map_model_id=map_model_id,
-                map_log_score=map_log_score,
-                map_pmp=map_pmp,
-                scorer=scorer,
-                registry=registry,
-            )
-
-        # 12. Return Result
-        return BFGResult(
-            outcome=outcome_name,
-            candidate_names=names,
-            n_obs=n,
-            n_predictors=p,
-            total_universe_models=1 << p,
-            n_models_evaluated=scorer.n_unique_evaluated,
-            log_Z=global_log_Z,
-            model_size_posterior=pd.Series(P_hat_k, index=pd.RangeIndex(p + 1, name="model_size"), name="posterior_probability"),
-            pips=pd.Series(pips_array, index=names, name="pip"),
-            posterior_mean=pd.Series(coef_mean_array, index=names, name="post_mean"),
-            posterior_sd=pd.Series(coef_sd_array, index=names, name="post_sd"),
-            sign_probability=pd.Series(sign_pos_array, index=names, name="p_pos"),
-            map_model=map_vars,
-            map_model_id=map_model_id,
-            map_log_score=map_log_score,
-            map_pmp=map_pmp,
-            lattice_results=lattice_results,
-            elite_registry=registry.to_dataframe(),
-            checkpoints=ckpt_history,
-            runtime={
-                "total_seconds": t_total,
-                "wings_seconds": t_wings,
-                "genealogy_seconds": t_genealogy,
-                "sampling_seconds": t_sampling,
-                "acesm_seconds": t_acesm,
-                "backend": scorer.backend,
-                "throughput_models_per_sec": scorer.n_unique_evaluated / max(t_total, 1e-6),
-            },
-            hardware={
-                "device_name": scorer.device_name,
-                "backend": scorer.backend,
-                "precision": "float64",
-            },
-            diagnostics={
-                "cache_hits": scorer.n_cache_hits,
-                "eval_calls": scorer.n_eval_calls,
-                "exact_wings": sorted(list(exact_wings)),
-                "compression_factor": (1 << p) / max(scorer.n_unique_evaluated, 1),
-            },
-        )
+        # Freeze discovery before drawing fresh final_reconnaissance samples. Calibration
+        # scores from elite search are no longer reused as a probability sample.
+        recon = execution['final_reconnaissance']
+        if recon is None:
+            priorities, capacities = self._allocation_information(scorer, p)
+            available = (max(0, self.config.budget_models-scorer.n_unique_evaluated)
+                         if self.config.budget_semantics == 'hard' else reserve)
+            recon = dict(next_k=0, samples={}, discovery={
+                str(k): [m for m in scorer.cache if m.bit_count() == k] for k in range(p+1)},
+                allocation=BudgetAllocator.allocate(total_budget=available, p=p,
+                    exact_wings={k for k,v in capacities.items() if v == 0},
+                    strategy=self.config.allocation_strategy, P_k_hat=priorities,
+                    min_per_lattice=min(self.config.recon_sample_per_lattice,
+                        available//max(sum(v > 0 for v in capacities.values()), 1)),
+                    remaining_by_k=capacities))
+            execution['final_reconnaissance'] = recon
+        recon['allocation'] = {int(k): v for k,v in recon['allocation'].items()}
+        for k in range(recon['next_k'], p+1):
+            discovered = recon['discovery'][str(k)]
+            available_k = math.comb(p,k)-len(discovered)
+            sample_ids = sampler.sample_combinations(k, recon['allocation'].get(k, 0), rng,
+                                                     exclude_set=set(discovered))
+            scores = scorer.score_batch(sample_ids, chunk_size=self.config.batch_size)
+            if any(m not in scorer.cache for m in sample_ids):
+                raise ValueError('Final reconnaissance sample exceeded its reserved evaluation budget')
+            registry.register_batch(sample_ids, [scores[m] for m in sample_ids],
+                                    ModelProvenance.RANDOM_BULK, source_tag=f'final_reconnaissance_k{k}')
+            recon['samples'][str(k)] = sample_ids
+            recon['next_k'] = k+1
+            save_progress('final_reconnaissance')
+        save_progress('complete')
+        return BFGResult.from_search(
+            scorer=scorer, registry=registry, names=names, n_obs=n,
+            outcome=outcome_name, config=self.config,
+            elapsed_seconds=elapsed_before_resume + time.perf_counter() - t0_total,
+            fingerprint=fingerprint, checkpoints=ckpt_history,
+            exact_wings=sorted(exact_wings))
 
 
-def fit_bfg(
-    y: Any,
-    X: Any,
-    candidate_names: Optional[Sequence[str]] = None,
-    *,
-    always_in: Optional[Any] = None,
-    budget_models: int = 100_000,
-    device: str = "cuda",
-    seed: int = 20260715,
-    g: Union[str, float] = "benchmark",
-    model_prior: Tuple[str, float, float] = ("betabinomial", 1.0, 1.0),
-    always_prior: str = "shrink",
-    acesm_beta: float = 3.5,
-    beam_width: int = 5,
-    checkpoint_dir: Optional[Union[str, Path]] = None,
-    resume: bool = False,
-    config: Optional[BFGConfig] = None,
-    verbose: bool = True,
-    outcome_name: str = "y",
-    **kwargs,
-) -> BFGResult:
-    """Public high-level functional API for BFG Bayesian Model Averaging.
+def fit_bfg(y: Any, X: Any, candidate_names=None, *, always_in=None,
+            config: Optional[BFGConfig] = None, outcome_name='y', **search_options) -> BFGResult:
+    """Find high-evidence models under a hard unique-evaluation budget.
 
-    Parameters
-    ----------
-    y : array-like, Series, or 1D Tensor
-        Target outcome variable.
-    X : array-like, DataFrame, or 2D Tensor
-        Design matrix of candidate predictors.
-    candidate_names : Optional[Sequence[str]], default=None
-        Names of candidate predictors. If None and X is a DataFrame, column names are used.
-    always_in : Optional[array-like or DataFrame], default=None
-        Controls and fixed-effect dummies always included in the model.
-    budget_models : int, default=100_000
-        Total model evaluation budget.
-    device : str, default="cuda"
-        Compute device ("cuda", "cuda:0", "cpu").
-    seed : int, default=20260715
-        Deterministic random seed.
-    g : Union[str, float], default="benchmark"
-        Zellner g-prior specification.
-    model_prior : Tuple[str, float, float], default=("betabinomial", 1.0, 1.0)
-        Model size prior specification.
-    always_prior : str, default="shrink"
-        Always-included slope prior: "shrink" (Stata bmaregress compatible) or "flat".
-    acesm_beta : float, default=3.5
-        Locked ACESM Weibull shape parameter.
-    beam_width : int, default=5
-        Genealogical beam width.
-    checkpoint_dir : Optional[Union[str, Path]], default=None
-        Directory for progressive checkpoints and state resumption.
-    resume : bool, default=False
-        Whether to resume from existing checkpoints in checkpoint_dir.
-    config : Optional[BFGConfig], default=None
-        Custom configuration instance overriding individual parameters.
-    verbose : bool, default=True
-        Whether to print progress messages.
-    outcome_name : str, default="y"
-        Name of outcome variable for reporting.
-
-    Returns
-    -------
-    BFGResult
-        Structured BMA result containing reconstructed log Z, PIPs, MAP model,
-        posterior model size distribution, and moments.
-
-    Example
-    -------
-    >>> from gpubma import fit_bfg
-    >>> import numpy as np
-    >>> X = np.random.randn(100, 10)
-    >>> y = X[:, 0] * 2.0 + X[:, 1] * 1.5 + np.random.randn(100)
-    >>> result = fit_bfg(y, X, budget_models=5000, seed=20260715)
-    >>> print(result.summary())
+    Supply a BFGConfig or keyword search options, never both. No global
+    normalizer, model probabilities, inclusion probabilities or moments are
+    estimated. Without a config, the historical functional beam width is 5;
+    BFGConfig() retains its historical width 15. Set it explicitly to compare runs.
     """
+    if config is not None and search_options:
+        raise TypeError('Supply config OR search options; options cannot be silently ignored')
     if config is None:
-        cfg = BFGConfig(
-            budget_models=budget_models,
-            device=device,
-            seed=seed,
-            g=g,
-            model_prior=model_prior,
-            always_prior=always_prior,
-            acesm_beta=acesm_beta,
-            beam_width=beam_width,
-            checkpoint_dir=checkpoint_dir,
-            resume=resume,
-            verbose=verbose,
-            **kwargs,
-        )
-    else:
-        cfg = config
-
-    engine = BFGEngine(config=cfg)
-    return engine.fit(
-        y=y,
-        X=X,
-        candidate_names=candidate_names,
-        always_in=always_in,
-        outcome_name=outcome_name,
-    )
+        search_options.setdefault('beam_width', 5)
+        config = BFGConfig(**search_options)
+    return BFGEngine(config).fit(y, X, candidate_names, always_in, outcome_name)

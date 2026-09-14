@@ -1,0 +1,12 @@
+{
+  "model_id": 536887295,
+  "model_size": 15,
+  "pmp": 0.4715187997893168,
+  "log_score": 1118.521780616737,
+  "exact_global_rank": 1,
+  "variables": "x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x30",
+  "cumulative_global_pmp": 0.4715187997893168,
+  "log_model_prior": -22.293680785633526,
+  "log_marginal_likelihood_common_constant_omitted": 1140.8154614023706,
+  "true_model_equals_map": false
+}

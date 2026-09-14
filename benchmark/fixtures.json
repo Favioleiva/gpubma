@@ -1,0 +1,35 @@
+[
+  {
+    "p": 12,
+    "file": "fixtures/p12.npz",
+    "n": 1000,
+    "universe_size": "4096",
+    "g": 1000.0,
+    "sha256": "7c64fcd456b7af1d21bca36db87a87481da1027760353ffad94851c4b56eff57",
+    "source": "data/synthetic/panel_12.parquet",
+    "source_sha256": "0b35d8419215193a37c42177bd51912e11d25358ea9bd9bd8f16efee871f1cfc",
+    "scope": "Existing non-sensitive synthetic fixture; software regression only in this release"
+  },
+  {
+    "p": 18,
+    "file": "fixtures/p18.npz",
+    "n": 1000,
+    "universe_size": "262144",
+    "g": 1000.0,
+    "sha256": "bd9e93a7e2f6a92d48765fa603156e42033f52910e5fe46a5b97e6d9992f8953",
+    "source": "archived-source:panel_18.parquet",
+    "source_sha256": "7023a06bd750c5c46376d807703e2db3fd644c8f38a23bd82b06f1c27eeb8cef",
+    "scope": "Existing non-sensitive synthetic fixture; software regression only in this release"
+  },
+  {
+    "p": 30,
+    "file": "fixtures/p30.npz",
+    "n": 2000,
+    "universe_size": "1073741824",
+    "g": 2000.0,
+    "sha256": "71fad56bee24b78e94c5d4dfa61cc53bcaa81d0f58c9e9c455da4da9ce638c61",
+    "source": "data/synthetic/panel_30_center15.parquet",
+    "source_sha256": "7b468ca0c09249a83b05638b53c884bc444fdd535ba5f698b8fa92c24f7dd6e0",
+    "scope": "Existing non-sensitive synthetic fixture; software regression only in this release"
+  }
+]

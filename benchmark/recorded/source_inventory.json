@@ -1,0 +1,32 @@
+[
+  {
+    "public_file": "benchmark/recorded/benchmark_metrics.csv",
+    "source": "archived-source:BENCHMARK_RECORDED_METRICS.csv",
+    "sha256": "53f1421c9e08b5116d33ea30d27ed2aee65273bb83b10a4a341c9ed6d0d28ae8"
+  },
+  {
+    "public_file": "benchmark/recorded/scaling_discovery.csv",
+    "source": "archived-source:BFG_TRUE_MODEL_VS_MAP_EVIDENCE.csv",
+    "sha256": "c64dd134d80d2c92359a09cd265ec69ed6b32de0d27ea84514479576de7bb771",
+    "source_sha256": "efd9a3bd3ec2382045ae9128bd326d9db3420fcddfa0d301988856b6e9352710",
+    "packaging_change": "Private archival paths replaced by source basenames; all numerical fields and claim classifications unchanged."
+  },
+  {
+    "public_file": "benchmark/recorded/seed_results.csv",
+    "source": "archived-source:seed_level_results.csv",
+    "sha256": "0e792adb2adecee37d0557bf92608165c4e5d0d0f21d88b83e8db943e9a08202"
+  },
+  {
+    "public_file": "benchmark/recorded/closure_claims.csv",
+    "source": "archived-source:BFG_THESIS_CLAIMS_MATRIX.csv",
+    "sha256": "9f7d602489443b03bfdecd2a844440c10dff837368995f166e1dd2790b9724ac",
+    "source_sha256": "6c4461856bae740eacfcecd662b5a11e4fe1e29f9689961ba3fd191afc6b0db5",
+    "packaging_change": "Private archival paths replaced by source basenames; all numerical fields and claim classifications unchanged."
+  },
+  {
+    "public_file": "benchmark/recorded/recorded_rank_observations.csv.gz",
+    "source": "archived-source:model_evaluation_log.parquet",
+    "source_sha256": "1dd188e34615278dcec80cf68744231a854c8d134c34301cdcc94913fd6dcb9c",
+    "selection": "seed=20260715; largest recorded budget per benchmark; eight existing columns; no derived ranks"
+  }
+]

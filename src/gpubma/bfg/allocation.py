@@ -20,6 +20,7 @@ class BudgetAllocator:
         P_k_hat: Optional[np.ndarray] = None,
         frontier_scores: Optional[Dict[int, float]] = None,
         min_per_lattice: int = 500,
+        remaining_by_k: Optional[Dict[int, int]] = None,
     ) -> Dict[int, int]:
         """Allocate evaluation counts B_k for each non-wing lattice.
 
@@ -40,25 +41,36 @@ class BudgetAllocator:
         min_per_lattice : int, default=500
             Minimum budget assigned to any non-wing lattice.
         """
+        if not isinstance(total_budget, (int, np.integer)) or total_budget < 0:
+            raise ValueError("total_budget must be a nonnegative integer")
+        if not isinstance(min_per_lattice, (int, np.integer)) or min_per_lattice < 0:
+            raise ValueError("min_per_lattice must be a nonnegative integer")
+        if p < 0 or strategy not in ("uniform", "posterior", "adaptive"):
+            raise ValueError("Invalid lattice dimension or allocation strategy")
+        if P_k_hat is not None:
+            P_k_hat = np.asarray(P_k_hat, dtype=np.float64)
+            if P_k_hat.shape != (p + 1,) or not np.isfinite(P_k_hat).all() or np.any(P_k_hat < 0):
+                raise ValueError("P_k_hat must contain p+1 finite nonnegative values")
         non_wings = [k for k in range(p + 1) if k not in exact_wings]
         n_non_wings = len(non_wings)
 
         if n_non_wings == 0:
             return {}
 
-        min_total = min_per_lattice * n_non_wings
-        budget_to_distribute = max(0, total_budget - min_total)
-
-        if strategy == "uniform" or P_k_hat is None:
-            # Uniform allocation across non-wings
-            extra_per_k = budget_to_distribute // n_non_wings
-            allocations = {k: min_per_lattice + extra_per_k for k in non_wings}
-            rem = budget_to_distribute % n_non_wings
-            for k in non_wings[:rem]:
-                allocations[k] += 1
+        capacities = {k: math.comb(p, k) for k in non_wings}
+        if remaining_by_k is not None:
+            for k in non_wings:
+                value = remaining_by_k.get(k, capacities[k])
+                if not isinstance(value, (int, np.integer)) or value < 0:
+                    raise ValueError("remaining_by_k must contain nonnegative integer capacities")
+                capacities[k] = min(capacities[k], int(value))
+        target = min(int(total_budget), sum(capacities.values()))
+        allocations = {k: 0 for k in non_wings}
+        if target == 0:
             return allocations
-
-        if strategy == "posterior":
+        if strategy == "uniform" or P_k_hat is None:
+            weights = np.ones(n_non_wings, dtype=np.float64)
+        elif strategy == "posterior":
             # Proportional to P_hat(k|y)
             weights = np.array([max(P_k_hat[k], 1e-6) for k in non_wings], dtype=np.float64)
             weights = weights / np.sum(weights)
@@ -73,23 +85,33 @@ class BudgetAllocator:
         else:
             raise ValueError(f"Unknown allocation strategy '{strategy}'")
 
-        allocations = {}
-        distributed = 0
-        for idx, k in enumerate(non_wings):
-            extra = int(math.floor(weights[idx] * budget_to_distribute))
-            allocations[k] = min_per_lattice + extra
-            distributed += extra
-
-        # Distribute remaining rounding difference
-        remainder = budget_to_distribute - distributed
-        sort_indices = np.argsort(weights)[::-1]
-        for idx in sort_indices[:remainder]:
-            allocations[non_wings[idx]] += 1
-
-        # Cap by available lattice size comb(p, k)
-        for k in non_wings:
-            N_k = math.comb(p, k)
-            if allocations[k] > N_k:
-                allocations[k] = N_k
-
+        # Minima are best-effort insurance, never a promise exceeding the budget.
+        # Water-fill both rounds to redistribute capacity-clipped allocations.
+        def distribute(amount, limits, relevance):
+            while amount > 0:
+                active = [i for i, k in enumerate(non_wings) if allocations[k] < limits[k]]
+                if not active:
+                    break
+                w = relevance[active]
+                w = w / w.sum()
+                quotas = amount * w
+                spent = 0
+                for i, quota in zip(active, quotas):
+                    k = non_wings[i]
+                    take = min(limits[k] - allocations[k], int(math.floor(quota)))
+                    allocations[k] += take
+                    spent += take
+                amount -= spent
+                if amount:
+                    order = sorted(range(len(active)), key=lambda j: (-(quotas[j] % 1), active[j]))
+                    for j in order:
+                        k = non_wings[active[j]]
+                        if amount and allocations[k] < limits[k]:
+                            allocations[k] += 1
+                            amount -= 1
+            return amount
+        floor_limits = {k: min(min_per_lattice, capacities[k]) for k in non_wings}
+        floor_budget = min(target, sum(floor_limits.values()))
+        distribute(floor_budget, floor_limits, np.ones(n_non_wings))
+        distribute(target - sum(allocations.values()), capacities, weights)
         return allocations

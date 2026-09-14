@@ -1,237 +1,74 @@
-# GPUBMA
+# gpubma
 
-Exhaustive **Bayesian Model Averaging** for Gaussian linear regression, built
-toward single-GPU enumeration of 2^30 = 1,073,741,824 candidate models.
-Open source, BSD-3-Clause, Python-first. Stata is used only as an external
-validation oracle on small datasets — never as a dependency.
-
-**Status: canonical Phase 2 experiment complete** — exact float64 CPU
-reference (Stata-verified to ~1e-12 on seven designs), a bounded-memory
-single-GPU enumerator validated progressively at p = 12…24, and the exact
-`panel_30_center15` run at **p = 30 (1,073,741,824 models)**. On an
-NVIDIA A100-SXM4-80GB, measured PASS1 was 115.7 s (9.28M models/s), exact
-PASS2 was 896 s, and peak GPU memory was 1.93 GiB. See `STATUS.md` and
-`reports/CANONICAL_P30_RESULTS.md`.
+GPU and CPU tools for Bayesian linear-model spaces. **BFG is a budgeted high-evidence model-space discovery algorithm.** The separate exact-reference notebook reproduces figures from the complete canonical p=30 universe.
 
 ## Install
 
-```bash
-pip install -e .[dev]                 # from a clone (development)
-pip install "gpubma[gpu] @ git+https://github.com/Favioleiva/gpubma"
+This is a candidate prepared for human review. From the public repository checkout:
+
+```sh
+python -m pip install ".[notebooks]"
 ```
 
-Requires Python ≥ 3.10, NumPy, SciPy, pandas (PyArrow for Parquet, PyTorch
-with CUDA for the GPU enumerator).
+Python 3.10+ and PyTorch are required. Install the appropriate PyTorch CPU/CUDA build for your environment. Rendering the exact reference requires neither CUDA nor model enumeration.
 
-## Run the exact 2^30 enumeration on Google Colab (`panel_30_center15`)
+## Examples
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Favioleiva/gpubma/blob/main/notebooks/GPUBMA_A100_p30.ipynb)
+### Exact p=30 BMA reference
 
-The clean runnable notebook is **`notebooks/GPUBMA_A100_p30.ipynb`**
-(<https://github.com/Favioleiva/gpubma/blob/main/notebooks/GPUBMA_A100_p30.ipynb>).
-It targets the frozen **`panel_30_center15`** benchmark, published in this
-repository at `data/synthetic/panel_30_center15.parquet` (+ metadata at
-`data/synthetic/panel_30_center15_metadata.json`) — a fresh Colab clone
-loads it directly, no external downloads or private access.
+[Exact_BMA_Canonical_p30_Figures.ipynb](examples/Exact_BMA_Canonical_p30_Figures.ipynb) reproduces nine publication figures and the regression comparison table from the **complete 1,073,741,824-model universe**. Default `REGENERATE_FULL_ENUMERATION = False`. Compact hash-checked exact artifacts are committed under [benchmark/exact_p30/reference](benchmark/exact_p30/reference). No raw-score download or six-minute GPU run is needed. See [artifact provenance and workflow](docs/exact_p30_reference.md).
 
-Requirements and workflow (**select an A100 GPU runtime** — the completed
-canonical measurement used an A100-SXM4-80GB; do not run on CPU):
+### BFG canonical p=30 example
 
-1. open the notebook in Colab (badge above) and pick the A100 runtime;
-2. run bootstrap (clones this repo at a pinned public commit) and the
-   canonical input-validation cell;
-3. run the **mandatory CPU/GPU smoke test** (the expensive cell refuses to
-   start without a PASS);
-4. set `RUN_FULL_EXACT_P30 = True` (it defaults to **False**) and run the
-   clearly labelled expensive cell — the exact enumeration of all
-   2^30 = 1,073,741,824 models;
-5. protect progress at any time with `download_checkpoint_bundle()` (a
-   compact ZIP to your computer) and, after a destroyed runtime, restore
-   it through the upload cell;
-6. validate the completed posterior and download the compact results ZIP.
+[BFG_Canonical_p30_Example.ipynb](examples/BFG_Canonical_p30_Example.ipynb) runs the canonical synthetic benchmark with a user-controlled evaluation budget. The preserved B=5,000 profile found MAP, truth, 10/10 exact top models, and 98/100 exact top models. These are benchmark observations, not guarantees on new data.
 
-**Storage modes — Google Drive is optional and OFF by default
-(`USE_GOOGLE_DRIVE = False`); no paid Drive plan is required.**
+### BFG + shell recovery
 
-- *Default, free mode:* GitHub inputs → Colab local runtime (`/content`)
-  → manual checkpoint/result downloads. The dataset is hosted publicly in
-  this repository and read from the cloned copy — no uploads, credentials,
-  or tokens. Colab local storage is **ephemeral**: checkpoints survive
-  cell reruns in the same active runtime but are lost if the runtime is
-  destroyed; downloading checkpoint bundles protects progress without
-  Drive.
-- *Optional persistence mode* (`USE_GOOGLE_DRIVE = True`): checkpoints and
-  results live on your Drive, and a destroyed session resumes
-  automatically after Run all. Scientific and numerical behavior is
-  identical in both modes.
+[BFG_Canonical_p30_Shell_Recovery.ipynb](examples/BFG_Canonical_p30_Shell_Recovery.ipynb) pairs targeted BFG discovery (B=5,000) with representative uniform random shell recovery (recommended default cap 100,000 per shell) to reconstruct reticular score distributions across all 31 shells without equal-pooling bias. See [shell recovery documentation](docs/random_shell_recovery.md).
 
-**Completed canonical evidence:** the executed notebook with retained outputs
-and 23 final figures is
-`notebooks/GPUBMA_A100_p30_middle15_stata_figures.ipynb`. Its compact,
-versioned export is `reports/artifacts/panel_30_center15_exact_results.zip`.
-The earlier ~95 s figure belongs to the old sparse `panel_30` benchmark and
-must not be attributed to `panel_30_center15`.
+### Use BFG on your own data
 
-**Scientific result:** x1–x14 are essentially recovered, while strong
-substitution remains within the deliberately correlated x15/x30 family. The
-MAP model uses x30 instead of x15 (PMP 47.15%); the exact generating model
-ranks 8th (PMP 1.88%). Family-level recovery and posterior uncertainty are
-therefore the meaningful criteria—not whether the generating model ranks
-first. See `reports/CANONICAL_P30_RESULTS.md`.
+[BFG_User_Dataset_Example.ipynb](examples/BFG_User_Dataset_Example.ipynb): change `DATA_PATH`, `TARGET`, `EXPLANATORY_VARIABLES`, and `BUDGET`. CSV, Parquet and Stata are supported; always-in controls are configured separately.
 
-### Regenerate the canonical figures without rerunning BMA
+### Stata compatibility
 
-Install the plotting extra and point the generator at an existing results ZIP
-or its extracted directory:
+[BFG_Public_Stata_Example.ipynb](examples/BFG_Public_Stata_Example.ipynb) is a Grunfeld `.dta` compatibility / econometric parity example. Its two candidates give only four models; it is not a large model-space BFG demonstration.
 
-```bash
-pip install -e .[plots]
-```
+## Hard global evaluation budget
+
+`BUDGET` maps directly to **`BFGConfig.budget_models`**: the maximum number of **unique candidate models** BFG may score across all stages.
 
 ```python
-from gpubma import generate_canonical_figures
+from gpubma.bfg.example_workflow import ensure_public_data, load_example_data, fit_example
 
-variable_names = [f"Variable {i}" for i in range(1, 31)]
-variable_names[:5] = [
-    "Initial income",
-    "Mining production",
-    "W × Mining production",
-    "Capital stock",
-    "W × Capital stock",
-]
-
-manifest = generate_canonical_figures(
-    "reports/artifacts/panel_30_center15_exact_results.zip",
-    "canonical_figures",
-    variable_names=variable_names,
-)
+BUDGET = 5000
+path = ensure_public_data("canonical_p30")
+y, X, controls = load_example_data(path, "y", [f"x{i}" for i in range(1, 31)], ["w1", "w2"])
+result, metrics = fit_example(y, X, controls, budget=BUDGET, seed=12345, device="auto")
+assert result.n_models_evaluated <= BUDGET
+print(result.best_model)
+print(result.top_models(k=20))
 ```
 
-This writes the complete set of 23 PNGs followed by
-`panel_30_center15_figure_manifest.json`. Generation fails if the manifest and
-actual PNG filenames differ; every manifest record includes byte size and
-SHA-256. Labels are positional, accept spaces and Unicode, and must contain
-exactly one unique non-empty string per predictor. If `variable_names` is
-omitted, names stored with the results are used; the resolver's final fallback
-is `x1, ..., xp`. `BMAResult.predictor_names` already preserves the predictor
-column names supplied to `bma_regress`. No enumerator or posterior calculation
-is called.
+The invariant is `N_unique_scored <= BUDGET`. A fully exhausted small universe can stop below the budget. See [public API](PUBLIC_API.md) and [budget semantics](docs/example_budget_semantics.md).
 
-## Quick start
-
-### 1. Exhaustive Enumeration (Small-to-Moderate K, K <= 24)
-
-```python
-import pandas as pd
-from gpubma import bma_regress
-
-df = pd.read_parquet("data/synthetic/panel_8.parquet")
-
-result = bma_regress(
-    data=df,
-    outcome="y",
-    predictors=[f"x{j}" for j in range(1, 9)],   # 2^8 = 256 candidate models
-    controls=["w1", "w2"],                        # always included
-    fixed_effects=["individual", "time"],         # always included
-    entity_col="individual_id",
-    time_col="period",
-    backend="cpu",
-    method="enumeration",
-    precision="float64",
-)
-print(result.summary())
-result.coefficients()             # PIP, posterior mean, posterior sd
-result.inclusion_probabilities()
-result.top_models()
-result.model_size_distribution()
+```sh
+gpubma doctor
+gpubma-bfg --data input.csv --outcome y --candidates x1,x2,x3 --budget-models 100 --device cpu --out discovery.json
 ```
 
-Estimator style:
+## Scientific scope
 
-```python
-from gpubma import GPUBMARegressor
-est = GPUBMARegressor(predictors=[f"x{j}" for j in range(1, 9)]).fit(df, outcome="y")
-```
+BFG supports MAP/champion search, top-model recovery, genealogy/model-family discovery, controlled synthetic true-model recovery, deterministic reproducible search, and model-space compression. It provides the best models **found**, not a general exact-oracle certificate.
 
----
+Discovered-set weights normalize over the evaluated set. Search alone does **not** establish exact global Z, global PMP, global PIP, or complete posterior integration. Exact global quantities in the canonical reference use full enumeration. Always-in controls are not candidate PIPs. W-PCS is not a validated production estimator and is not installed in this package.
 
-### 2. BFG: Budgeted Fast GPU Bayesian Model Averaging (K >= 25, Designed for K = 60+)
+The canonical exact benchmark uses n=2,000, candidates x1–x30, controls w1/w2, g=2,000, beta-binomial(1,1), and float64. Frozen RTX 3060 enumeration took 379.812 s (2,827,037 models/s). MAP is x1–x14+x30 (mask 536887295, PMP 0.4715187997893168). The generating model x1–x15 has rank 8 and PMP 0.01881348830750715. One variable substitution has binary inclusion Hamming distance 2.
 
-For large predictor sets where exhaustive $2^K$ enumeration is computationally prohibitive ($2^{30} > 10^9$, $2^{60} > 10^{18}$ models), `gpubma` provides **BFG** (Budgeted Fast GPU). The package is designed for large-$K$ model spaces ($K=60+$) and has been certified against exact $2^{30}$ ground truth ($|\Delta \log Z| < 0.010$, MAP PMP error $< 0.005$).
+[Experimental post-BFG shell recovery](docs/random_shell_recovery.md) remains benchmark functionality, separate from discovery and outside its budget; it is not the default inference API. [Small exact wings](docs/random_shell_recovery.md#future-small-shell-hybrid) are documented as future work only.
 
-BFG delivers statistically certified BMA posterior inference under an explicit hard budget ($N_{\text{unique evaluated}} \le B_{\text{total}}$) by combining:
-- **Exact Boundary Wings**: Exhaustive enumeration of $k \le 3$ and $k \ge p - 3$.
-- **Genealogical Multi-Path Search**: Bidirectional greedy and multi-beam search discovering optimal model dynasties.
-- **GPU Elite Search**: Two-stage finite-population calibration and parallel upper-tail discovery.
-- **ACESM Saturation Reconstructor**: Anchored Cumulative Evidence Saturation Model with locked Weibull shape ($\beta = 3.50$) for unbiased denominator recovery.
-- **Progressive Checkpointing**: Lossless JSON/NPZ state persistence and resume.
+See [scientific scope](SCIENTIFIC_SCOPE.md), [limitations](LIMITATIONS.md), [benchmark inventory](benchmark/README.md), [test report](TEST_REPORT.md), [release notes](RELEASE_NOTES.md), and [public exclusions](PUBLIC_EXCLUSIONS.md). Cross-device bitwise equality is not promised. Benchmark results do not establish causal identification or performance on all datasets.
 
-#### Python Functional API
+## Citation and license
 
-```python
-import pandas as pd
-from gpubma import fit_bfg
-
-df = pd.read_parquet("data/synthetic/panel_30_center15.parquet")
-candidate_cols = [f"x{j}" for j in range(1, 31)]
-control_cols = ["w1", "w2"]
-
-# Run BFG with a budget of 50,000 models on GPU
-result = fit_bfg(
-    y=df["y"],
-    X=df[candidate_cols],
-    candidate_names=candidate_cols,
-    always_in=df[control_cols],
-    budget_models=50_000,
-    beam_width=15,
-    device="cuda",
-    seed=20260715,
-)
-
-print(result.summary())
-
-# Posterior inclusion probabilities & coefficients
-print(result.coefficients())
-
-# Top models ranked by posterior probability
-print(result.top_models(5))
-
-# Plot diagnostics (convergence, model size posterior, PIPs)
-# result.plot_convergence()
-# result.plot_size_distribution()
-```
-
-#### Standalone Command-Line Interface (`gpubma-bfg`)
-
-```bash
-# Standalone CLI execution
-gpubma-bfg --data data/synthetic/panel_30_center15.parquet \
-           --outcome y \
-           --controls w1 w2 \
-           --budget 50000 \
-           --device cuda \
-           --checkpoint-dir results/run1 \
-           --out results/summary.txt
-```
-
----
-
-## Tools
-
-```bash
-python -m gpubma.doctor            # GPU/CUDA/environment diagnostics (real float64 test)
-python -m gpubma.benchmark --max-predictors 15
-python -m gpubma.gpu.feasibility   # GPU feasibility report
-python scripts/generate_synthetic_panels.py   # regenerate frozen data
-python scripts/download_grunfeld.py           # regenerate Grunfeld snapshot
-python scripts/compare_fixed_effects.py       # dummies vs absorption report
-python scripts/compare_stata_python.py        # deterministic comparisons
-python scripts/run_enumeration_ladder.py      # GPU validation ladder p=12..24
-python -m pytest                              # 174 collected; all pass 100%
-```
-
----
-
-## Honesty rules
-
-The non-negotiable project rules: exhaustive enumeration (no silent MC3), explicit float64, measured-vs-projected labelling, detected (never assumed) hardware, reproducible seeds and checksums, and honest recording of unresolved statistical questions. The default `always_prior="shrink"` parameterization is **verified against executed Stata `bmaregress` output** (StataNow/SE 19.5, six designs, worst absolute difference 1.8e-12 — see `reports/comparison_report.md`); the alternative `always_prior="flat"` convention is gpubma-specific and not Stata's. Phase 2 extended the oracle to a per-model comparison of all 4,096 panel_12 models (worst |diff| 3.4e-12) and validated the GPU enumerator bit-for-bit on reproducibility and checkpoint/resume (`reports/enumeration_ladder.md`). Contract 6 validated BFG's ACESM Weibull saturation and multi-path elite search across small and large K benchmarks with zero data leakage.
+[CITATION.cff](CITATION.cff) provides software citation metadata; cite the approved version/commit when published. No paper DOI is assigned. [BSD-3-Clause](LICENSE).

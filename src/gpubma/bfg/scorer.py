@@ -289,7 +289,7 @@ class BFGScorer:
                     chunk = mlist[c_start : c_start + chunk_size]
                     b_size = len(chunk)
                     
-                    if self.p <= 64:
+                    if self.p <= 63:
                         # Vectorized NumPy bit unpacking
                         arr = np.array(chunk, dtype=np.int64)
                         bool_mask = ((arr[:, None] >> np.arange(self.p, dtype=np.int64)) & 1) == 1
