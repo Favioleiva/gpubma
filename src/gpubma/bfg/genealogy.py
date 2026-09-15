@@ -147,7 +147,6 @@ class GenealogicalSearch:
 
         seed_list = list(dict.fromkeys(start_seeds))
         self.scorer.score_batch(seed_list)
-        seed_list = [m for m in seed_list if m in self.scorer.cache]
         for s in seed_list:
             self.registry.register(s, self.scorer.cache[s], ModelProvenance.BEAM, source_tag="beam_seed")
 
@@ -189,7 +188,7 @@ class GenealogicalSearch:
                 history.append((m, count_set_bits(m), self.scorer.cache.get(m, float("-inf"))))
             evals_at_step.append(self.scorer.n_unique_evaluated)
 
-        best_item = max(history, key=lambda x: x[2], default=(None, None, float("-inf")))
+        best_item = max(history, key=lambda x: x[2])
         return SearchTrajectoryResult(
             algorithm=f"forward_beam_w{beam_width}",
             path=history,
@@ -210,7 +209,6 @@ class GenealogicalSearch:
         t0 = time.perf_counter()
         seed_list = list(dict.fromkeys(start_seeds))
         self.scorer.score_batch(seed_list)
-        seed_list = [m for m in seed_list if m in self.scorer.cache]
         for s in seed_list:
             self.registry.register(s, self.scorer.cache[s], ModelProvenance.BEAM, source_tag="bwd_beam_seed")
 
@@ -249,10 +247,10 @@ class GenealogicalSearch:
             next_beam = sorted(parent_list, key=lambda m: parent_scores[m], reverse=True)[:beam_width]
             current_beam = next_beam
             for m in current_beam:
-                history.append((m, count_set_bits(m), self.scorer.cache.get(m, float("-inf"))))
+                history.append((m, count_set_bits(m), self.scorer.cache[m]))
             evals_at_step.append(self.scorer.n_unique_evaluated)
 
-        best_item = max(history, key=lambda x: x[2], default=(None, None, float("-inf")))
+        best_item = max(history, key=lambda x: x[2])
         return SearchTrajectoryResult(
             algorithm=f"backward_beam_w{beam_width}",
             path=history,

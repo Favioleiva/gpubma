@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import os
 import time
@@ -22,13 +21,13 @@ class CheckpointState:
     checkpoint_id: int
     eval_count: int
     elapsed_seconds: float
-    log_Z_seen: float
-    exact_wing_log_mass: Dict[str, float]
-    discovered_size_weights: List[float]
-    discovered_set_pips: List[float]
-    best_model_id: int
-    best_log_score: float
-    best_discovered_weight: float
+    log_Z_hat: float
+    log_Z_by_k: Dict[str, float]
+    P_hat_k: List[float]
+    pips: List[float]
+    map_model_id: int
+    map_log_score: float
+    map_pmp: float
     evaluated_count: int
     registry_count: int
     timestamp: str
@@ -55,13 +54,13 @@ class CheckpointManager:
         checkpoint_id: int,
         eval_count: int,
         elapsed_seconds: float,
-        log_Z_seen: float,
-        exact_wing_log_mass: Dict[int, float],
-        discovered_size_weights: np.ndarray,
-        discovered_set_pips: np.ndarray,
-        best_model_id: int,
-        best_log_score: float,
-        best_discovered_weight: float,
+        log_Z_hat: float,
+        log_Z_by_k: Dict[int, float],
+        P_hat_k: np.ndarray,
+        pips: np.ndarray,
+        map_model_id: int,
+        map_log_score: float,
+        map_pmp: float,
         scorer: BFGScorer,
         registry: EliteRegistry,
         metadata: Optional[Dict[str, Any]] = None,
@@ -80,13 +79,13 @@ class CheckpointManager:
             checkpoint_id=checkpoint_id,
             eval_count=eval_count,
             elapsed_seconds=round(elapsed_seconds, 2),
-            log_Z_seen=float(log_Z_seen),
-            exact_wing_log_mass={str(k): float(v) for k, v in exact_wing_log_mass.items()},
-            discovered_size_weights=discovered_size_weights.tolist(),
-            discovered_set_pips=discovered_set_pips.tolist(),
-            best_model_id=int(best_model_id),
-            best_log_score=float(best_log_score),
-            best_discovered_weight=float(best_discovered_weight),
+            log_Z_hat=float(log_Z_hat),
+            log_Z_by_k={str(k): float(v) for k, v in log_Z_by_k.items()},
+            P_hat_k=P_hat_k.tolist(),
+            pips=pips.tolist(),
+            map_model_id=int(map_model_id),
+            map_log_score=float(map_log_score),
+            map_pmp=float(map_pmp),
             evaluated_count=scorer.n_unique_evaluated,
             registry_count=registry.total_registered(),
             timestamp=time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -113,18 +112,13 @@ class CheckpointManager:
         with open(ckpt_subdir / "elite_registry.json", "w", encoding="utf-8") as f:
             json.dump(reg_records, f, indent=2)
 
-        # Seal all payloads before advancing the atomic pointer.
-        digests = {name: hashlib.sha256((ckpt_subdir / name).read_bytes()).hexdigest()
-                   for name in ('state.json', 'evaluation_cache.npz', 'elite_registry.json')}
-        (ckpt_subdir / 'checksums.json').write_text(json.dumps(digests, sort_keys=True))
         # Update latest pointer
         latest_file = self.checkpoint_dir / "latest_checkpoint.json"
         pointer_temp = self.checkpoint_dir / "latest_checkpoint.json.tmp"
         with open(pointer_temp, "w", encoding="utf-8") as f:
             json.dump({
                 "latest_checkpoint_id": checkpoint_id,
-                "path": ckpt_subdir.name,
-                "checksums_sha256": hashlib.sha256((ckpt_subdir / "checksums.json").read_bytes()).hexdigest(),
+                "path": str(ckpt_subdir),
                 "timestamp": state.timestamp,
             }, f, indent=2)
             f.flush()
@@ -150,18 +144,9 @@ class CheckpointManager:
         with open(latest_file, "r", encoding="utf-8") as f:
             meta = json.load(f)
 
-        if Path(meta['path']).name != meta['path']:
-            raise ValueError('Invalid checkpoint pointer path')
-        ckpt_path = self.checkpoint_dir / meta['path']
-        checksum_bytes = (ckpt_path / 'checksums.json').read_bytes()
-        if hashlib.sha256(checksum_bytes).hexdigest() != meta.get('checksums_sha256'):
-            raise ValueError('Checkpoint checksum manifest mismatch')
-        digests = json.loads(checksum_bytes)
-        if set(digests) != {'state.json', 'evaluation_cache.npz', 'elite_registry.json'}:
-            raise ValueError('Incomplete checkpoint manifest')
-        for name, expected in digests.items():
-            if hashlib.sha256((ckpt_path / name).read_bytes()).hexdigest() != expected:
-                raise ValueError(f'Checkpoint checksum mismatch: {name}')
+        ckpt_path = Path(meta["path"])
+        if not ckpt_path.exists():
+            return None
 
         # Load state JSON
         with open(ckpt_path / "state.json", "r", encoding="utf-8") as f:
@@ -174,12 +159,6 @@ class CheckpointManager:
         with np.load(ckpt_path / "evaluation_cache.npz") as cache_npz:
             model_ids = cache_npz["model_ids"]
             log_scores = cache_npz["log_scores"]
-            ids = [int(m) for m in model_ids]
-            if (len(ids) != len(log_scores) or len(ids) != state.evaluated_count
-                    or len(ids) != len(set(ids)) or not np.isfinite(log_scores).all()
-                    or any(m < 0 or m >= (1 << scorer.p) for m in ids)
-                    or (scorer.max_eval_budget is not None and len(ids) > scorer.max_eval_budget)):
-                raise ValueError('Invalid checkpoint evaluation ledger')
             scorer.reset_cache()
             for m, s in zip(model_ids, log_scores):
                 scorer.cache[int(m)] = float(s)
@@ -202,8 +181,4 @@ class CheckpointManager:
                 registry.by_k[record.model_size][record.model_id] = record
                 registry._next_discovery_order = max(registry._next_discovery_order, record.discovery_order)
 
-        if (len(registry.records) != state.registry_count
-                or set(registry.records) != set(scorer.cache)
-                or any(r.log_score != scorer.cache[m] for m, r in registry.records.items())):
-            raise ValueError('Checkpoint registry/cache mismatch')
         return state
