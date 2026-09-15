@@ -300,20 +300,7 @@ class BFGScorer:
                             idx_arr[i] = [j for j in range(self.p) if (m & (1 << j))]
 
                     idx = torch.from_numpy(idx_arr).to(self.device)
-                    # Batch slice submatrices: (B, k, k) and (B, k, 1)
-                    Z = self.Zxx[idx.unsqueeze(2), idx.unsqueeze(1)]
-                    b = self.Zxy[idx].unsqueeze(-1)
-
-                    L = torch.linalg.cholesky(Z)
-                    u = torch.linalg.solve_triangular(L, b, upper=False)
-                    ess = (u.squeeze(-1) ** 2).sum(dim=1)
-                    one_minus_r2 = torch.clamp((self.tss - ess) / self.tss_norm, min=self.tiny)
-
-                    scores = (
-                        0.5 * (self.df - k - self.k_always) * self.log1pg
-                        - 0.5 * self.df * torch.log1p(self.g * one_minus_r2)
-                        + self.lp_size[k]
-                    )
+                    scores = self.score_indices(idx, k)
                     scores_list = scores.cpu().tolist()
                     for m, s in zip(chunk, scores_list):
                         self.cache[m] = s
@@ -338,6 +325,54 @@ class BFGScorer:
                     self.eval_order.append(m)
 
         return {m: self.cache.get(m, float("-inf")) for m in model_ids}
+
+    def score_indices(self, idx: Union[torch.Tensor, np.ndarray], k: int) -> torch.Tensor:
+        """Evaluate canonical Zellner g-prior log scores for a batch of models given by predictor indices.
+
+        Parameters
+        ----------
+        idx : torch.Tensor or np.ndarray of shape (B, k)
+            Indices of active predictors (0-indexed, ascending).
+        k : int
+            Model size (number of active predictors).
+
+        Returns
+        -------
+        torch.Tensor of shape (B,), dtype float64 on self.device
+            Canonical log scores.
+        """
+        if k == 0:
+            b_size = idx.shape[0] if hasattr(idx, "shape") and len(idx.shape) > 0 else 1
+            one_minus_r2 = max(self.tss / self.tss_norm, self.tiny)
+            s0 = float(
+                0.5 * (self.df - self.k_always) * self.log1pg
+                - 0.5 * self.df * math.log1p(self.g * one_minus_r2)
+                + self.lp_size_cpu[0]
+            )
+            return torch.full((b_size,), s0, dtype=torch.float64, device=self.device)
+
+        if not isinstance(idx, torch.Tensor):
+            idx_t = torch.from_numpy(np.ascontiguousarray(idx, dtype=np.int64)).to(self.device)
+        elif idx.device != self.device:
+            idx_t = idx.to(self.device)
+        else:
+            idx_t = idx
+
+        # Batch slice submatrices: (B, k, k) and (B, k, 1)
+        Z = self.Zxx[idx_t.unsqueeze(2), idx_t.unsqueeze(1)]
+        b = self.Zxy[idx_t].unsqueeze(-1)
+
+        L = torch.linalg.cholesky(Z)
+        u = torch.linalg.solve_triangular(L, b, upper=False)
+        ess = (u.squeeze(-1) ** 2).sum(dim=1)
+        one_minus_r2 = torch.clamp((self.tss - ess) / self.tss_norm, min=self.tiny)
+
+        scores = (
+            0.5 * (self.df - k - self.k_always) * self.log1pg
+            - 0.5 * self.df * torch.log1p(self.g * one_minus_r2)
+            + self.lp_size[k]
+        )
+        return scores
 
     def compute_model_coefficients(self, model_id: int) -> Dict[str, Any]:
         """Compute posterior coefficient mean and standard deviation conditional on model_id.
