@@ -10,8 +10,8 @@ from gpubma.fixed_effects.design import build_always_block
 from gpubma.priors.gpriors import resolve_g
 from gpubma.priors.model_priors import log_model_prior_function
 from gpubma.result import BMAResult
+from gpubma.search import MAX_REFERENCE_P, resolve_search
 
-_MAX_ENUMERATION_PREDICTORS = 20  # Phase 1 safety limit (2^20 = 1,048,576 models)
 
 
 def _residualize(M: np.ndarray, Q: np.ndarray) -> np.ndarray:
@@ -31,16 +31,26 @@ def bma_regress(
     entity_col: str = None,
     time_col: str = None,
     always_prior: str = "shrink",
-    backend: str = "cpu",
+    backend: str | None = None,
     method: str = "enumeration",
+    search: str | None = None,
+    exact_options: dict | None = None,
+    bfg_options: dict | None = None,
     precision: str = "float64",
     g="benchmark",
     model_prior=("betabinomial", 1.0, 1.0),
     top_k: int = 10,
     compute_coefficients: bool = True,
     deterministic: bool = True,
-) -> BMAResult:
-    """Exhaustive Bayesian Model Averaging for Gaussian linear regression.
+):
+    """Bayesian linear-model analysis with an optional model-space strategy.
+
+    ``search='auto'`` selects exhaustive GPU enumeration through 32 selectable
+    predictors and the existing BFG implementation above that boundary.
+    ``search='exact'`` rejects larger spaces; ``search='bfg'`` always uses BFG.
+    The return type is BMAResult for exact and the existing BFG result for BFG.
+    Omitted search retains the legacy enumeration/backend behavior. Explicit
+    search defaults to GPU; the exact route has no CPU fallback.
 
     Optional ``predictors`` define the 2^p model space. ``controls`` and
     ``fixed_effects`` are always included and never change the model count.
@@ -57,12 +67,15 @@ def bma_regress(
       it is NOT Stata's. It is the only coherent choice for
       ``fe_method="within"`` because absorption implies flat fixed effects.
     """
-    # ---- validation ------------------------------------------------------
-    if method != "enumeration":
-        raise ValueError(
-            "Phase 1 supports method='enumeration' only; MC3/sampling must "
-            "not be substituted without explicit authorization (CLAUDE.md rule 4)"
-        )
+    # Omitted search/method preserves the historical CPU/reference defaults.
+    # Existing method is extended as an alias; conflicting requests fail.
+    if method not in ("enumeration", "auto", "exact", "bfg"):
+        raise ValueError("method must be 'enumeration', 'auto', 'exact', or 'bfg'")
+    if search is not None and method != "enumeration" and search != method:
+        raise ValueError("Conflicting method and search arguments")
+    requested = search if search is not None else (None if method == "enumeration" else method)
+    unified = requested is not None
+    backend = backend if backend is not None else ("gpu" if unified else "cpu")
     if precision != "float64":
         raise ValueError(
             "Phase 1 reference requires precision='float64'; float32 must "
@@ -76,12 +89,18 @@ def bma_regress(
     p = len(predictors)
     if p == 0:
         raise ValueError("at least one optional predictor is required")
-    if p > _MAX_ENUMERATION_PREDICTORS:
+    strategy = resolve_search(p, requested if unified else "exact")
+    if not unified and p > MAX_REFERENCE_P:
         raise ValueError(
-            f"{p} optional predictors imply 2^{p} = {2**p:,} models; Phase 1 "
-            f"caps exhaustive enumeration at {_MAX_ENUMERATION_PREDICTORS} "
-            "predictors. The production-scale enumerator arrives in a later phase."
+            f"The legacy all-scores reference is limited to {MAX_REFERENCE_P} predictors. "
+            "Use search='exact' for streamed GPU enumeration or search='auto'."
         )
+    if strategy == "exact" and unified and backend != "gpu":
+        raise ValueError("search='auto'/'exact' uses exhaustive GPU enumeration; select backend='gpu'. Omit search for the legacy CPU reference.")
+    if exact_options and (strategy != "exact" or not unified):
+        raise ValueError("exact_options requires the unified exact GPU route")
+    if bfg_options and strategy != "bfg":
+        raise ValueError("bfg_options is only accepted when the selected strategy is BFG")
     missing = [c for c in [outcome, *predictors, *controls] if c not in data.columns]
     if missing:
         raise KeyError(f"columns not found in data: {missing}")
@@ -114,6 +133,23 @@ def bma_regress(
         entity_col=entity_col, time_col=time_col, y=y, X=X,
     )
     A = block["A"]
+    if strategy == "bfg":
+        if fixed_effects and fe_method == "within":
+            raise ValueError("The BFG adapter requires explicit FE dummies to preserve always-in ranks and priors; use fe_method='dummies'.")
+        from gpubma.bfg import fit_bfg
+
+        options = dict(bfg_options or {})
+        reserved = {"y", "X", "candidate_names", "always_in", "outcome_name",
+                    "g", "model_prior", "always_prior", "device", "config"}
+        if reserved.intersection(options):
+            raise ValueError(f"bfg_options cannot override model/interface settings: {sorted(reserved.intersection(options))}")
+        # A begins with the flat intercept; fit_bfg adds that intercept itself.
+        # Only the remaining controls/dummies are passed as always-in columns.
+        return fit_bfg(y, X, candidate_names=predictors,
+                       always_in=A[:, 1:] if A.shape[1] > 1 else None,
+                       g=g, model_prior=model_prior, always_prior=always_prior,
+                       device="cuda" if backend == "gpu" else "cpu",
+                       outcome_name=outcome, **options)
     if A.shape[1]:
         Q, _ = np.linalg.qr(A)
         y_r = _residualize(block["y_work"][:, None], Q).ravel()
@@ -143,7 +179,23 @@ def bma_regress(
 
     # ---- scoring ---------------------------------------------------------
     hardware = {}
-    if backend == "gpu":
+    if unified:
+        from gpubma.gpu.enumerator import enumerate_models_gpu
+        from gpubma.gpu.batch_scorer import gpu_hardware_info
+
+        options = dict(exact_options or {})
+        allowed = {"max_chunk", "vram_budget_bytes", "checkpoint_path", "checkpoint_every_s",
+                   "resume", "progress_every_s", "progress", "keep_scores"}
+        if set(options) - allowed:
+            raise ValueError(f"Unsupported exact_options: {sorted(set(options) - allowed)}")
+        out = enumerate_models_gpu(
+            X_r, y_r, df_resid=df_resid, g=g_spec.g, log_model_prior=log_prior_fn,
+            top_k=top_k, compute_coefficients=compute_coefficients, **score_kwargs, **options,
+        )
+        hardware = gpu_hardware_info()
+        notes = ["Exact exhaustive GPU enumeration; optional predictors alone determine the model space.",
+                 "Full model probability/mask arrays are not materialized by the streaming engine; top models use global normalization."]
+    elif backend == "gpu":
         from gpubma.gpu.batch_scorer import gpu_score_all_models, gpu_hardware_info
 
         gpu_out = gpu_score_all_models(
@@ -204,9 +256,9 @@ def bma_regress(
         backend=backend,
         precision=precision,
         pip=out["pip"],
-        pmp=out["pmp"],
-        masks=out["masks"],
-        log_scores=out["log_scores"],
+        pmp=out.get("pmp"),
+        masks=out.get("masks"),
+        log_scores=out.get("log_scores"),
         coef_mean=out["coef_mean"],
         coef_sd=out["coef_sd"],
         mean_model_size=out["mean_model_size"],

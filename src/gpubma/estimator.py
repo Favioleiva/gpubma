@@ -25,8 +25,11 @@ class GPUBMARegressor:
         entity_col=None,
         time_col=None,
         always_prior="shrink",
-        backend="cpu",
+        backend=None,
         method="enumeration",
+        search=None,
+        exact_options=None,
+        bfg_options=None,
         precision="float64",
         g="benchmark",
         model_prior=("betabinomial", 1.0, 1.0),
@@ -42,6 +45,9 @@ class GPUBMARegressor:
         self.always_prior = always_prior
         self.backend = backend
         self.method = method
+        self.search = search
+        self.exact_options = exact_options
+        self.bfg_options = bfg_options
         self.precision = precision
         self.g = g
         self.model_prior = model_prior
@@ -62,6 +68,9 @@ class GPUBMARegressor:
             always_prior=self.always_prior,
             backend=self.backend,
             method=self.method,
+            search=self.search,
+            exact_options=self.exact_options,
+            bfg_options=self.bfg_options,
             precision=self.precision,
             g=self.g,
             model_prior=self.model_prior,

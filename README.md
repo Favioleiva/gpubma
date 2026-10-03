@@ -14,6 +14,30 @@ Python 3.10+ and PyTorch are required. Install the appropriate PyTorch CPU/CUDA 
 
 ## Examples
 
+### Select exact or BFG automatically
+
+```python
+from gpubma import bma_regress, resolve_search
+
+strategy = resolve_search(len(candidate_columns), search="auto")
+result = bma_regress(df, "y", candidate_columns, controls=always_in_columns,
+                     search="auto")
+```
+
+**Exact exhaustive GPU enumeration: p <= 32. BFG search: p > 32.**
+`search="auto"` selects automatically. Here **p counts selectable regressors**;
+observations, the intercept, controls and fixed effects do not determine the
+search strategy. `search="exact"` explicitly rejects p > 32;
+`search="bfg"` requests the existing BFG implementation even for small p.
+
+Explicit search defaults to GPU. Exact execution requires CUDA and uses float64,
+streamed accumulators and wide model counters; it has no CPU fallback. Selecting
+exact can be expensive: p=32 contains 4,294,967,296 models. No such full run is
+part of the unit tests. Calls that omit `search` retain the legacy CPU/reference
+behavior and its separate all-scores storage cap. See
+[strategy API and compatibility](docs/search_strategy.md) for engine options,
+return types, prior handling and the pre-existing BFG API discrepancy.
+
 ### Exact p=30 BMA reference
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Favioleiva/gpubma/blob/main/examples/Exact_BMA_Canonical_p30_Figures.ipynb)

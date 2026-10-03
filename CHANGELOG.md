@@ -1,5 +1,19 @@
 # Changelog
 
+## Reusable exact/BFG strategy selection - 2026-10-04
+
+- Added opt-in `search="auto" | "exact" | "bfg"` to the functional and
+  estimator APIs; preserved legacy calls without search.
+- Centralized the selectable-dimension policy: exhaustive GPU through p=32,
+  existing BFG above p=32; observations and always-in columns do not route search.
+- Generalized the original streaming exact engine and validated wide counters,
+  model masks, every model size and old/new checkpoint compatibility.
+- Rejected ambiguous `fit_bfg(config=..., <search options>)` calls instead of
+  silently discarding their options. Public signature/defaults and all BFG
+  algorithm/scoring/result code remain unchanged.
+- Documented the pre-existing discovery-versus-reconstruction API discrepancy;
+  no restoration of historical search/posterior behavior is included.
+
 ## Final public packaging — 2026-09-14
 
 - Added compact exact p30 reference artifacts, canonical figure notebook, hash verification and presentation tests.

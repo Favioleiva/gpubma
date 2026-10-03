@@ -34,6 +34,8 @@ from pathlib import Path
 
 import numpy as np
 
+from gpubma.search import MAX_REFERENCE_P, validate_exact_p
+
 CHECKPOINT_VERSION = 1
 
 
@@ -42,8 +44,10 @@ CHECKPOINT_VERSION = 1
 # --------------------------------------------------------------------------
 
 def binomial_table(p: int) -> np.ndarray:
-    """(p+1) x (p+1) table of C(n, j) as exact int64 (p <= 62 is safe;
-    we use p <= 30 where C(30, 15) = 155,117,520)."""
+    """Exact int64 binomial table, also shared by the structured enumerator.
+
+    The exhaustive engine validates its selectable dimension at entry.
+    """
     C = np.zeros((p + 1, p + 1), dtype=np.int64)
     C[:, 0] = 1
     for n in range(1, p + 1):
@@ -74,6 +78,20 @@ def unrank_combinations(ranks, k: int, binom, torch):
 # --------------------------------------------------------------------------
 # checkpoint helpers
 # --------------------------------------------------------------------------
+
+def validate_cursor(p: int, done: int, next_k: int, next_rank: int) -> None:
+    """Validate wide counters against the deterministic colex enumeration order."""
+    validate_exact_p(p)
+    if not (0 <= next_k <= p + 1 and 0 <= done <= (1 << p)):
+        raise ValueError("Invalid checkpoint model count or model size")
+    if next_k == p + 1:
+        if next_rank != 0 or done != (1 << p):
+            raise ValueError("Invalid completed checkpoint cursor")
+    elif not 0 <= next_rank < math.comb(p, next_k):
+        raise ValueError("Invalid checkpoint combination rank")
+    expected = sum(math.comb(p, k) for k in range(next_k)) + next_rank
+    if done != expected:
+        raise ValueError("Checkpoint cursor does not match evaluated model count")
 
 def _config_digest(Zxx, Zxy, tss, tss_norm, df_resid, g, k_always,
                    log_prior_by_size, top_k) -> str:
@@ -138,22 +156,24 @@ def enumerate_models_gpu(
     """
     from gpubma.gpu.batch_scorer import torch_cuda_available
 
+    # Reject unsupported model spaces before device setup or large allocations.
+    X = np.ascontiguousarray(X, dtype=np.float64)
+    y = np.ascontiguousarray(y, dtype=np.float64)
+    n, p = X.shape
+    validate_exact_p(p)
     ok, msg = torch_cuda_available()
     if not ok:
         raise RuntimeError(f"CUDA unavailable: {msg}")
     import torch
 
     t_start = time.perf_counter()
-    X = np.ascontiguousarray(X, dtype=np.float64)
-    y = np.ascontiguousarray(y, dtype=np.float64)
-    n, p = X.shape
-    if p > 30:
-        raise ValueError(f"p = {p} exceeds the designed maximum of 30")
+    if torch.device(device).type != "cuda":
+        raise ValueError("The exact GPU enumerator requires a CUDA device")
     if df_resid <= 2:
         raise ValueError(f"effective degrees of freedom too small: {df_resid}")
     n_models_expected = 1 << p
-    if keep_scores and p > 20:
-        raise ValueError("keep_scores stores 2^p values; limited to p <= 20")
+    if keep_scores and p > MAX_REFERENCE_P:
+        raise ValueError(f"keep_scores stores 2^p values; limited to p <= {MAX_REFERENCE_P}")
 
     # ---- sufficient statistics (identical to the CPU oracle) -------------
     Zxx_np = X.T @ X
@@ -225,6 +245,9 @@ def enumerate_models_gpu(
         start_k = int(st["next_k"])
         start_rank = int(st["next_rank"])
         elapsed_prior = float(st["elapsed_s"])
+        validate_cursor(p, models_done, start_k, start_rank)
+        if top_masks.dtype != torch.int64:
+            raise ValueError("Checkpoint model masks must use int64")
         if keep_scores:
             raise ValueError("keep_scores cannot be combined with resume")
 
@@ -239,6 +262,7 @@ def enumerate_models_gpu(
         return max(1024, min(max_chunk, by_mem))
 
     def _save(next_k: int, next_rank: int) -> None:
+        validate_cursor(p, models_done, next_k, next_rank)
         if checkpoint_path is None:
             return
         state = dict(

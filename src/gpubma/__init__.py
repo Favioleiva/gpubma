@@ -21,11 +21,14 @@ from gpubma.plots import (
     resolve_variable_names,
 )
 from gpubma.result import BMAResult
+from gpubma.search import MAX_EXACT_P, resolve_search
 
 __version__ = "0.3.0rc1"
 
 __all__ = [
     "bma_regress",
+    "MAX_EXACT_P",
+    "resolve_search",
     "fit_bfg",
     "BFGResult",
     "BFGConfig",

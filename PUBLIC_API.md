@@ -1,4 +1,25 @@
-# Public BFG discovery API
+# Public API
+
+## Unified strategy selection
+
+`bma_regress(..., search="auto" | "exact" | "bfg")` and
+`GPUBMARegressor(..., search=...)` use the same package-level policy:
+exact exhaustive GPU enumeration for **p <= 32**, BFG for **p > 32** in auto
+mode. `p` is the number of selectable regressors, never the observation count.
+Always-in regressors are excluded. `resolve_search(p, search="auto")` inspects
+the policy without running a model. `MAX_EXACT_P` is defined once in
+`gpubma.search`. See [complete usage and compatibility](docs/search_strategy.md).
+
+## Historical BFG discovery interface
+
+The discovery contract below describes the earlier release. Subsequent BFG128
+and package-completeness commits replaced the exported engine and result with
+the posterior-reconstruction API. They are not interchangeable: the current
+engine can reject a budget that suffices for discovery but cannot support its
+reconstruction stage. The strategy selector delegates to the current engine;
+it does not restore the earlier algorithm or reinterpret posterior results.
+See the compatibility audit in `docs/search_strategy.md` before using the
+historical methods below with the current export.
 
 ```python
 from gpubma import fit_bfg, BFGConfig, BFGResult

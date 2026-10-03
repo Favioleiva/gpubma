@@ -1,0 +1,701 @@
+{
+  "pre_change_commit": "a31e63a34227135d8ac3db0289d78e7732c389e4",
+  "baseline_bfg_suite": {
+    "passed": 72,
+    "failed": 43,
+    "errors": 8
+  },
+  "after_entire_repository_suite": {
+    "passed": 116,
+    "failed": 42,
+    "errors": 8
+  },
+  "previously_passing_bfg_regressions": {},
+  "fixed_existing_tests": [
+    "tests.test_discovery::test_config_options_never_silently_ignored"
+  ],
+  "existing_bfg_test_status_before_after": {
+    "tests.bfg.test_allocation::test_budget_allocation_strategies": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_bitops::test_boundary_bits": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_bitops::test_straddling_and_isolated_words": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_bitops::test_null_and_saturated_models": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_bitops::test_parent_child_invariants": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_bitops::test_add_remove_bit": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_bitops::test_validation_and_errors": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_bitops::test_batch_operations": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_bitops::test_structured_array": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_bitops::test_hex_formatting": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_engine::test_wide_elite_registry_basic": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_engine::test_wide_genealogical_search": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_engine::test_wide_elite_search": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_engine::test_shell_accumulator_online_properties": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_engine::test_wide_shell_recovery_census_and_sampling": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_engine::test_dispatch_unsupported_p_above_128": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_engine::test_dispatch_p_less_than_or_equal_60": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_engine::test_dispatch_61_to_128_end_to_end": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_engine::test_bfg128_checkpoint_resume": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_engine::test_hybrid_recovery_estimator_hand_check": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_sampling::test_boundary_dimensions_and_k": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_sampling::test_mask_consistency_and_uniqueness": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_sampling::test_exclusion_ledger": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_sampling::test_remainder_limit_fail_fast": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_sampling::test_thread_invariance": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_sampling::test_chunk_invariance": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_sampling::test_restart_resume": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_sampling::test_census_enumeration": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_stage6_validation::test_regime1_p30_legacy_oracle": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_stage6_validation::test_regime2_p67_end_to_end": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_stage6_validation::test_regime3_p100_k50_stress": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_stage6_validation::test_regime4_p128_k64_stress": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_stage6_validation::test_dispatch_boundary_exhaustive": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_stage6_validation::test_checkpoint_resume_p67_and_p100": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_bfg128_stage6_validation::test_persistence_provenance_audit": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_elite_search::test_threshold_estimators": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_elite_search::test_tail_prevalence_estimator": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_elite_search::test_gpu_elite_search_execution": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_genealogy::test_genealogical_searches": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_registry::test_elite_registry_operations": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_sampling::test_lattice_sampler_no_duplicates_and_exclusions": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_sampling::test_exact_wing_enumerator": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_scorer::test_bitmask_utilities": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_scorer::test_hardware_detection": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_scorer::test_scorer_exact_parity_with_cpu_enumeration": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_shell_recovery::test_public_import": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_shell_recovery::test_rank_bijection": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_shell_recovery::test_bigint_metadata_only": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_shell_recovery::test_sample_size_logic_and_validation": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_shell_recovery::test_remainder_sampler_exclusions_and_nested_determinism": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_shell_recovery::test_reconstruct_shell_mixture_weight_accounting": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.bfg.test_shell_recovery::test_population_weights_not_equal_pooling": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_discovery::test_hard_budget_unique_deterministic[cpu-1]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_hard_budget_unique_deterministic[cpu-2]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_hard_budget_unique_deterministic[cpu-5]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_hard_budget_unique_deterministic[cpu-10]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_hard_budget_unique_deterministic[cpu-31]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_hard_budget_unique_deterministic[cpu-32]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_hard_budget_unique_deterministic[cpu-100]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_hard_budget_unique_deterministic[cuda-1]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_hard_budget_unique_deterministic[cuda-2]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_hard_budget_unique_deterministic[cuda-5]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_hard_budget_unique_deterministic[cuda-10]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_hard_budget_unique_deterministic[cuda-31]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_hard_budget_unique_deterministic[cuda-32]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_hard_budget_unique_deterministic[cuda-100]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_discovered_quantities_and_serialization": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_interrupted_resume_matches_full[cpu-wings]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_interrupted_resume_matches_full[cpu-genealogy]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_interrupted_resume_matches_full[cpu-sampling]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_interrupted_resume_matches_full[cpu-final_reconnaissance]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_interrupted_resume_matches_full[cuda-wings]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_interrupted_resume_matches_full[cuda-genealogy]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_interrupted_resume_matches_full[cuda-sampling]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_interrupted_resume_matches_full[cuda-final_reconnaissance]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_checkpoint_mismatch_corruption_and_completion": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_invalid_config_rejected[bad0]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_invalid_config_rejected[bad1]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_invalid_config_rejected[bad2]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_invalid_config_rejected[bad3]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_invalid_config_rejected[bad4]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_invalid_config_rejected[bad5]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_invalid_config_rejected[bad6]": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_discovery::test_invalid_config_rejected[bad7]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_config_options_never_silently_ignored": {
+      "before": "failure",
+      "after": "passed"
+    },
+    "tests.test_discovery::test_wide_bitmask_gpu_cpu_and_json[64]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_wide_bitmask_gpu_cpu_and_json[90]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_budget_exhausted_beam_seed": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_cli": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_no_experimental_default_imports": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_cpu_fallback_when_cuda_unavailable": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_discovery::test_mutated_config_validated_at_entry": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_canonical_reporting::test_denominator_and_always_in": {
+      "before": "error",
+      "after": "error"
+    },
+    "tests.test_canonical_reporting::test_finite_ridge_support[values0]": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_canonical_reporting::test_finite_ridge_support[values1]": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_canonical_reporting::test_finite_ridge_support[values2]": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_canonical_reporting::test_finite_ridge_support[values3]": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_canonical_reporting::test_ols_diagnostics_against_direct_reference": {
+      "before": "error",
+      "after": "error"
+    },
+    "tests.test_canonical_reporting::test_booktabs_rank_order_and_fe_suppression": {
+      "before": "error",
+      "after": "error"
+    },
+    "tests.test_canonical_reporting::test_bad_data_and_fe_metadata_fail": {
+      "before": "error",
+      "after": "error"
+    },
+    "tests.test_canonical_reporting::test_rank_deficiency_no_fabricated_uncertainty": {
+      "before": "error",
+      "after": "error"
+    },
+    "tests.test_canonical_reporting::test_full_figure_geometry_and_png_only": {
+      "before": "error",
+      "after": "error"
+    },
+    "tests.test_canonical_reporting::test_prior_is_actual_uniform_size": {
+      "before": "error",
+      "after": "error"
+    },
+    "tests.test_canonical_reporting::test_no_coefficients_without_original_data": {
+      "before": "error",
+      "after": "error"
+    },
+    "tests.test_benchmark_fixtures::test_public_fixture[12]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_benchmark_fixtures::test_public_fixture[18]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_benchmark_fixtures::test_public_fixture[30]": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_benchmark_fixtures::test_historical_tables_consistent": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_official_examples::test_canonical_public_bytes[canonical_p30]": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_official_examples::test_canonical_public_bytes[grunfeld]": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_official_examples::test_checksum_substitution_rejected": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_official_examples::test_bad_budgets_rejected[0]": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_official_examples::test_bad_budgets_rejected[-1]": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_official_examples::test_bad_budgets_rejected[2.5]": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_official_examples::test_bad_budgets_rejected[True]": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_official_examples::test_bad_budgets_rejected[5000]": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_official_examples::test_budget_fraction_and_cap": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_official_examples::test_auto_device_dispatch": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_official_examples::test_three_loaders_preserve_public_stata_rows": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_official_examples::test_loader_no_implicit_sample_changes": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_official_examples::test_canonical_p30_controls_and_sample": {
+      "before": "passed",
+      "after": "passed"
+    },
+    "tests.test_official_examples::test_stata_budget_early_completion_and_table": {
+      "before": "failure",
+      "after": "failure"
+    },
+    "tests.test_official_examples::test_archived_truth_is_distinct_from_map_and_first_hits_are_observed": {
+      "before": "passed",
+      "after": "passed"
+    }
+  },
+  "bfg_source_hashes_before_normalized_utf8": {
+    "src/gpubma/bfg/acesm.py": "6a4fe71f5fa73a078c6f24cc88ba9caee836f15b9c1f4c15749c72f302b56327",
+    "src/gpubma/bfg/allocation.py": "85cbb4bee749cc992992b2ac54995ea745688ad9785be284b486a10bb2c7bc19",
+    "src/gpubma/bfg/checkpoint.py": "b9d7c59cafb2bd4f8debdd72ba68ec939d774dc1cca759dd86cdea3caea926c2",
+    "src/gpubma/bfg/cli.py": "58ba63e1ad75e3dc7b5691328b772f84a28c51827f3adc7795ef6d108266d24f",
+    "src/gpubma/bfg/config.py": "671452866d485ec8378572907ae7448f5bfcbfa7f0f0c97779180805d76a0800",
+    "src/gpubma/bfg/diagnostics.py": "84a42816a265bd71825ca19900736c15f017fdc79e38394e07f2cb2b7cfd2440",
+    "src/gpubma/bfg/discovery_cli.py": "c3d1b5391f8f2d590902a8d352409132d4a0e2b0c04388ce9c668cd6e1d10443",
+    "src/gpubma/bfg/discovery_result.py": "4cceeb06e7e9e3e7243a9ca0e035c3195238c07fc2d9ccc231d257810a4e21cf",
+    "src/gpubma/bfg/elite_search.py": "e5324235f621aa2fe1709a7a0deda1c1d5094d4e7d32646dd364097e90e4abe8",
+    "src/gpubma/bfg/engine.py": "1c4df5af513574bb9a5c5c7265a0cae8021d7f3ac00ef00bbb1972bf2e78f3b9",
+    "src/gpubma/bfg/example_workflow.py": "34bc18b93fafa7b50cafb1c13ea40e833845ea5dbe9b80e39a1ad95eb3deb577",
+    "src/gpubma/bfg/figures.py": "36c5601843d85bab4d56bb38f6de67f7b734154572e59fe3b98508388b496ac3",
+    "src/gpubma/bfg/figure_data.py": "a867cc87645d36a8125f835a322606e12eefe018e37c4b2518420716c5ef6629",
+    "src/gpubma/bfg/genealogy.py": "f26c59f1de02ef8dbf03a6ec86bf9015e7f10a81633627da361c4556c8998631",
+    "src/gpubma/bfg/model_report.py": "877ca996116b330e4ab263e8d17f82b17cf7b57157a46715b955ba10e852de94",
+    "src/gpubma/bfg/reconstruction.py": "6bc2b5762e35e8166ac370e7816251ce5e0b04696c9830e3b6de84c0dc03d89e",
+    "src/gpubma/bfg/registry.py": "7321c248525948b7d0164cdd2b4118183d9462fd64992ac32963e4a81523e2c1",
+    "src/gpubma/bfg/results.py": "acf6bf96f2406a792b56e0e09f7c74f0a64789dafe15889578f25824c7b38b4e",
+    "src/gpubma/bfg/sampling.py": "2bb27e289b2474da3bcdcf0be78a5ce58a53f3643a40137e739733318f565deb",
+    "src/gpubma/bfg/scorer.py": "07e291ebaea8ea3e2d6a984487da00eb4324acc8df7e055e476b29723fc66d99",
+    "src/gpubma/bfg/shell_recovery.py": "368a03e7a2212ef3e37f1284cc9e10b11ed9df79a8901089a4a48bd06142a136",
+    "src/gpubma/bfg/__init__.py": "e131095e7a176d0fa1195889cdeaf6178e666cf04051622765148f0f14848002",
+    "src/gpubma/bfg/bfg128/bitops.py": "78dea8d57ce3d87c3abb2e355144c8e1a06e33c09b2e21ac8b24960a1af62b83",
+    "src/gpubma/bfg/bfg128/elite_search.py": "aae0ae62766017de11792b66e9870c91d8de409e2f98ab9268a32255a80beb9d",
+    "src/gpubma/bfg/bfg128/engine.py": "27ff9ef716033d6e2cabec40aa4cbcb447ed7c995f703f6d59c89cd773d41aa3",
+    "src/gpubma/bfg/bfg128/genealogy.py": "2861729d643e9932ce49322d6a0f765c14e2d2ce3955a888a4aa28cefeb5c7ae",
+    "src/gpubma/bfg/bfg128/recovery.py": "f8d5642b437117e9c5205ac52981147490ee49c8255f23eb8d41fb96e70b17b0",
+    "src/gpubma/bfg/bfg128/registry.py": "4484f25c0e56ec1842d0b7963e7cbf326fdc5258e9744ba9dc6d6401a6f8d472",
+    "src/gpubma/bfg/bfg128/results.py": "8c41707deab12f5bdc07cfb2f55e82d7b55a2cb4b6382c20c422fc4c7ae8cc70",
+    "src/gpubma/bfg/bfg128/rng.py": "ac9825b4f5b06698f58e54def7c5cfb17ad82bcfbcdb050b655de0ce17342d80",
+    "src/gpubma/bfg/bfg128/sampling.py": "7e04b24d6cb774ce6936a30466a8b8617bb1f05d2d02136e3e20b89b064f78d3",
+    "src/gpubma/bfg/bfg128/types.py": "1c9aad64f2889aa4347802bebfcc05b9aebff9b67059192f3d9fe63ffb984d02",
+    "src/gpubma/bfg/bfg128/__init__.py": "0b5d7dfffb3a7c6f590c331823e68172994c2be86d916eda4125ffab0a850888"
+  },
+  "numerical_capture": {
+    "sha256_before": "09d5d98fb20336c25fb6bfeb3a5216cbc2cd61a4b1b4d139c88e65e2a65e3975",
+    "sha256_after": "09d5d98fb20336c25fb6bfeb3a5216cbc2cd61a4b1b4d139c88e65e2a65e3975",
+    "bitwise_equal": true,
+    "signature_unchanged": true,
+    "cases": [
+      "existing_p10_cpu",
+      "existing_p10_cuda",
+      "existing_p67_config",
+      "p33_bounded"
+    ],
+    "torch": "2.5.1+cu121",
+    "cuda": "12.1",
+    "device": "NVIDIA GeForce RTX 3060"
+  },
+  "exact_old_new_comparison": {
+    "base_revision": "a31e63a34227135d8ac3db0289d78e7732c389e4",
+    "comparisons": [
+      {
+        "p": 1,
+        "always_prior": "shrink",
+        "models": 2,
+        "bitwise_equal": true,
+        "checkpoint_both_directions": true
+      },
+      {
+        "p": 1,
+        "always_prior": "flat",
+        "models": 2,
+        "bitwise_equal": true,
+        "checkpoint_both_directions": true
+      },
+      {
+        "p": 5,
+        "always_prior": "shrink",
+        "models": 32,
+        "bitwise_equal": true,
+        "checkpoint_both_directions": true
+      },
+      {
+        "p": 5,
+        "always_prior": "flat",
+        "models": 32,
+        "bitwise_equal": true,
+        "checkpoint_both_directions": true
+      },
+      {
+        "p": 8,
+        "always_prior": "shrink",
+        "models": 256,
+        "bitwise_equal": true,
+        "checkpoint_both_directions": true
+      },
+      {
+        "p": 8,
+        "always_prior": "flat",
+        "models": 256,
+        "bitwise_equal": true,
+        "checkpoint_both_directions": true
+      }
+    ],
+    "full_p30_or_p32_run": false,
+    "scientific_data_used": false
+  },
+  "relevant_suite_nodes": [
+    "tests/bfg/test_allocation.py::test_budget_allocation_strategies",
+    "tests/bfg/test_bfg128_bitops.py::test_boundary_bits",
+    "tests/bfg/test_bfg128_bitops.py::test_straddling_and_isolated_words",
+    "tests/bfg/test_bfg128_bitops.py::test_null_and_saturated_models",
+    "tests/bfg/test_bfg128_bitops.py::test_parent_child_invariants",
+    "tests/bfg/test_bfg128_bitops.py::test_add_remove_bit",
+    "tests/bfg/test_bfg128_bitops.py::test_validation_and_errors",
+    "tests/bfg/test_bfg128_bitops.py::test_batch_operations",
+    "tests/bfg/test_bfg128_bitops.py::test_structured_array",
+    "tests/bfg/test_bfg128_bitops.py::test_hex_formatting",
+    "tests/bfg/test_bfg128_engine.py::test_wide_elite_registry_basic",
+    "tests/bfg/test_bfg128_engine.py::test_wide_genealogical_search",
+    "tests/bfg/test_bfg128_engine.py::test_wide_elite_search",
+    "tests/bfg/test_bfg128_engine.py::test_shell_accumulator_online_properties",
+    "tests/bfg/test_bfg128_engine.py::test_wide_shell_recovery_census_and_sampling",
+    "tests/bfg/test_bfg128_engine.py::test_dispatch_unsupported_p_above_128",
+    "tests/bfg/test_bfg128_engine.py::test_dispatch_p_less_than_or_equal_60",
+    "tests/bfg/test_bfg128_engine.py::test_dispatch_61_to_128_end_to_end",
+    "tests/bfg/test_bfg128_engine.py::test_bfg128_checkpoint_resume",
+    "tests/bfg/test_bfg128_engine.py::test_hybrid_recovery_estimator_hand_check",
+    "tests/bfg/test_bfg128_sampling.py::test_boundary_dimensions_and_k",
+    "tests/bfg/test_bfg128_sampling.py::test_mask_consistency_and_uniqueness",
+    "tests/bfg/test_bfg128_sampling.py::test_exclusion_ledger",
+    "tests/bfg/test_bfg128_sampling.py::test_remainder_limit_fail_fast",
+    "tests/bfg/test_bfg128_sampling.py::test_thread_invariance",
+    "tests/bfg/test_bfg128_sampling.py::test_chunk_invariance",
+    "tests/bfg/test_bfg128_sampling.py::test_restart_resume",
+    "tests/bfg/test_bfg128_sampling.py::test_census_enumeration",
+    "tests/bfg/test_bfg128_stage6_validation.py::test_regime1_p30_legacy_oracle",
+    "tests/bfg/test_bfg128_stage6_validation.py::test_regime2_p67_end_to_end",
+    "tests/bfg/test_bfg128_stage6_validation.py::test_regime3_p100_k50_stress",
+    "tests/bfg/test_bfg128_stage6_validation.py::test_regime4_p128_k64_stress",
+    "tests/bfg/test_bfg128_stage6_validation.py::test_dispatch_boundary_exhaustive",
+    "tests/bfg/test_bfg128_stage6_validation.py::test_checkpoint_resume_p67_and_p100",
+    "tests/bfg/test_bfg128_stage6_validation.py::test_persistence_provenance_audit",
+    "tests/bfg/test_elite_search.py::test_threshold_estimators",
+    "tests/bfg/test_elite_search.py::test_tail_prevalence_estimator",
+    "tests/bfg/test_elite_search.py::test_gpu_elite_search_execution",
+    "tests/bfg/test_genealogy.py::test_genealogical_searches",
+    "tests/bfg/test_registry.py::test_elite_registry_operations",
+    "tests/bfg/test_sampling.py::test_lattice_sampler_no_duplicates_and_exclusions",
+    "tests/bfg/test_sampling.py::test_exact_wing_enumerator",
+    "tests/bfg/test_scorer.py::test_bitmask_utilities",
+    "tests/bfg/test_scorer.py::test_hardware_detection",
+    "tests/bfg/test_scorer.py::test_scorer_exact_parity_with_cpu_enumeration",
+    "tests/bfg/test_shell_recovery.py::test_public_import",
+    "tests/bfg/test_shell_recovery.py::test_rank_bijection",
+    "tests/bfg/test_shell_recovery.py::test_bigint_metadata_only",
+    "tests/bfg/test_shell_recovery.py::test_sample_size_logic_and_validation",
+    "tests/bfg/test_shell_recovery.py::test_remainder_sampler_exclusions_and_nested_determinism",
+    "tests/bfg/test_shell_recovery.py::test_reconstruct_shell_mixture_weight_accounting",
+    "tests/bfg/test_shell_recovery.py::test_population_weights_not_equal_pooling",
+    "tests/test_discovery.py::test_invalid_config_rejected[bad6]",
+    "tests/test_canonical_reporting.py::test_finite_ridge_support[values0]",
+    "tests/test_canonical_reporting.py::test_finite_ridge_support[values1]",
+    "tests/test_canonical_reporting.py::test_finite_ridge_support[values2]",
+    "tests/test_canonical_reporting.py::test_finite_ridge_support[values3]",
+    "tests/test_benchmark_fixtures.py::test_historical_tables_consistent",
+    "tests/test_official_examples.py::test_canonical_public_bytes[canonical_p30]",
+    "tests/test_official_examples.py::test_canonical_public_bytes[grunfeld]",
+    "tests/test_official_examples.py::test_checksum_substitution_rejected",
+    "tests/test_official_examples.py::test_bad_budgets_rejected[0]",
+    "tests/test_official_examples.py::test_bad_budgets_rejected[-1]",
+    "tests/test_official_examples.py::test_bad_budgets_rejected[2.5]",
+    "tests/test_official_examples.py::test_bad_budgets_rejected[True]",
+    "tests/test_official_examples.py::test_bad_budgets_rejected[5000]",
+    "tests/test_official_examples.py::test_budget_fraction_and_cap",
+    "tests/test_official_examples.py::test_auto_device_dispatch",
+    "tests/test_official_examples.py::test_three_loaders_preserve_public_stata_rows",
+    "tests/test_official_examples.py::test_loader_no_implicit_sample_changes",
+    "tests/test_official_examples.py::test_canonical_p30_controls_and_sample",
+    "tests/test_official_examples.py::test_archived_truth_is_distinct_from_map_and_first_hits_are_observed",
+    "tests/test_discovery.py::test_config_options_never_silently_ignored",
+    "tests/test_exact_reference.py",
+    "tests/test_search_strategy.py",
+    "tests/test_exact_search_gpu.py",
+    "tests/test_bfg_config_compatibility.py"
+  ],
+  "new_regression_before_fix": "FAIL: DID NOT RAISE TypeError",
+  "new_regression_after_fix": "PASS",
+  "existing_test_files_modified": false,
+  "full_p32_execution": false,
+  "MEKC_PASS1_or_PASS2_executed": false,
+  "datasets_uploaded": false,
+  "relevant_suite": {
+    "passed": 116,
+    "failed": 0,
+    "errors": 0,
+    "exit_code": 0
+  }
+}

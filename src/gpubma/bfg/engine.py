@@ -6,6 +6,7 @@ import math
 import hashlib
 import json
 import time
+from functools import wraps
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
 
@@ -649,6 +650,24 @@ class BFGEngine:
         )
 
 
+def _exclusive_config(function):
+    """Reject ignored options without changing the public signature or defaults."""
+    @wraps(function)
+    def checked(*args, **kwargs):
+        if kwargs.get("config") is not None:
+            options = set(kwargs) - {
+                "y", "X", "candidate_names", "always_in", "outcome_name", "config"
+            }
+            if options:
+                raise TypeError(
+                    "Use config OR keyword search options, not both; "
+                    f"conflicting options: {sorted(options)}"
+                )
+        return function(*args, **kwargs)
+    return checked
+
+
+@_exclusive_config
 def fit_bfg(
     y: Any,
     X: Any,
@@ -703,7 +722,8 @@ def fit_bfg(
     resume : bool, default=False
         Whether to resume from existing checkpoints in checkpoint_dir.
     config : Optional[BFGConfig], default=None
-        Custom configuration instance overriding individual parameters.
+        Custom configuration instance. Supply config OR keyword search options;
+        mixing them raises TypeError instead of silently ignoring options.
     verbose : bool, default=True
         Whether to print progress messages.
     outcome_name : str, default="y"
